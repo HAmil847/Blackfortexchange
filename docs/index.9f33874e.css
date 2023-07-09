@@ -66,6 +66,7 @@ ul.content-subpages-list li.content-subpage img:hover {
 }
 
 .dot {
+  opacity: 0;
   color: #fff;
   z-index: 100;
   flex-direction: column;
