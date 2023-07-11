@@ -669,6 +669,10 @@ var _postProcessingDefault = parcelHelpers.interopDefault(_postProcessing);
 var _tweenJs = require("@tweenjs/tween.js");
 var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
 var _css3Drenderer = require("three/examples/jsm/renderers/CSS3DRenderer");
+var _statsJs = require("stats.js");
+var _statsJsDefault = parcelHelpers.interopDefault(_statsJs);
+const stats = new (0, _statsJsDefault.default)();
+document.body.appendChild(stats.dom);
 // External links
 const portalUrl = new URL(require("ddd27ad91f13ba8c"));
 // Portal object
@@ -684,7 +688,7 @@ const PORTAL = {
 let goToCamera = false;
 (0, _listener.setupListeners)();
 // Main components
-const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 400);
 const cameraPather = new _three.Group();
 cameraPather.add(camera);
 // Create a web scene
@@ -704,7 +708,7 @@ DOM_MANAGER.setDomItemPosition(WEB, 80, 240);
 // Create an instance of ParticleSystem
 const particleSystem = new (0, _particleSystemDefault.default)(WEB);
 // Create and add particles to the scene
-particleSystem.CreateParticles(8, 6000, 180, new _three.Color(0x5271ff), new _three.Color(0x52f6ff));
+particleSystem.CreateParticles(50, 6000, 180, new _three.Color(0x0CF7DF), new _three.Color(0x0C51ED));
 // Set up helpers in the 3D scene
 // WEB.add(gridHelper);
 // WEB.add(axisHelper);
@@ -716,11 +720,19 @@ LoadPortal();
 const animateCamera = createTweenAnimation(cameraPather, DOM_MANAGER.LIST_ITEM_CAST[1].position, 5000);
 const beginAnimation = createTweenAnimation(cameraPather, new _three.Vector3(), 5000);
 // Set up post-processing
-//WEB.setPostProcessing(PostProcessing.bloomPass);
+WEB.setPostProcessing((0, _postProcessingDefault.default).bloomPass);
 // Set the scene's animation loop
 WEB.renderer.setAnimationLoop(RenderExperience);
+// Crear un reloj
+const clock = new _three.Clock();
 // Render experience function
 function RenderExperience() {
+    stats.begin();
+    stats.end();
+    // Obtener el tiempo transcurrido desde la última actualización
+    const elapsedTime = clock.getElapsedTime();
+    //animate particles 
+    particleSystem.updateTime(elapsedTime);
     DOM_MANAGER.LIST_ITEM.forEach((element)=>{
         const vectorSum = new _three.Vector3().addVectors(cameraPather.position, element.position);
         const relativePos = new _three.Vector3().addVectors(vectorSum, camera.position);
@@ -742,17 +754,62 @@ function RenderExperience() {
     (0, _tweenJsDefault.default).update();
 }
 function createTweenAnimation(object, target, duration) {
-    const tween = new (0, _tweenJsDefault.default).Tween(object.position).to(target, duration).easing((0, _tweenJsDefault.default).Easing.Exponential.Out).onComplete(function() {
+    const offset = 0.01; // Ajuste de posición para evitar z-fighting
+    const targetPosition = target.clone().subScalar(offset);
+    const tween = new (0, _tweenJsDefault.default).Tween(object.position).to(targetPosition, duration).easing((0, _tweenJsDefault.default).Easing.Exponential.Out).onComplete(function() {
         const newPos = new _three.Vector3(19.67263286166932, 0, 50.546138291252554);
         const newPosPather = new _three.Vector3(61.47697769271663, 0, 179.20668216016426);
         camera.lookAt(newPos);
         console.log("Animaci\xf3n terminada");
+        console.log(targetPosition, target);
     });
+    console.log("Vector original:", target);
+    console.log("Vector modificado:", targetPosition);
+    // Devolver animación
     return tween;
 }
 // Load the portal
 async function LoadPortal() {
     PORTAL.model = await PORTAL.instance.modelo;
+    //nuev material
+    /*
+  const portalMaterial = new THREE.ShaderMaterial({
+    vertexShader: `
+      varying vec3 vNormal;
+      
+      void main() {
+        vNormal = normal;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vNormal;
+      
+      void main() {
+        vec3 color1 = vec3(0.2, 0.4, 0.6);
+        vec3 color2 = vec3(0.8, 0.6, 0.4);
+        
+        float gradient = (vNormal.y + 1.0) * 0.5; // Calcula el factor de degradado en función de la normal
+        
+        vec3 finalColor = mix(color1, color2, gradient); // Mezcla los colores en función del factor de degradado
+        
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `,
+  });
+  
+  */ console.log(PORTAL.model);
+    //cargar material to escene
+    PORTAL.model.traverse((node)=>{
+        if (node.isMesh) {
+            // Asignar un nuevo material al modelo
+            // Modificar el material único en el nodo
+            node.material.color.set(0x16CAF2); // Turquesa
+            node.material.emissive.set(0x22DDF2); // Turquesa claro
+            node.material.alphaTest = 0.5; // Activar el canal de alpha test
+        }
+    });
+    //cargar a la escena
     WEB.add(PORTAL.modelGroup);
     PORTAL.modelGroup.add(PORTAL.model);
     PORTAL.model.rotation.x = Math.PI / 2;
@@ -763,7 +820,7 @@ function GoToCamera() {
     goToCamera = !goToCamera;
 }
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls":"7mqRv","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","./scene/dom/DomManager":"2jBvr","./scene/dom/DomComponent":"iuXxG","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","@tweenjs/tween.js":"7DfAI","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","ddd27ad91f13ba8c":"97wAT","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","three/examples/jsm/controls/OrbitControls":"7mqRv","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","./scene/dom/DomManager":"2jBvr","./scene/dom/DomComponent":"iuXxG","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","@tweenjs/tween.js":"7DfAI","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","stats.js":"9lwC6","ddd27ad91f13ba8c":"97wAT"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -31536,7 +31593,12 @@ class WebScene {
     constructor(camera){
         this.scene = new (0, _three.Scene)();
         this.camera = camera;
-        this.renderer = new (0, _three.WebGLRenderer)();
+        this.renderer = new (0, _three.WebGLRenderer)({
+            powerPreference: "high-performance",
+            antialias: false,
+            stencil: false,
+            depth: false
+        });
         this.quality = 1;
         //setup values
         this.setup(this.renderer, RESOLUTION);
@@ -39288,7 +39350,7 @@ const textureURL = new URL(require("2b08804ec1a89b00"));
 class ParticleSystem {
     constructor(scene){
         this.scene = scene;
-        this.particles = null;
+        this.particlesMaterial = null;
     }
     CreateParticles(size, count, range, colorInner, colorOuter) {
         // Configuración de la geometría de las partículas
@@ -39298,9 +39360,9 @@ class ParticleSystem {
         const sizes = new Float32Array(count);
         // Creación y configuración de cada partícula
         for(let i = 0; i < count; i++){
-            const radius = Math.pow(Math.random(), 0.5) * range; // Utilizar la raíz cuadrada del número aleatorio para dispersar más hacia los alrededores
+            const radius = Math.pow(Math.random(), 0.5) * range;
             const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(2 * Math.random() - 1); // Distribución más uniforme hacia los alrededores
+            const phi = Math.acos(2 * Math.random() - 1);
             const x = radius * Math.sin(theta) * Math.cos(phi);
             const z = radius * Math.sin(theta) * Math.sin(phi);
             const y = radius * Math.cos(theta);
@@ -39327,67 +39389,97 @@ class ParticleSystem {
         // Cargar la textura
         const textureLoader = new (0, _three.TextureLoader)();
         const texture = textureLoader.load(textureURL);
-        //shaders
-        const vertexShader = `
-
-  void main() {
-    vec4 modelPos = modelMatrix * vec4(position, 1.0);
-    vec4 viewPosition = viewMatrix * modelPos;
-    vec4 projectedPos= projectionMatrix * viewPosition;
-
-      gl_PointSize = 20.0;  // Tamaño de la partícula
-
-    gl_Position = projectedPos;
-  }
-`;
-        // console.log(geometry.attributes);
-        const fragmentShader = `
-uniform sampler2D particleTexture;
-void main(void)
-{
-    // Calcula la distancia desde el centro del círculo
-    float dist = distance(gl_PointCoord, vec2(0.5));
-
-    // Define el radio del círculo
-    float radius = 0.5;
-
-    // Comprueba si la coordenada está dentro del círculo
-    if (dist > radius) {
-        discard; // Descarta los fragmentos fuera del círculo
-    }
-
-    // Establece el color del círculo
-    gl_FragColor = vec4(1.0, 1.0, 1.0, .5); // Color blanco completamente opaco
-}
-`;
         // Crear el material de las partículas
-        /*
-    const material = new ShaderMaterial({
-        uniforms: {
-            particleTexture: { value: texture },  // Cian
-        },
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        transparent: true,
-        alphaTest: .5,
-        vertexColors: true,
-        depthWrite: false,
-        //blending: AdditiveBlending,
-      });
-*/ // Crear el material para las partículas
-        const material = new (0, _three.PointsMaterial)({
-            map: texture,
-            blending: (0, _three.AdditiveBlending),
+        const material = new (0, _three.ShaderMaterial)({
+            uniforms: {
+                particleTexture: {
+                    value: texture
+                },
+                uTime: {
+                    value: 0.0
+                }
+            },
+            vertexShader: `
+      uniform float uTime; // Tiempo para la animación
+attribute float size;
+attribute vec3 color;
+varying vec3 vColor;
+
+void main() {
+  vColor = color;
+  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+  
+  // Calcula la distancia al agujero negro
+  float distanceToBlackHole = length(position);
+  
+  // Calcula el ángulo de rotación en función del tiempo y la distancia al agujero negro
+  float rotationAngle = uTime * 0.15 + distanceToBlackHole * 0.1;
+  
+  // Calcula las coordenadas rotadas en el eje x/z
+  float rotatedX = position.x * cos(rotationAngle) - position.z * sin(rotationAngle);
+  float rotatedZ = position.x * sin(rotationAngle) + position.z * cos(rotationAngle);
+  
+  // Aplica el desplazamiento y la rotación a la posición de la partícula
+  mvPosition.x += rotatedX * 0.1;
+  mvPosition.z += rotatedZ * 0.1;
+  
+  gl_PointSize = size * (size / length(mvPosition.xyz));
+  gl_Position = projectionMatrix * mvPosition;
+}
+
+      
+      
+      
+      `,
+            fragmentShader: `
+      varying vec3 vColor; // Variable que almacena el color de la partícula  
+      void main() {
+
+        
+        
+        // Calculamos la coordenada relativa al centro del fragmento
+        vec2 coord = gl_PointCoord - vec2(0.5);
+        
+        // Calculamos la distancia del fragmento al centro del círculo
+        float dist = length(coord);
+        
+        //ajustes de particulas
+        vec3 lightColor = vColor; // Color de la luz
+        float alpha = smoothstep(0.5, 0.4, dist);
+        float alphaIntensity = 0.15;
+        float lightIntensity = 1.0;
+
+        // Descartamos los fragmentos que están fuera del radio de 0.5,
+        // asignando un valor de opacidad de cero
+        if (dist > 0.5) discard;
+
+        // Calculamos el brillo de la partícula
+  float brightness = pow(1.0 - dist, 2.0) * lightIntensity;
+
+  // Calculamos el color final de la partícula con el brillo
+  vec3 finalColor = vColor + lightColor * brightness;
+      
+        // Asignamos el color de la partícula al fragmento
+        gl_FragColor = vec4(finalColor, alpha * alphaIntensity);
+      }
+      
+
+    `,
             transparent: true,
-            alphaTest: 0.5,
-            opacity: 0.7,
-            depthTest: false,
-            vertexColors: true
+            blending: (0, _three.AdditiveBlending),
+            depthWrite: false
         });
         // Crear el objeto de partículas
-        this.particles = new (0, _three.Points)(geometry, material);
-        // Agregar las partículas a la escena
-        this.scene.add(this.particles);
+        const particles = new (0, _three.Points)(geometry, material);
+        // Crear el objeto LOD
+        const particleLOD = new (0, _three.LOD)();
+        particleLOD.addLevel(particles, 0);
+        this.particlesMaterial = material;
+        // Agregar el objeto LOD a la escena
+        this.scene.add(particleLOD);
+    }
+    updateTime(time) {
+        this.particlesMaterial.uniforms.uTime.value = time;
     }
 }
 exports.default = ParticleSystem;
@@ -39431,7 +39523,7 @@ bloomFolder.add(BLOOM, "threshold", 0, 1).onChange((value) => {
 });
 */ 
 
-},{"three":"ktPTu","three/examples/jsm/postprocessing/UnrealBloomPass":"3iDYE","dat.gui":"k3xQk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3iDYE":[function(require,module,exports) {
+},{"three":"ktPTu","dat.gui":"k3xQk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","three/examples/jsm/postprocessing/UnrealBloomPass":"3iDYE"}],"3iDYE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "UnrealBloomPass", ()=>UnrealBloomPass);
@@ -40540,7 +40632,92 @@ var exports = {
     update: update
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"97wAT":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9lwC6":[function(require,module,exports) {
+// stats.js - http://github.com/mrdoob/stats.js
+(function(f, e) {
+    module.exports = e();
+})(this, function() {
+    var f = function() {
+        function e(a) {
+            c.appendChild(a.dom);
+            return a;
+        }
+        function u(a) {
+            for(var d = 0; d < c.children.length; d++)c.children[d].style.display = d === a ? "block" : "none";
+            l = a;
+        }
+        var l = 0, c = document.createElement("div");
+        c.style.cssText = "position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000";
+        c.addEventListener("click", function(a) {
+            a.preventDefault();
+            u(++l % c.children.length);
+        }, !1);
+        var k = (performance || Date).now(), g = k, a = 0, r = e(new f.Panel("FPS", "#0ff", "#002")), h = e(new f.Panel("MS", "#0f0", "#020"));
+        if (self.performance && self.performance.memory) var t = e(new f.Panel("MB", "#f08", "#201"));
+        u(0);
+        return {
+            REVISION: 16,
+            dom: c,
+            addPanel: e,
+            showPanel: u,
+            begin: function() {
+                k = (performance || Date).now();
+            },
+            end: function() {
+                a++;
+                var c = (performance || Date).now();
+                h.update(c - k, 200);
+                if (c > g + 1E3 && (r.update(1E3 * a / (c - g), 100), g = c, a = 0, t)) {
+                    var d = performance.memory;
+                    t.update(d.usedJSHeapSize / 1048576, d.jsHeapSizeLimit / 1048576);
+                }
+                return c;
+            },
+            update: function() {
+                k = this.end();
+            },
+            domElement: c,
+            setMode: u
+        };
+    };
+    f.Panel = function(e, f, l) {
+        var c = Infinity, k = 0, g = Math.round, a = g(window.devicePixelRatio || 1), r = 80 * a, h = 48 * a, t = 3 * a, v = 2 * a, d = 3 * a, m = 15 * a, n = 74 * a, p = 30 * a, q = document.createElement("canvas");
+        q.width = r;
+        q.height = h;
+        q.style.cssText = "width:80px;height:48px";
+        var b = q.getContext("2d");
+        b.font = "bold " + 9 * a + "px Helvetica,Arial,sans-serif";
+        b.textBaseline = "top";
+        b.fillStyle = l;
+        b.fillRect(0, 0, r, h);
+        b.fillStyle = f;
+        b.fillText(e, t, v);
+        b.fillRect(d, m, n, p);
+        b.fillStyle = l;
+        b.globalAlpha = .9;
+        b.fillRect(d, m, n, p);
+        return {
+            dom: q,
+            update: function(h, w) {
+                c = Math.min(c, h);
+                k = Math.max(k, h);
+                b.fillStyle = l;
+                b.globalAlpha = 1;
+                b.fillRect(0, 0, r, m);
+                b.fillStyle = f;
+                b.fillText(g(h) + " " + e + " (" + g(c) + "-" + g(k) + ")", t, v);
+                b.drawImage(q, d + a, m, n - a, p, d, m, n - a, p);
+                b.fillRect(d + n - a, m, a, p);
+                b.fillStyle = l;
+                b.globalAlpha = .9;
+                b.fillRect(d + n - a, m, a, g((1 - h / w) * p));
+            }
+        };
+    };
+    return f;
+});
+
+},{}],"97wAT":[function(require,module,exports) {
 module.exports = require("1065846c8c783c61").getBundleURL("8Kyqb") + "final.23f53255.glb" + "?" + Date.now();
 
 },{"1065846c8c783c61":"lgJ39"}]},["gLv3T","jYf5p"], "jYf5p", "parcelRequire94c2")
