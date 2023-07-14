@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+
+div.section.active {
+  display: flex;
+  flex-direction: column;
+  width: 65%;
+}
+
+.dots-container:has(.active) .section:not(.active) {
+  /* Estilo aplicado a los elementos sin la clase "active" cuando al menos uno de ellos la tiene */
+  transition: opacity 4s ease; /* Agregamos una transición suave */
+  opacity: 0; /* Al agregar la clase .active, los elementos .seccion se ocultan gradualmente */
+}
+div.section.active {
+  animation: fadeIn 0.8s cubic-bezier(0.755, 0.05, 0.855, 0.06); /* Iniciar la animación de fade in con una curva de aceleración similar a ease-in-quint */
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+span.content-span {
+  /* Estilos para el span */
+}
+h2.content-title {
+  font-size: 45px;
+  font-family: Monzerrat-medium;
+  background: #ffffff;
+  background: linear-gradient(to right, #747474 0%, #ffffff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  margin-top: 0;
+  /* Estilos para el título */
+}
+
+div.content-description {
+  /* Estilos para la descripción */
+  margin-bottom: 50px;
+  font-family: Monzerrat-regular;
+  font-size: 14px;
+}
+
+img.content-image {
+  /* Estilos para la imagen */
+}
+
+a.content-external-button {
+  /* Estilos para el botón externo */
+}
+
+ul.content-subpages-list {
+  /* Estilos para la lista de subpáginas */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+ul.content-subpages-list li.content-subpage {
+  /* Estilos para cada elemento de subpágina */
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+ul.content-subpages-list li.content-subpage img {
+  margin-left: -5px;
+  height: 60px;
+  transition: transform 0.3s;
+}
+ul.content-subpages-list li.content-subpage img:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s;
+}
+
+    </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    let object;
+    fetch('temp.json')
+  .then(response => response.json())
+  .then(data => {
+    // Aquí puedes trabajar con el objeto JSON cargado
+    
+    object = data;
+
+    for (let prop in object) {
+  if (object.hasOwnProperty(prop)) {
+    const value = object[prop];
+    console.log(prop , ": " , value[0]);
+    // Realiza las operaciones que necesites con cada propiedad y su valor
+    document.body.appendChild(createHTMLElement(value[0]))
+  }
+  
+}
+  })
+  .catch(error => {
+    console.error('Error al cargar el archivo JSON:', error);
+  });
+
+    function createHTMLElement(jsonData) {
+    const elemento = document.createElement(jsonData.type);
+    console.log(elemento)
+    if (jsonData.class) {
+        elemento.className = jsonData.class;
+    }
+    if (jsonData.content) {
+        elemento.innerText = jsonData.content;
+    }
+    return elemento;
+    }
+
+
+</script>
+</html>
