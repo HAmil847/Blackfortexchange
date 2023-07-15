@@ -348,7 +348,6 @@ div#navigator .icon {
 }
 
 div#navigator div.icon:hover {
-  border: 3px solid red;
 }
 
 div#navigator div.icon object {
