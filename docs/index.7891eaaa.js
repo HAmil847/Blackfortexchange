@@ -647,7 +647,7 @@ LoadPortal();
 //const animateCamera = createTweenAnimation(cameraPather, DOM_MANAGER.LIST_ITEM_CAST[1].position, 5000);
 //const beginAnimation = createTweenAnimation(cameraPather, new THREE.Vector3(), 5000);
 // Set up post-processing
-//WEB.setPostProcessing(PostProcessing.bloomPass);
+WEB.setPostProcessing((0, _postProcessingDefault.default).bloomPass);
 // Set the scene's animation loop
 //exportar camara 
 WEB.renderer.setAnimationLoop(RenderExperience);
