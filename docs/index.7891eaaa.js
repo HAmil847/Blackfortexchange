@@ -575,9 +575,182 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"jYf5p":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "cameraComponent", ()=>cameraComponent);
+var _three = require("three");
+var _orbitControls = require("three/examples/jsm/controls/OrbitControls");
+var _webScene = require("./scene/WebScene");
+var _modelLoader = require("./loader/ModelLoader");
+var _modelLoaderDefault = parcelHelpers.interopDefault(_modelLoader);
+var _domManager = require("./scene/dom/DomManager");
+var _domManagerDefault = parcelHelpers.interopDefault(_domManager);
+var _domComponent = require("./scene/dom/DomComponent");
+var _datGui = require("dat.gui");
+var _listener = require("./scene/Listener");
+var _mouseHandler = require("./Handlers/MouseHandler");
+var _mouseHandlerDefault = parcelHelpers.interopDefault(_mouseHandler);
+var _particleSystem = require("./effects/ParticleSystem");
+var _particleSystemDefault = parcelHelpers.interopDefault(_particleSystem);
+var _postProcessing = require("./effects/PostProcessing");
+var _postProcessingDefault = parcelHelpers.interopDefault(_postProcessing);
+var _tweenJs = require("@tweenjs/tween.js");
+var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
+var _css3Drenderer = require("three/examples/jsm/renderers/CSS3DRenderer");
+var _statsJs = require("stats.js");
+var _statsJsDefault = parcelHelpers.interopDefault(_statsJs);
+var _cameraHandler = require("./Handlers/CameraHandler");
+var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
+const stats = new (0, _statsJsDefault.default)();
+document.body.appendChild(stats.dom);
+// External links
+const portalUrl = new URL(require("ddd27ad91f13ba8c"));
+// Portal object
+const PORTAL = {
+    model: null,
+    scene: null,
+    clips: null,
+    isLoaded: false,
+    instance: new (0, _modelLoaderDefault.default)(portalUrl),
+    modelGroup: new _three.Group()
+};
+// Configurar listeners
+let goToCamera = false;
+(0, _listener.setupListeners)();
+// Main components
+const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 400);
+const cameraPather = new _three.Group();
+cameraPather.add(camera);
+// Create a web scene
+const WEB = new (0, _webScene.WebScene)(camera);
+const DOM = new (0, _webScene.DomScene)(camera);
+// Set DOM manager
+const DOM_MANAGER = new (0, _domManagerDefault.default)();
+// Create DOM elements
+DOM_MANAGER.createElement(DOM, "ntfs", (0, _domComponent.COMPONENTS).ntfsSection);
+DOM_MANAGER.createElement(DOM, "home", (0, _domComponent.COMPONENTS).homeSection);
+DOM_MANAGER.createElement(DOM, "network", (0, _domComponent.COMPONENTS).networkSection);
+DOM_MANAGER.createElement(DOM, "contact", (0, _domComponent.COMPONENTS).contactSection);
+DOM_MANAGER.createElement(DOM, "blog", (0, _domComponent.COMPONENTS).blogSection);
+console.log(DOM.scene);
+// Set DOM item positions
+DOM_MANAGER.setDomItemPosition(WEB, 80, 240);
+// Create an instance of ParticleSystem
+const particleSystem = new (0, _particleSystemDefault.default)(WEB);
+// Create and add particles to the scene
+particleSystem.CreateParticles(50, 6000, 180, new _three.Color(0x0CF7DF), new _three.Color(0x0C51ED));
+// Set up helpers in the 3D scene
+// WEB.add(gridHelper);
+// WEB.add(axisHelper);
+// Set camera position and vision
+cameraPather.position.set(0, 160, 110);
+(0, _mouseHandlerDefault.default).intensity = 50;
+// Load portal
+LoadPortal();
+//const animateCamera = createTweenAnimation(cameraPather, DOM_MANAGER.LIST_ITEM_CAST[1].position, 5000);
+//const beginAnimation = createTweenAnimation(cameraPather, new THREE.Vector3(), 5000);
+// Set up post-processing
+//WEB.setPostProcessing(PostProcessing.bloomPass);
+// Set the scene's animation loop
+//exportar camara 
+WEB.renderer.setAnimationLoop(RenderExperience);
+//enviar componentes al camera handlre
+const cameraComponent = {
+    camera: camera,
+    cameraGroup: cameraPather
+};
+(0, _cameraHandlerDefault.default).setCamera(cameraComponent);
+// Crear un reloj
+const clock = new _three.Clock();
+// Render experience function
+function RenderExperience() {
+    stats.begin();
+    stats.end();
+    //asegurar la posicion de la camara
+    (0, _cameraHandlerDefault.default).update();
+    // Obtener el tiempo transcurrido desde la última actualización
+    const elapsedTime = clock.getElapsedTime();
+    //animate particles 
+    particleSystem.updateTime(elapsedTime);
+    DOM_MANAGER.LIST_ITEM.forEach((element)=>{
+        const vectorSum = new _three.Vector3().addVectors(cameraPather.position, element.position);
+        const relativePos = new _three.Vector3().addVectors(vectorSum, camera.position);
+        element.lookAt(relativePos);
+    });
+    DOM.renderScene();
+    WEB.renderScene();
+    if (PORTAL.isLoaded) PORTAL.model.rotation.z += 0.005;
+    (0, _cameraHandlerDefault.default).setParallax((0, _mouseHandlerDefault.default).normalized, 0.02);
+//TWEEN.update();
+}
 /*
+function createTweenAnimation(object, target, duration) {
+  const offset = 0.01; // Ajuste de posición para evitar z-fighting
+
+  const targetPosition = target.clone().subScalar(offset);
+
+  const tween = new TWEEN.Tween(object.position)
+    .to(targetPosition, duration)
+    .easing(TWEEN.Easing.Exponential.Out)
+    .onComplete(function() {
+      const newPos = new THREE.Vector3(19.67263286166932, 0, 50.546138291252554);
+      const newPosPather = new THREE.Vector3(61.47697769271663, 0, 179.20668216016426);
+      camera.lookAt(newPos);
+      console.log('Animación terminada');
+      console.log(targetPosition, target)
+    });
+
+  console.log('Vector original:', target);
+  console.log('Vector modificado:', targetPosition);
+
+  // Devolver animación
+  return tween;
+}
+*/ // Load the portal
+async function LoadPortal() {
+    PORTAL.model = await PORTAL.instance.modelo;
+    //nuev material
+    /*
+  const portalMaterial = new THREE.ShaderMaterial({
+    vertexShader: `
+      varying vec3 vNormal;
+      
+      void main() {
+        vNormal = normal;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vNormal;
+      
+      void main() {
+        vec3 color1 = vec3(0.2, 0.4, 0.6);
+        vec3 color2 = vec3(0.8, 0.6, 0.4);
+        
+        float gradient = (vNormal.y + 1.0) * 0.5; // Calcula el factor de degradado en función de la normal
+        
+        vec3 finalColor = mix(color1, color2, gradient); // Mezcla los colores en función del factor de degradado
+        
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `,
+  });
+  
+  */ console.log(PORTAL.model);
+    //cargar material to escene
+    PORTAL.model.traverse((node)=>{
+        if (node.isMesh) {
+            // Asignar un nuevo material al modelo
+            // Modificar el material único en el nodo
+            node.material.color.set(0x16CAF2); // Turquesa
+            node.material.emissive.set(0x22DDF2); // Turquesa claro
+            node.material.alphaTest = 0.5; // Activar el canal de alpha test
+        }
+    });
+    //cargar a la escena
+    WEB.add(PORTAL.modelGroup);
+    PORTAL.modelGroup.add(PORTAL.model);
+    PORTAL.model.rotation.x = Math.PI / 2;
+    PORTAL.model.scale.set(5, 5, 5);
+    PORTAL.isLoaded = true;
+} /*
 // Create an instance of dat.GUI
 var gui = new dat.GUI();
 
@@ -649,183 +822,9 @@ function updateRotation() {
   );
 }
 
-*/ //funciones temporales
-parcelHelpers.export(exports, "GoToCamera", ()=>GoToCamera);
-var _three = require("three");
-var _orbitControls = require("three/examples/jsm/controls/OrbitControls");
-var _webScene = require("./scene/WebScene");
-var _modelLoader = require("./loader/ModelLoader");
-var _modelLoaderDefault = parcelHelpers.interopDefault(_modelLoader);
-var _domManager = require("./scene/dom/DomManager");
-var _domManagerDefault = parcelHelpers.interopDefault(_domManager);
-var _domComponent = require("./scene/dom/DomComponent");
-var _datGui = require("dat.gui");
-var _listener = require("./scene/Listener");
-var _mouseHandler = require("./Handlers/MouseHandler");
-var _mouseHandlerDefault = parcelHelpers.interopDefault(_mouseHandler);
-var _particleSystem = require("./effects/ParticleSystem");
-var _particleSystemDefault = parcelHelpers.interopDefault(_particleSystem);
-var _postProcessing = require("./effects/PostProcessing");
-var _postProcessingDefault = parcelHelpers.interopDefault(_postProcessing);
-var _tweenJs = require("@tweenjs/tween.js");
-var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
-var _css3Drenderer = require("three/examples/jsm/renderers/CSS3DRenderer");
-var _statsJs = require("stats.js");
-var _statsJsDefault = parcelHelpers.interopDefault(_statsJs);
-const stats = new (0, _statsJsDefault.default)();
-document.body.appendChild(stats.dom);
-// External links
-const portalUrl = new URL(require("ddd27ad91f13ba8c"));
-// Portal object
-const PORTAL = {
-    model: null,
-    scene: null,
-    clips: null,
-    isLoaded: false,
-    instance: new (0, _modelLoaderDefault.default)(portalUrl),
-    modelGroup: new _three.Group()
-};
-// Configurar listeners
-let goToCamera = false;
-(0, _listener.setupListeners)();
-// Main components
-const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 400);
-const cameraPather = new _three.Group();
-cameraPather.add(camera);
-const cameraComponent = {
-    camera: camera,
-    cameraGroup: cameraPather
-};
-// Create a web scene
-const WEB = new (0, _webScene.WebScene)(camera);
-const DOM = new (0, _webScene.DomScene)(camera);
-// Set DOM manager
-const DOM_MANAGER = new (0, _domManagerDefault.default)();
-// Create DOM elements
-DOM_MANAGER.createElement(DOM, "ntfs", (0, _domComponent.COMPONENTS).ntfsSection);
-DOM_MANAGER.createElement(DOM, "home", (0, _domComponent.COMPONENTS).homeSection);
-DOM_MANAGER.createElement(DOM, "network", (0, _domComponent.COMPONENTS).networkSection);
-DOM_MANAGER.createElement(DOM, "contact", (0, _domComponent.COMPONENTS).contactSection);
-DOM_MANAGER.createElement(DOM, "blog", (0, _domComponent.COMPONENTS).blogSection);
-console.log(DOM.scene);
-// Set DOM item positions
-DOM_MANAGER.setDomItemPosition(WEB, 80, 240);
-// Create an instance of ParticleSystem
-const particleSystem = new (0, _particleSystemDefault.default)(WEB);
-// Create and add particles to the scene
-particleSystem.CreateParticles(50, 6000, 180, new _three.Color(0x0CF7DF), new _three.Color(0x0C51ED));
-// Set up helpers in the 3D scene
-// WEB.add(gridHelper);
-// WEB.add(axisHelper);
-// Set camera position and vision
-cameraPather.position.set(0, 160, 110);
-(0, _mouseHandlerDefault.default).intensity = 50;
-// Load portal
-LoadPortal();
-const animateCamera = createTweenAnimation(cameraPather, DOM_MANAGER.LIST_ITEM_CAST[1].position, 5000);
-const beginAnimation = createTweenAnimation(cameraPather, new _three.Vector3(), 5000);
-// Set up post-processing
-//WEB.setPostProcessing(PostProcessing.bloomPass);
-// Set the scene's animation loop
-WEB.renderer.setAnimationLoop(RenderExperience);
-// Crear un reloj
-const clock = new _three.Clock();
-// Render experience function
-function RenderExperience() {
-    stats.begin();
-    stats.end();
-    // Obtener el tiempo transcurrido desde la última actualización
-    const elapsedTime = clock.getElapsedTime();
-    //animate particles 
-    particleSystem.updateTime(elapsedTime);
-    DOM_MANAGER.LIST_ITEM.forEach((element)=>{
-        const vectorSum = new _three.Vector3().addVectors(cameraPather.position, element.position);
-        const relativePos = new _three.Vector3().addVectors(vectorSum, camera.position);
-        element.lookAt(relativePos);
-    });
-    DOM.renderScene();
-    WEB.renderScene();
-    if (PORTAL.isLoaded) {
-        PORTAL.model.rotation.z += 0.005;
-        if (!goToCamera) camera.lookAt(new _three.Vector3(0, 0, 5));
-        const relative = new _three.Vector3((0, _mouseHandlerDefault.default).normalized.x, (0, _mouseHandlerDefault.default).normalized.y * 1.5, 0);
-        camera.position.lerp(relative, 0.02);
-    }
-    if (goToCamera) {
-        console.log("animando camara");
-        animateCamera.start();
-        goToCamera = false;
-    }
-    (0, _tweenJsDefault.default).update();
-}
-function createTweenAnimation(object, target, duration) {
-    const offset = 0.01; // Ajuste de posición para evitar z-fighting
-    const targetPosition = target.clone().subScalar(offset);
-    const tween = new (0, _tweenJsDefault.default).Tween(object.position).to(targetPosition, duration).easing((0, _tweenJsDefault.default).Easing.Exponential.Out).onComplete(function() {
-        const newPos = new _three.Vector3(19.67263286166932, 0, 50.546138291252554);
-        const newPosPather = new _three.Vector3(61.47697769271663, 0, 179.20668216016426);
-        camera.lookAt(newPos);
-        console.log("Animaci\xf3n terminada");
-        console.log(targetPosition, target);
-    });
-    console.log("Vector original:", target);
-    console.log("Vector modificado:", targetPosition);
-    // Devolver animación
-    return tween;
-}
-// Load the portal
-async function LoadPortal() {
-    PORTAL.model = await PORTAL.instance.modelo;
-    //nuev material
-    /*
-  const portalMaterial = new THREE.ShaderMaterial({
-    vertexShader: `
-      varying vec3 vNormal;
-      
-      void main() {
-        vNormal = normal;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      varying vec3 vNormal;
-      
-      void main() {
-        vec3 color1 = vec3(0.2, 0.4, 0.6);
-        vec3 color2 = vec3(0.8, 0.6, 0.4);
-        
-        float gradient = (vNormal.y + 1.0) * 0.5; // Calcula el factor de degradado en función de la normal
-        
-        vec3 finalColor = mix(color1, color2, gradient); // Mezcla los colores en función del factor de degradado
-        
-        gl_FragColor = vec4(finalColor, 1.0);
-      }
-    `,
-  });
-  
-  */ console.log(PORTAL.model);
-    //cargar material to escene
-    PORTAL.model.traverse((node)=>{
-        if (node.isMesh) {
-            // Asignar un nuevo material al modelo
-            // Modificar el material único en el nodo
-            node.material.color.set(0x16CAF2); // Turquesa
-            node.material.emissive.set(0x22DDF2); // Turquesa claro
-            node.material.alphaTest = 0.5; // Activar el canal de alpha test
-        }
-    });
-    //cargar a la escena
-    WEB.add(PORTAL.modelGroup);
-    PORTAL.modelGroup.add(PORTAL.model);
-    PORTAL.model.rotation.x = Math.PI / 2;
-    PORTAL.model.scale.set(5, 5, 5);
-    PORTAL.isLoaded = true;
-}
-function GoToCamera() {
-    goToCamera = !goToCamera;
-}
+*/ 
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls":"7mqRv","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","./scene/dom/DomManager":"2jBvr","./scene/dom/DomComponent":"iuXxG","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","@tweenjs/tween.js":"7DfAI","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","stats.js":"9lwC6","ddd27ad91f13ba8c":"97wAT","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls":"7mqRv","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","./scene/dom/DomManager":"2jBvr","./scene/dom/DomComponent":"iuXxG","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","@tweenjs/tween.js":"7DfAI","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","stats.js":"9lwC6","ddd27ad91f13ba8c":"97wAT","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Handlers/CameraHandler":"bJrvG"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -35299,6 +35298,8 @@ var _domLoadContent = require("./DomLoadContent");
 var _domLoadContentDefault = parcelHelpers.interopDefault(_domLoadContent);
 var _main = require("../../Main");
 var _cameraHandler = require("../../Handlers/CameraHandler");
+var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
+const NAVIGATOR_REF = document.getElementById("navigator");
 class DomManager {
     constructor(){
         this.LIST_ITEM = [];
@@ -35309,66 +35310,50 @@ class DomManager {
         const scaleFactor = 1 / 6;
         const element = document.createElement("div");
         element.appendChild(component);
-        // Probar event listener
         element.addEventListener("click", (event)=>{
             console.log("toque al dot");
             console.log("Elemento activo", event.currentTarget.id);
-            //mover la camra a la nueva posicion
-            //TEMP
-            (0, _main.GoToCamera)();
-            (0, _cameraHandler.cameraToTarget)(event.currentTarget);
-            // Llamar a la función correspondiente para cargar el contenido de las páginas
-            (0, _domLoadContentDefault.default)(event.currentTarget);
+            const element = event.currentTarget;
+            (0, _domLoadContentDefault.default)(element);
+            setTimeout(()=>{
+                (0, _cameraHandlerDefault.default).moveCameraTo(element, ()=>{
+                    //mostrar una vez terminada la animacion
+                    NAVIGATOR_REF.classList.add("active");
+                });
+            }, 300);
         });
-        // Crear un objeto CSS3DObject usando el elemento div como malla
         const domComponent = new (0, _css3Drenderer.CSS3DObject)(element);
-        // Asignar el identificador al objeto
         element.id = identifier;
         element.classList.add("section");
         element.classList.add("no-active");
         domComponent.name = identifier;
-        // Setear posición
         domComponent.scale.set(scaleFactor, scaleFactor, scaleFactor);
         domComponent.position.set(0, 0, 0);
-        // Crear un objeto plano para capturar los objetos
-        const castPlane = crearPlano(domComponent.position, scaleFactor);
-        castPlane.name = identifier;
-        //aregar objeto a la escena
+        const vectorPosition = new (0, _three.Vector3)();
         domScene.add(domComponent);
-        // Agregar el componente a la lista
         this.LIST_ITEM.push(domComponent);
-        this.LIST_ITEM_CAST.push(castPlane);
+        this.LIST_ITEM_CAST.push(vectorPosition);
     }
     setDomItemPosition(scene, rangeIn, rangeOut) {
-        const centro = new (0, _three.Vector3)(0, 0, -10); // Centro alrededor del cual se posicionan los vectores
-        const angle = 2 * Math.PI / this.LIST_ITEM.length; // Ángulo entre cada vector
-        const domRadio = rangeIn / angle; // Radio para determinar la distancia desde el centro DOM
-        const castRadio = rangeOut / angle; // Radio para determinar la distancia desde el centro CAST
+        const centro = new (0, _three.Vector3)(0, 0, -10);
+        const angle = 2 * Math.PI / this.LIST_ITEM.length;
+        const domRadio = rangeIn / angle;
+        const castRadio = rangeOut / angle;
         for(let i = 0; i < this.LIST_ITEM.length; i++){
-            // Calcular la posición del vector de la primera lista {DOM}
             const x = centro.x + domRadio * Math.cos(angle * i);
-            const y = centro.y; // Mantener la misma altura
+            const y = centro.y;
             const z = centro.z + domRadio * Math.sin(angle * i);
-            // Setear ayudas visuales
-            // crearAxisHelper(x, y, z, scene);
-            // Actualizar la posición del vector DOM
             this.LIST_ITEM[i].position.set(x, y, z);
-            //agregar esa informacion de posicion al objetos html
             const targetPos = JSON.stringify([
                 x,
                 y,
                 z
             ]);
             this.LIST_ITEM[i].element.setAttribute("data-target", targetPos);
-            // Calcular la posición del vector de la segunda lista {CAST}
             const xCast = centro.x + castRadio * Math.cos(angle * i);
-            const yCast = centro.y; // Mantener la misma altura
+            const yCast = centro.y;
             const zCast = centro.z + castRadio * Math.sin(angle * i);
-            // Setear ayudas visuales
-            // crearAxisHelper(xCast, yCast, zCast, scene);
-            // Actualizar la posición del vector CAST
-            this.LIST_ITEM_CAST[i].position.set(xCast, yCast, zCast);
-            //agregar esa informacion de posicion al objetos html
+            this.LIST_ITEM_CAST[i].set(xCast, yCast, zCast);
             const farPos = JSON.stringify([
                 xCast,
                 yCast,
@@ -35377,17 +35362,6 @@ class DomManager {
             this.LIST_ITEM[i].element.setAttribute("data-far", farPos);
         }
     }
-}
-// Crea un plano de captura
-function crearPlano(position, scale) {
-    scale *= 100;
-    const geometry = new (0, _three.BoxGeometry)(scale, scale, scale);
-    const material = new (0, _three.MeshBasicMaterial)({
-        color: 0x00ff00
-    });
-    const box = new (0, _three.Mesh)(geometry, material);
-    box.position.copy(position);
-    return box;
 }
 function crearAxisHelper(x, y, z, scene) {
     const axisHelper = new (0, _three.AxesHelper)(20);
@@ -35412,27 +35386,23 @@ const PAGES = {
     blog: (0, _blogJsonDefault.default)
 };
 const dotImg = new URL(require("80de5feca22d900a"));
-function loadPage(pageData, mainPage) {
+function loadPage(mainPage) {
     let pageId;
     let jsonData;
     let mainContainer;
-    if (mainPage) {
-        mainContainer = pageData;
-        mainContainer.innerHTML = "";
-        pageId = pageData.id;
-        jsonData = PAGES[pageId];
-        if (!jsonData) {
-            console.log("No se encontr\xf3 el archivo JSON correspondiente a la p\xe1gina: " + pageId);
-            return;
-        }
+    mainContainer = mainPage;
+    mainContainer.innerHTML = "";
+    pageId = mainPage.id;
+    jsonData = PAGES[pageId];
+    if (!jsonData) {
+        console.log("No se encontr\xf3 el archivo JSON correspondiente a la p\xe1gina: " + pageId);
+        return;
     }
-    //crea los componentes internos de este objeto
+    // Crea los componentes internos de este objeto
     const newPage = loadLevel(jsonData.content, mainContainer);
     console.log(newPage);
-    //asigna el objeto recien creado
+    // Asigna el objeto recién creado
     removeClass(newPage, "no-active");
-    //loadContent(jsonData, pageData);
-    //addNavigationButton(jsonData, pageData);
     addClass(newPage, "active");
 }
 function removeClass(element, className) {
@@ -35452,53 +35422,6 @@ function createButton(text, onClick) {
     button.innerText = text;
     button.addEventListener("click", onClick);
     return button;
-}
-function loadContent(data, page) {
-    page.innerHTML = "";
-    if (data.span) {
-        const spanElement = createElement("span", "content-span");
-        spanElement.innerHTML = data.span;
-        page.appendChild(spanElement);
-    }
-    if (data.title) {
-        const titleElement = createElement("h2", "content-title");
-        titleElement.innerHTML = data.title;
-        page.appendChild(titleElement);
-    }
-    if (data.content) {
-        const contentElement = createElement("div", "content-description");
-        contentElement.innerHTML = data.content;
-        page.appendChild(contentElement);
-    }
-    if (data.image) {
-        const imageElement = createElement("img", "content-image");
-        imageElement.src = data.imageSrc;
-        page.appendChild(imageElement);
-    }
-    if (data.haveExternalPage) {
-        const externalButton = createElement("a", "content-external-button", "External Page");
-        externalButton.href = data.externalPageLink;
-        page.appendChild(externalButton);
-    }
-    if (data.haveSubPage) {
-        const subPagesList = createElement("ul", "content-subpages-list");
-        for (const subPage of data.subPages){
-            const subPageItem = createElement("li", "content-subpage");
-            const textElement = createElement("span", "", subPage.name);
-            const imageElement = createElement("img");
-            imageElement.src = dotImg.href;
-            subPageItem.appendChild(textElement);
-            subPageItem.appendChild(imageElement);
-            subPagesList.appendChild(subPageItem);
-        }
-        page.appendChild(subPagesList);
-    }
-}
-function createElement(tagName, className, textContent) {
-    const element = document.createElement(tagName);
-    element.className = className || "";
-    element.textContent = textContent || "";
-    return element;
 }
 //funciones renovadas
 function loadLevel(content, container) {
@@ -35529,7 +35452,7 @@ function createHTMLElement(jsonData) {
 }
 
 },{"./view/home.json":"la34J","./view/ntfs.json":"5egMc","./view/blog.json":"2VY0o","80de5feca22d900a":"2oYJH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"la34J":[function(require,module,exports) {
-module.exports = JSON.parse('{"id":"home","isMain":true,"content":[{"name":"subTitle","type":"span","class":"content-span","haveSon":false,"content":"WHAT IS NEXT?"},{"name":"title","type":"h2","class":"content-title","haveSon":false,"content":"BlackFort Exchange Network"},{"name":"description","type":"div","class":"content-description","haveSon":false,"content":"based solution."},{"name":"subPageLinks","type":"ul","class":"content-subpage-list","haveSon":true,"content":[{"linkId":"smartchain","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"More BXN Smartchain"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]},{"linkId":"explorer","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"BlackFort Explorer"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]},{"linkId":"ode","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"Audited Code"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]},{"linkId":"link-4","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"PoSA & Decentralization"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]}]}],"subPage":[{"linkId":"link-1","name":"subTitle","type":"span","class":"content-span","haveSon":false,"content":"WHAT IS NEXT?"},{"linkId":"link-1","name":"description","type":"div","class":"content-description","haveSon":false,"content":"based solution."},{"linkId":"link-2","name":"title","type":"h2","class":"content-title","haveSon":false,"content":"BlackFort Exchange Network"},{"linkId":"link-3","name":"description","type":"div","class":"content-description","haveSon":false,"content":"based solution."},{"linkId":"link-4","name":"title","type":"h2","class":"content-title","haveSon":false,"content":"BlackFort Exchange Network"}]}');
+module.exports = JSON.parse('{"id":"home","isMain":true,"content":[{"name":"subTitle","type":"span","class":"content-span","haveSon":false,"content":"WHAT IS NEXT?"},{"name":"title","type":"h2","class":"content-title","haveSon":false,"content":"BlackFort Exchange Network"},{"name":"description","type":"div","class":"content-description","haveSon":false,"content":"BlackFort is an innovative blockchain platform that has all the attributes needed for a top–tier blockchain. It is a Layer 1 blockchain that is EVM compatible, fast, scalable, secure, and efficient, with POSA and easy access to become a delegator. Transparency is a key priority for BlackFort, ensuring that all parties in a transaction have the information they need to feel secure. This combination of features makes BlackFort an ideal platform for anyone looking to build a blockchain–based solution."},{"name":"subPageLinks","type":"ul","class":"content-subpage-list","haveSon":true,"content":[{"linkId":"smartchain","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"More BXN Smartchain"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]},{"linkId":"explorer","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"BlackFort Explorer"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]},{"linkId":"ode","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"Audited Code"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]},{"linkId":"link-4","name":"container","type":"li","class":"content-subpage","haveSon":true,"content":[{"name":"title","type":"span","class":"","haveSon":false,"content":"PoSA & Decentralization"},{"name":"icon","type":"img","class":"","haveSon":false,"content":""}]}]}],"subPage":[{"linkId":"link-1","name":"subTitle","type":"span","class":"content-span","haveSon":false,"content":"WHAT IS NEXT?"},{"linkId":"link-1","name":"description","type":"div","class":"content-description","haveSon":false,"content":"based solution."},{"linkId":"link-2","name":"title","type":"h2","class":"content-title","haveSon":false,"content":"BlackFort Exchange Network"},{"linkId":"link-3","name":"description","type":"div","class":"content-description","haveSon":false,"content":"based solution."},{"linkId":"link-4","name":"title","type":"h2","class":"content-title","haveSon":false,"content":"BlackFort Exchange Network"}]}');
 
 },{}],"5egMc":[function(require,module,exports) {
 module.exports = JSON.parse('{"id":"ntfs","isMain":true,"content":[{"name":"subTitle","type":"span","class":"content-span","haveSon":false,"content":""},{"name":"title","type":"h2","class":"content-title","haveSon":false,"content":"BlackFort Genesis Knights NFTs"},{"name":"description","type":"div","class":"content-description","haveSon":false,"content":"We’re glad to introduce you to our Exclusive Genesis NFT collection! Only 500 NFTs will be minted, providing additional elite opportunities.\\n\\nFirst sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!\\n\\nSecond sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!\\n\\nThird sales Phase of 150 pieces: ENDED SUCCESSFULLY\\n\\nLAST PHASE COMING SOON"},{"name":"subPageLinks","type":"ul","class":"content-subpage-list","haveSon":true,"content":[{"name":"container","type":"li","class":"content-subpage item-container","haveSon":false,"content":"More Info"},{"name":"container","type":"li","class":"content-subpage item-container","haveSon":false,"content":"View Image"}]}]}');
@@ -35578,52 +35501,807 @@ exports.getOrigin = getOrigin;
 },{}],"bJrvG":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "cameraToTarget", ()=>cameraToTarget);
 var _three = require("three");
-var _main = require("../Main");
-function cameraToTarget(element) {
-    // Obtener el valor del atributo
-    var targetData = element.getAttribute("data-target");
-    var farData = element.getAttribute("data-far");
-    //convertir datos TARGET a vector
-    var target = JSON.parse(targetData);
-    const targetPos = new (0, _three.Vector3)(target[0], target[1], target[2]);
-    //convertir datos FAR a vector
-    var far = JSON.parse(farData);
-    const farPos = new (0, _three.Vector3)(far[0], far[1], far[2]);
-    console.log("far: ", farPos, " target: ", target);
-}
+var _tweenJs = require("@tweenjs/tween.js");
+var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
 class CameraHandler {
-    constructor(camera, cameraGroup){
-        this.camera = camera;
-        this.cameraGroup = cameraGroup;
+    constructor(){
+        this.camera = null;
+        this.cameraGroup = null;
         this.targetView = new (0, _three.Vector3)();
         this.targetPosition = new (0, _three.Vector3)();
-        this.lastTargetView = camera.target;
-        this.lastTargetPosition = cameraGroup.position.clone();
+        this.lastTargetView = null;
+        this.lastTargetPosition = null;
+        this.isAnimated = false;
+        this.isLoadOver = false;
+        this.timing = 500;
+    }
+    setCamera(component) {
+        this.camera = component.camera;
+        this.cameraGroup = component.cameraGroup;
+        // Setup
+        this.targetView = new (0, _three.Vector3)();
+        component.camera.getWorldDirection(this.targetView);
+        this.targetPosition = this.cameraGroup.position.clone();
+        // Asignar durante unos segundos
+        setTimeout(()=>{
+            console.log("");
+            this.isLoadOver = false;
+            console.log("Camara INICIADA");
+        }, this.timing);
+        console.log("camera is ready:", this.camera, this.cameraGroup);
+        console.log("last pos updated: ", this.targetView, this.targetPosition);
     }
     animatedCamera(object, target, duration) {
-        const offset = 0.01; // Ajuste de posición para evitar z-fighting
-        const targetPosition = target.clone().subScalar(offset);
-        //crear animacion
-        const tween = new TWEEN.Tween(object.position).to(targetPosition, duration).easing(TWEEN.Easing.Exponential.Out).onComplete(function() {
-            console.log("Animaci\xf3n terminada");
+        // Crear animacion suavizada
+        const tween = new (0, _tweenJsDefault.default).Tween(object).to(target, duration).easing((0, _tweenJsDefault.default).Easing.Quadratic.InOut).onComplete(()=>{
+            this.isAnimated = false;
+            console.log("ANIM END: ", this.isAnimated);
         });
         // Devolver animación
         return tween;
     }
-    getWeightedSum(vector) {
-        return vector.x + vector.y + vector.z;
+    setParallax(target, time) {
+        this.camera.position.lerp(target, time);
     }
-    update() {
-        this.camera.position.copy(this.targetPosition);
+    moveCameraTo(element, callback) {
+        // Obtener el valor del atributo
+        const targetData = element.getAttribute("data-target");
+        const farData = element.getAttribute("data-far");
+        // Convertir datos TARGET a vector
+        const target = JSON.parse(targetData);
+        const targetPos = new (0, _three.Vector3)(target[0], target[1], target[2]);
+        // Convertir datos FAR a vector
+        const far = JSON.parse(farData);
+        const farPos = new (0, _three.Vector3)(far[0], far[1], far[2]);
+        console.log("far: ", farPos, " target: ", targetPos);
+        // Iniciar animación suavizada
+        if (!this.isAnimated) {
+            const cameraViewAnim = this.animatedCamera(this.targetView, targetPos, 4500);
+            cameraViewAnim.start();
+            cameraViewAnim.onStart(()=>{
+                this.isAnimated = true;
+                console.log("ANIM START: ", this.isAnimated);
+            });
+            cameraViewAnim.onComplete(()=>{
+                callback();
+            });
+            const cameraPosAnim = this.animatedCamera(this.targetPosition, farPos, 6000);
+            cameraPosAnim.start();
+        }
+    }
+    updateComponents() {
+        this.cameraGroup.position.copy(this.targetPosition);
         this.camera.lookAt(this.targetView);
     }
+    update() {
+        // Actualizar animación
+        (0, _tweenJsDefault.default).update();
+        if (this.isAnimated) this.updateComponents();
+        else console.log("Modulo c\xe1mara en REPOSO");
+        if (!this.isLoadOver) this.updateComponents();
+    }
 }
-const cameraHandler = new CameraHandler((0, _main.cameraComponent).camera, (0, _main.cameraComponent).cameraGroup);
+const cameraHandler = new CameraHandler();
 exports.default = cameraHandler;
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../Main":"jYf5p"}],"iuXxG":[function(require,module,exports) {
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@tweenjs/tween.js":"7DfAI"}],"7DfAI":[function(require,module,exports) {
+/**
+ * The Ease class provides a collection of easing functions for use with tween.js.
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Easing", ()=>Easing);
+parcelHelpers.export(exports, "Group", ()=>Group);
+parcelHelpers.export(exports, "Interpolation", ()=>Interpolation);
+parcelHelpers.export(exports, "Sequence", ()=>Sequence);
+parcelHelpers.export(exports, "Tween", ()=>Tween);
+parcelHelpers.export(exports, "VERSION", ()=>VERSION);
+parcelHelpers.export(exports, "add", ()=>add);
+parcelHelpers.export(exports, "default", ()=>exports);
+parcelHelpers.export(exports, "getAll", ()=>getAll);
+parcelHelpers.export(exports, "nextId", ()=>nextId);
+parcelHelpers.export(exports, "now", ()=>now);
+parcelHelpers.export(exports, "remove", ()=>remove);
+parcelHelpers.export(exports, "removeAll", ()=>removeAll);
+parcelHelpers.export(exports, "update", ()=>update);
+var Easing = Object.freeze({
+    Linear: Object.freeze({
+        None: function(amount) {
+            return amount;
+        },
+        In: function(amount) {
+            return this.None(amount);
+        },
+        Out: function(amount) {
+            return this.None(amount);
+        },
+        InOut: function(amount) {
+            return this.None(amount);
+        }
+    }),
+    Quadratic: Object.freeze({
+        In: function(amount) {
+            return amount * amount;
+        },
+        Out: function(amount) {
+            return amount * (2 - amount);
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount;
+            return -0.5 * (--amount * (amount - 2) - 1);
+        }
+    }),
+    Cubic: Object.freeze({
+        In: function(amount) {
+            return amount * amount * amount;
+        },
+        Out: function(amount) {
+            return --amount * amount * amount + 1;
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount;
+            return 0.5 * ((amount -= 2) * amount * amount + 2);
+        }
+    }),
+    Quartic: Object.freeze({
+        In: function(amount) {
+            return amount * amount * amount * amount;
+        },
+        Out: function(amount) {
+            return 1 - --amount * amount * amount * amount;
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount;
+            return -0.5 * ((amount -= 2) * amount * amount * amount - 2);
+        }
+    }),
+    Quintic: Object.freeze({
+        In: function(amount) {
+            return amount * amount * amount * amount * amount;
+        },
+        Out: function(amount) {
+            return --amount * amount * amount * amount * amount + 1;
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount * amount;
+            return 0.5 * ((amount -= 2) * amount * amount * amount * amount + 2);
+        }
+    }),
+    Sinusoidal: Object.freeze({
+        In: function(amount) {
+            return 1 - Math.sin((1.0 - amount) * Math.PI / 2);
+        },
+        Out: function(amount) {
+            return Math.sin(amount * Math.PI / 2);
+        },
+        InOut: function(amount) {
+            return 0.5 * (1 - Math.sin(Math.PI * (0.5 - amount)));
+        }
+    }),
+    Exponential: Object.freeze({
+        In: function(amount) {
+            return amount === 0 ? 0 : Math.pow(1024, amount - 1);
+        },
+        Out: function(amount) {
+            return amount === 1 ? 1 : 1 - Math.pow(2, -10 * amount);
+        },
+        InOut: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            if ((amount *= 2) < 1) return 0.5 * Math.pow(1024, amount - 1);
+            return 0.5 * (-Math.pow(2, -10 * (amount - 1)) + 2);
+        }
+    }),
+    Circular: Object.freeze({
+        In: function(amount) {
+            return 1 - Math.sqrt(1 - amount * amount);
+        },
+        Out: function(amount) {
+            return Math.sqrt(1 - --amount * amount);
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return -0.5 * (Math.sqrt(1 - amount * amount) - 1);
+            return 0.5 * (Math.sqrt(1 - (amount -= 2) * amount) + 1);
+        }
+    }),
+    Elastic: Object.freeze({
+        In: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            return -Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+        },
+        Out: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            return Math.pow(2, -10 * amount) * Math.sin((amount - 0.1) * 5 * Math.PI) + 1;
+        },
+        InOut: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            amount *= 2;
+            if (amount < 1) return -0.5 * Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+            return 0.5 * Math.pow(2, -10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI) + 1;
+        }
+    }),
+    Back: Object.freeze({
+        In: function(amount) {
+            var s = 1.70158;
+            return amount === 1 ? 1 : amount * amount * ((s + 1) * amount - s);
+        },
+        Out: function(amount) {
+            var s = 1.70158;
+            return amount === 0 ? 0 : --amount * amount * ((s + 1) * amount + s) + 1;
+        },
+        InOut: function(amount) {
+            var s = 2.5949095;
+            if ((amount *= 2) < 1) return 0.5 * (amount * amount * ((s + 1) * amount - s));
+            return 0.5 * ((amount -= 2) * amount * ((s + 1) * amount + s) + 2);
+        }
+    }),
+    Bounce: Object.freeze({
+        In: function(amount) {
+            return 1 - Easing.Bounce.Out(1 - amount);
+        },
+        Out: function(amount) {
+            if (amount < 1 / 2.75) return 7.5625 * amount * amount;
+            else if (amount < 2 / 2.75) return 7.5625 * (amount -= 1.5 / 2.75) * amount + 0.75;
+            else if (amount < 2.5 / 2.75) return 7.5625 * (amount -= 2.25 / 2.75) * amount + 0.9375;
+            else return 7.5625 * (amount -= 2.625 / 2.75) * amount + 0.984375;
+        },
+        InOut: function(amount) {
+            if (amount < 0.5) return Easing.Bounce.In(amount * 2) * 0.5;
+            return Easing.Bounce.Out(amount * 2 - 1) * 0.5 + 0.5;
+        }
+    }),
+    generatePow: function(power) {
+        if (power === void 0) power = 4;
+        power = power < Number.EPSILON ? Number.EPSILON : power;
+        power = power > 10000 ? 10000 : power;
+        return {
+            In: function(amount) {
+                return Math.pow(amount, power);
+            },
+            Out: function(amount) {
+                return 1 - Math.pow(1 - amount, power);
+            },
+            InOut: function(amount) {
+                if (amount < 0.5) return Math.pow(amount * 2, power) / 2;
+                return (1 - Math.pow(2 - amount * 2, power)) / 2 + 0.5;
+            }
+        };
+    }
+});
+var now = function() {
+    return performance.now();
+};
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tween
+ */ var Group = /** @class */ function() {
+    function Group() {
+        this._tweens = {};
+        this._tweensAddedDuringUpdate = {};
+    }
+    Group.prototype.getAll = function() {
+        var _this = this;
+        return Object.keys(this._tweens).map(function(tweenId) {
+            return _this._tweens[tweenId];
+        });
+    };
+    Group.prototype.removeAll = function() {
+        this._tweens = {};
+    };
+    Group.prototype.add = function(tween) {
+        this._tweens[tween.getId()] = tween;
+        this._tweensAddedDuringUpdate[tween.getId()] = tween;
+    };
+    Group.prototype.remove = function(tween) {
+        delete this._tweens[tween.getId()];
+        delete this._tweensAddedDuringUpdate[tween.getId()];
+    };
+    Group.prototype.update = function(time, preserve) {
+        if (time === void 0) time = now();
+        if (preserve === void 0) preserve = false;
+        var tweenIds = Object.keys(this._tweens);
+        if (tweenIds.length === 0) return false;
+        // Tweens are updated in "batches". If you add a new tween during an
+        // update, then the new tween will be updated in the next batch.
+        // If you remove a tween during an update, it may or may not be updated.
+        // However, if the removed tween was added during the current batch,
+        // then it will not be updated.
+        while(tweenIds.length > 0){
+            this._tweensAddedDuringUpdate = {};
+            for(var i = 0; i < tweenIds.length; i++){
+                var tween = this._tweens[tweenIds[i]];
+                var autoStart = !preserve;
+                if (tween && tween.update(time, autoStart) === false && !preserve) delete this._tweens[tweenIds[i]];
+            }
+            tweenIds = Object.keys(this._tweensAddedDuringUpdate);
+        }
+        return true;
+    };
+    return Group;
+}();
+/**
+ *
+ */ var Interpolation = {
+    Linear: function(v, k) {
+        var m = v.length - 1;
+        var f = m * k;
+        var i = Math.floor(f);
+        var fn = Interpolation.Utils.Linear;
+        if (k < 0) return fn(v[0], v[1], f);
+        if (k > 1) return fn(v[m], v[m - 1], m - f);
+        return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+    },
+    Bezier: function(v, k) {
+        var b = 0;
+        var n = v.length - 1;
+        var pw = Math.pow;
+        var bn = Interpolation.Utils.Bernstein;
+        for(var i = 0; i <= n; i++)b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+        return b;
+    },
+    CatmullRom: function(v, k) {
+        var m = v.length - 1;
+        var f = m * k;
+        var i = Math.floor(f);
+        var fn = Interpolation.Utils.CatmullRom;
+        if (v[0] === v[m]) {
+            if (k < 0) i = Math.floor(f = m * (1 + k));
+            return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
+        } else {
+            if (k < 0) return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
+            if (k > 1) return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
+            return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
+        }
+    },
+    Utils: {
+        Linear: function(p0, p1, t) {
+            return (p1 - p0) * t + p0;
+        },
+        Bernstein: function(n, i) {
+            var fc = Interpolation.Utils.Factorial;
+            return fc(n) / fc(i) / fc(n - i);
+        },
+        Factorial: function() {
+            var a = [
+                1
+            ];
+            return function(n) {
+                var s = 1;
+                if (a[n]) return a[n];
+                for(var i = n; i > 1; i--)s *= i;
+                a[n] = s;
+                return s;
+            };
+        }(),
+        CatmullRom: function(p0, p1, p2, p3, t) {
+            var v0 = (p2 - p0) * 0.5;
+            var v1 = (p3 - p1) * 0.5;
+            var t2 = t * t;
+            var t3 = t * t2;
+            return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+        }
+    }
+};
+/**
+ * Utils
+ */ var Sequence = /** @class */ function() {
+    function Sequence() {}
+    Sequence.nextId = function() {
+        return Sequence._nextId++;
+    };
+    Sequence._nextId = 0;
+    return Sequence;
+}();
+var mainGroup = new Group();
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */ var Tween = /** @class */ function() {
+    function Tween(_object, _group) {
+        if (_group === void 0) _group = mainGroup;
+        this._object = _object;
+        this._group = _group;
+        this._isPaused = false;
+        this._pauseStart = 0;
+        this._valuesStart = {};
+        this._valuesEnd = {};
+        this._valuesStartRepeat = {};
+        this._duration = 1000;
+        this._isDynamic = false;
+        this._initialRepeat = 0;
+        this._repeat = 0;
+        this._yoyo = false;
+        this._isPlaying = false;
+        this._reversed = false;
+        this._delayTime = 0;
+        this._startTime = 0;
+        this._easingFunction = Easing.Linear.None;
+        this._interpolationFunction = Interpolation.Linear;
+        // eslint-disable-next-line
+        this._chainedTweens = [];
+        this._onStartCallbackFired = false;
+        this._onEveryStartCallbackFired = false;
+        this._id = Sequence.nextId();
+        this._isChainStopped = false;
+        this._propertiesAreSetUp = false;
+        this._goToEnd = false;
+    }
+    Tween.prototype.getId = function() {
+        return this._id;
+    };
+    Tween.prototype.isPlaying = function() {
+        return this._isPlaying;
+    };
+    Tween.prototype.isPaused = function() {
+        return this._isPaused;
+    };
+    Tween.prototype.to = function(target, duration) {
+        if (duration === void 0) duration = 1000;
+        if (this._isPlaying) throw new Error("Can not call Tween.to() while Tween is already started or paused. Stop the Tween first.");
+        this._valuesEnd = target;
+        this._propertiesAreSetUp = false;
+        this._duration = duration;
+        return this;
+    };
+    Tween.prototype.duration = function(duration) {
+        if (duration === void 0) duration = 1000;
+        this._duration = duration;
+        return this;
+    };
+    Tween.prototype.dynamic = function(dynamic) {
+        if (dynamic === void 0) dynamic = false;
+        this._isDynamic = dynamic;
+        return this;
+    };
+    Tween.prototype.start = function(time, overrideStartingValues) {
+        if (time === void 0) time = now();
+        if (overrideStartingValues === void 0) overrideStartingValues = false;
+        if (this._isPlaying) return this;
+        // eslint-disable-next-line
+        this._group && this._group.add(this);
+        this._repeat = this._initialRepeat;
+        if (this._reversed) {
+            // If we were reversed (f.e. using the yoyo feature) then we need to
+            // flip the tween direction back to forward.
+            this._reversed = false;
+            for(var property in this._valuesStartRepeat){
+                this._swapEndStartRepeatValues(property);
+                this._valuesStart[property] = this._valuesStartRepeat[property];
+            }
+        }
+        this._isPlaying = true;
+        this._isPaused = false;
+        this._onStartCallbackFired = false;
+        this._onEveryStartCallbackFired = false;
+        this._isChainStopped = false;
+        this._startTime = time;
+        this._startTime += this._delayTime;
+        if (!this._propertiesAreSetUp || overrideStartingValues) {
+            this._propertiesAreSetUp = true;
+            // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
+            if (!this._isDynamic) {
+                var tmp = {};
+                for(var prop in this._valuesEnd)tmp[prop] = this._valuesEnd[prop];
+                this._valuesEnd = tmp;
+            }
+            this._setupProperties(this._object, this._valuesStart, this._valuesEnd, this._valuesStartRepeat, overrideStartingValues);
+        }
+        return this;
+    };
+    Tween.prototype.startFromCurrentValues = function(time) {
+        return this.start(time, true);
+    };
+    Tween.prototype._setupProperties = function(_object, _valuesStart, _valuesEnd, _valuesStartRepeat, overrideStartingValues) {
+        for(var property in _valuesEnd){
+            var startValue = _object[property];
+            var startValueIsArray = Array.isArray(startValue);
+            var propType = startValueIsArray ? "array" : typeof startValue;
+            var isInterpolationList = !startValueIsArray && Array.isArray(_valuesEnd[property]);
+            // If `to()` specifies a property that doesn't exist in the source object,
+            // we should not set that property in the object
+            if (propType === "undefined" || propType === "function") continue;
+            // Check if an Array was provided as property value
+            if (isInterpolationList) {
+                var endValues = _valuesEnd[property];
+                if (endValues.length === 0) continue;
+                // Handle an array of relative values.
+                // Creates a local copy of the Array with the start value at the front
+                var temp = [
+                    startValue
+                ];
+                for(var i = 0, l = endValues.length; i < l; i += 1){
+                    var value = this._handleRelativeValue(startValue, endValues[i]);
+                    if (isNaN(value)) {
+                        isInterpolationList = false;
+                        console.warn("Found invalid interpolation list. Skipping.");
+                        break;
+                    }
+                    temp.push(value);
+                }
+                if (isInterpolationList) // if (_valuesStart[property] === undefined) { // handle end values only the first time. NOT NEEDED? setupProperties is now guarded by _propertiesAreSetUp.
+                _valuesEnd[property] = temp;
+            }
+            // handle the deepness of the values
+            if ((propType === "object" || startValueIsArray) && startValue && !isInterpolationList) {
+                _valuesStart[property] = startValueIsArray ? [] : {};
+                var nestedObject = startValue;
+                for(var prop in nestedObject)_valuesStart[property][prop] = nestedObject[prop];
+                // TODO? repeat nested values? And yoyo? And array values?
+                _valuesStartRepeat[property] = startValueIsArray ? [] : {};
+                var endValues = _valuesEnd[property];
+                // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
+                if (!this._isDynamic) {
+                    var tmp = {};
+                    for(var prop in endValues)tmp[prop] = endValues[prop];
+                    _valuesEnd[property] = endValues = tmp;
+                }
+                this._setupProperties(nestedObject, _valuesStart[property], endValues, _valuesStartRepeat[property], overrideStartingValues);
+            } else {
+                // Save the starting value, but only once unless override is requested.
+                if (typeof _valuesStart[property] === "undefined" || overrideStartingValues) _valuesStart[property] = startValue;
+                if (!startValueIsArray) // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                _valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
+                if (isInterpolationList) // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                _valuesStartRepeat[property] = _valuesEnd[property].slice().reverse();
+                else _valuesStartRepeat[property] = _valuesStart[property] || 0;
+            }
+        }
+    };
+    Tween.prototype.stop = function() {
+        if (!this._isChainStopped) {
+            this._isChainStopped = true;
+            this.stopChainedTweens();
+        }
+        if (!this._isPlaying) return this;
+        // eslint-disable-next-line
+        this._group && this._group.remove(this);
+        this._isPlaying = false;
+        this._isPaused = false;
+        if (this._onStopCallback) this._onStopCallback(this._object);
+        return this;
+    };
+    Tween.prototype.end = function() {
+        this._goToEnd = true;
+        this.update(Infinity);
+        return this;
+    };
+    Tween.prototype.pause = function(time) {
+        if (time === void 0) time = now();
+        if (this._isPaused || !this._isPlaying) return this;
+        this._isPaused = true;
+        this._pauseStart = time;
+        // eslint-disable-next-line
+        this._group && this._group.remove(this);
+        return this;
+    };
+    Tween.prototype.resume = function(time) {
+        if (time === void 0) time = now();
+        if (!this._isPaused || !this._isPlaying) return this;
+        this._isPaused = false;
+        this._startTime += time - this._pauseStart;
+        this._pauseStart = 0;
+        // eslint-disable-next-line
+        this._group && this._group.add(this);
+        return this;
+    };
+    Tween.prototype.stopChainedTweens = function() {
+        for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)this._chainedTweens[i].stop();
+        return this;
+    };
+    Tween.prototype.group = function(group) {
+        if (group === void 0) group = mainGroup;
+        this._group = group;
+        return this;
+    };
+    Tween.prototype.delay = function(amount) {
+        if (amount === void 0) amount = 0;
+        this._delayTime = amount;
+        return this;
+    };
+    Tween.prototype.repeat = function(times) {
+        if (times === void 0) times = 0;
+        this._initialRepeat = times;
+        this._repeat = times;
+        return this;
+    };
+    Tween.prototype.repeatDelay = function(amount) {
+        this._repeatDelayTime = amount;
+        return this;
+    };
+    Tween.prototype.yoyo = function(yoyo) {
+        if (yoyo === void 0) yoyo = false;
+        this._yoyo = yoyo;
+        return this;
+    };
+    Tween.prototype.easing = function(easingFunction) {
+        if (easingFunction === void 0) easingFunction = Easing.Linear.None;
+        this._easingFunction = easingFunction;
+        return this;
+    };
+    Tween.prototype.interpolation = function(interpolationFunction) {
+        if (interpolationFunction === void 0) interpolationFunction = Interpolation.Linear;
+        this._interpolationFunction = interpolationFunction;
+        return this;
+    };
+    // eslint-disable-next-line
+    Tween.prototype.chain = function() {
+        var tweens = [];
+        for(var _i = 0; _i < arguments.length; _i++)tweens[_i] = arguments[_i];
+        this._chainedTweens = tweens;
+        return this;
+    };
+    Tween.prototype.onStart = function(callback) {
+        this._onStartCallback = callback;
+        return this;
+    };
+    Tween.prototype.onEveryStart = function(callback) {
+        this._onEveryStartCallback = callback;
+        return this;
+    };
+    Tween.prototype.onUpdate = function(callback) {
+        this._onUpdateCallback = callback;
+        return this;
+    };
+    Tween.prototype.onRepeat = function(callback) {
+        this._onRepeatCallback = callback;
+        return this;
+    };
+    Tween.prototype.onComplete = function(callback) {
+        this._onCompleteCallback = callback;
+        return this;
+    };
+    Tween.prototype.onStop = function(callback) {
+        this._onStopCallback = callback;
+        return this;
+    };
+    /**
+     * @returns true if the tween is still playing after the update, false
+     * otherwise (calling update on a paused tween still returns true because
+     * it is still playing, just paused).
+     */ Tween.prototype.update = function(time, autoStart) {
+        if (time === void 0) time = now();
+        if (autoStart === void 0) autoStart = true;
+        if (this._isPaused) return true;
+        var property;
+        var elapsed;
+        var endTime = this._startTime + this._duration;
+        if (!this._goToEnd && !this._isPlaying) {
+            if (time > endTime) return false;
+            if (autoStart) this.start(time, true);
+        }
+        this._goToEnd = false;
+        if (time < this._startTime) return true;
+        if (this._onStartCallbackFired === false) {
+            if (this._onStartCallback) this._onStartCallback(this._object);
+            this._onStartCallbackFired = true;
+        }
+        if (this._onEveryStartCallbackFired === false) {
+            if (this._onEveryStartCallback) this._onEveryStartCallback(this._object);
+            this._onEveryStartCallbackFired = true;
+        }
+        elapsed = (time - this._startTime) / this._duration;
+        elapsed = this._duration === 0 || elapsed > 1 ? 1 : elapsed;
+        var value = this._easingFunction(elapsed);
+        // properties transformations
+        this._updateProperties(this._object, this._valuesStart, this._valuesEnd, value);
+        if (this._onUpdateCallback) this._onUpdateCallback(this._object, elapsed);
+        if (elapsed === 1) {
+            if (this._repeat > 0) {
+                if (isFinite(this._repeat)) this._repeat--;
+                // Reassign starting values, restart by making startTime = now
+                for(property in this._valuesStartRepeat){
+                    if (!this._yoyo && typeof this._valuesEnd[property] === "string") this._valuesStartRepeat[property] = // eslint-disable-next-line
+                    // @ts-ignore FIXME?
+                    this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
+                    if (this._yoyo) this._swapEndStartRepeatValues(property);
+                    this._valuesStart[property] = this._valuesStartRepeat[property];
+                }
+                if (this._yoyo) this._reversed = !this._reversed;
+                if (this._repeatDelayTime !== undefined) this._startTime = time + this._repeatDelayTime;
+                else this._startTime = time + this._delayTime;
+                if (this._onRepeatCallback) this._onRepeatCallback(this._object);
+                this._onEveryStartCallbackFired = false;
+                return true;
+            } else {
+                if (this._onCompleteCallback) this._onCompleteCallback(this._object);
+                for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)// Make the chained tweens start exactly at the time they should,
+                // even if the `update()` method was called way past the duration of the tween
+                this._chainedTweens[i].start(this._startTime + this._duration, false);
+                this._isPlaying = false;
+                return false;
+            }
+        }
+        return true;
+    };
+    Tween.prototype._updateProperties = function(_object, _valuesStart, _valuesEnd, value) {
+        for(var property in _valuesEnd){
+            // Don't update properties that do not exist in the source object
+            if (_valuesStart[property] === undefined) continue;
+            var start = _valuesStart[property] || 0;
+            var end = _valuesEnd[property];
+            var startIsArray = Array.isArray(_object[property]);
+            var endIsArray = Array.isArray(end);
+            var isInterpolationList = !startIsArray && endIsArray;
+            if (isInterpolationList) _object[property] = this._interpolationFunction(end, value);
+            else if (typeof end === "object" && end) // eslint-disable-next-line
+            // @ts-ignore FIXME?
+            this._updateProperties(_object[property], start, end, value);
+            else {
+                // Parses relative end values with start as base (e.g.: +10, -3)
+                end = this._handleRelativeValue(start, end);
+                // Protect against non numeric properties.
+                if (typeof end === "number") // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                _object[property] = start + (end - start) * value;
+            }
+        }
+    };
+    Tween.prototype._handleRelativeValue = function(start, end) {
+        if (typeof end !== "string") return end;
+        if (end.charAt(0) === "+" || end.charAt(0) === "-") return start + parseFloat(end);
+        return parseFloat(end);
+    };
+    Tween.prototype._swapEndStartRepeatValues = function(property) {
+        var tmp = this._valuesStartRepeat[property];
+        var endValue = this._valuesEnd[property];
+        if (typeof endValue === "string") this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(endValue);
+        else this._valuesStartRepeat[property] = this._valuesEnd[property];
+        this._valuesEnd[property] = tmp;
+    };
+    return Tween;
+}();
+var VERSION = "21.0.0";
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */ var nextId = Sequence.nextId;
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tweens.
+ */ var TWEEN = mainGroup;
+// This is the best way to export things in a way that's compatible with both ES
+// Modules and CommonJS, without build hacks, and so as not to break the
+// existing API.
+// https://github.com/rollup/rollup/issues/1961#issuecomment-423037881
+var getAll = TWEEN.getAll.bind(TWEEN);
+var removeAll = TWEEN.removeAll.bind(TWEEN);
+var add = TWEEN.add.bind(TWEEN);
+var remove = TWEEN.remove.bind(TWEEN);
+var update = TWEEN.update.bind(TWEEN);
+var exports = {
+    Easing: Easing,
+    Group: Group,
+    Interpolation: Interpolation,
+    now: now,
+    Sequence: Sequence,
+    nextId: nextId,
+    Tween: Tween,
+    VERSION: VERSION,
+    getAll: getAll,
+    removeAll: removeAll,
+    add: add,
+    remove: remove,
+    update: update
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iuXxG":[function(require,module,exports) {
 //AQUI SE DEFINEN TODOS LOS ELEMENTOS HTML/CSS
 //QUE SE INSERTARAN EN LA ESCENA
 //LOS ELEMENTOS DECLARADOS SE ELIMINAN UN AVEZ CARGADOS, EL OBJETO NO PUEDE
@@ -38047,8 +38725,9 @@ function startScene(event) {
     //esconder la intro
     (0, _textAnimJs.HideTextAnimation)(".animated-item", 1200, function(completed) {
         INTRO_REF.style.display = "none";
+        //mostrar el nuevo objeto
+        (0, _textAnimJs.ShowTextAnimation)(".dot");
     });
-    (0, _textAnimJs.ShowTextAnimation)(".dot");
 }
 
 },{"../Handlers/MouseHandler":"7ESAf","../../js/text-anim.js":"jjSxz","three":"ktPTu","../Main":"jYf5p","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ESAf":[function(require,module,exports) {
@@ -38065,7 +38744,7 @@ const mouseData = {
 class MouseHandler {
     constructor(){
         this.intensity = 2; // Factor de intensidad del mouse
-        this.normalized = new (0, _three.Vector2)(); // Posición normalizada del mouse
+        this.normalized = new (0, _three.Vector3)(); // Posición normalizada del mouse
         this.ToCamera = new (0, _three.Vector3)();
         this.isMouseMoving = false; // El mouse se está moviendo
         this.timer = null; // Temporizador para determinar si el mouse se ha detenido
@@ -38078,7 +38757,7 @@ class MouseHandler {
         const mouseY = event.clientY; // Posición Y actual del mouse
         const normalizedX = (mouseX / mouseData.screenWidth - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición X
         const normalizedY = (mouseY / mouseData.screenHeight - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición Y
-        this.normalized.set(normalizedX, normalizedY);
+        this.normalized.set(normalizedX, normalizedY * 2, 0);
         if (!this.isMouseMoving) // El mouse estaba detenido y ahora se está moviendo
         //console.log("El mouse se ha movido");
         this.isMouseMoving = true; // Actualizar isMouseMoving a true cuando el mouse se mueve
@@ -38115,6 +38794,7 @@ const DESCRIPTION_REF = document.getElementById("description");
 const FOOTER_REF = document.getElementById("start-ui");
 // Iconos
 const arrowUpIcon = new URL(require("3b531f2ebd263c17"));
+const soundIcon = new URL(require("bd1902df3feafb99"));
 // Objeto con el texto de cada una de las presentaciones
 const TEXT_INTRO = {
     title: "BXN BLACKFORT",
@@ -38136,7 +38816,13 @@ FOOTER_REF.innerHTML = `
     <button id="start-scene" class="control animated-item">
       <img src="${arrowUpIcon.href}" alt="" srcset="">
     </button>
-    <button id="toggle-sound" class="control animated-item"></button>
+    <button id="toggle-sound" class="control animated-item">
+    <object
+    class="icon"
+    data="${soundIcon.href}"
+    type="image/svg+xml"
+  ></object>
+    </button>
   </div>
 `;
 // Animar la primera escena
@@ -38182,7 +38868,7 @@ function HideTextAnimation(target, animationDuration, callback) {
     });
 }
 
-},{"animejs":"jokr5","3b531f2ebd263c17":"lSDFi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jokr5":[function(require,module,exports) {
+},{"animejs":"jokr5","3b531f2ebd263c17":"lSDFi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","bd1902df3feafb99":"68K6w"}],"jokr5":[function(require,module,exports) {
 /*
  * anime.js v3.2.1
  * (c) 2020 Julian Garnier
@@ -39462,7 +40148,10 @@ exports.default = anime;
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lSDFi":[function(require,module,exports) {
 module.exports = require("3d0b759233c7b30a").getBundleURL("8Kyqb") + "arrowup-icon.6a03358b.png" + "?" + Date.now();
 
-},{"3d0b759233c7b30a":"lgJ39"}],"kST2h":[function(require,module,exports) {
+},{"3d0b759233c7b30a":"lgJ39"}],"68K6w":[function(require,module,exports) {
+module.exports = require("ee93f26d89823c7e").getBundleURL("8Kyqb") + "sound.965fd49b.svg" + "?" + Date.now();
+
+},{"ee93f26d89823c7e":"lgJ39"}],"kST2h":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _three = require("three");
@@ -40036,723 +40725,7 @@ var _three = require("three");
 		}`
 };
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7DfAI":[function(require,module,exports) {
-/**
- * The Ease class provides a collection of easing functions for use with tween.js.
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Easing", ()=>Easing);
-parcelHelpers.export(exports, "Group", ()=>Group);
-parcelHelpers.export(exports, "Interpolation", ()=>Interpolation);
-parcelHelpers.export(exports, "Sequence", ()=>Sequence);
-parcelHelpers.export(exports, "Tween", ()=>Tween);
-parcelHelpers.export(exports, "VERSION", ()=>VERSION);
-parcelHelpers.export(exports, "add", ()=>add);
-parcelHelpers.export(exports, "default", ()=>exports);
-parcelHelpers.export(exports, "getAll", ()=>getAll);
-parcelHelpers.export(exports, "nextId", ()=>nextId);
-parcelHelpers.export(exports, "now", ()=>now);
-parcelHelpers.export(exports, "remove", ()=>remove);
-parcelHelpers.export(exports, "removeAll", ()=>removeAll);
-parcelHelpers.export(exports, "update", ()=>update);
-var Easing = Object.freeze({
-    Linear: Object.freeze({
-        None: function(amount) {
-            return amount;
-        },
-        In: function(amount) {
-            return this.None(amount);
-        },
-        Out: function(amount) {
-            return this.None(amount);
-        },
-        InOut: function(amount) {
-            return this.None(amount);
-        }
-    }),
-    Quadratic: Object.freeze({
-        In: function(amount) {
-            return amount * amount;
-        },
-        Out: function(amount) {
-            return amount * (2 - amount);
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount;
-            return -0.5 * (--amount * (amount - 2) - 1);
-        }
-    }),
-    Cubic: Object.freeze({
-        In: function(amount) {
-            return amount * amount * amount;
-        },
-        Out: function(amount) {
-            return --amount * amount * amount + 1;
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount;
-            return 0.5 * ((amount -= 2) * amount * amount + 2);
-        }
-    }),
-    Quartic: Object.freeze({
-        In: function(amount) {
-            return amount * amount * amount * amount;
-        },
-        Out: function(amount) {
-            return 1 - --amount * amount * amount * amount;
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount;
-            return -0.5 * ((amount -= 2) * amount * amount * amount - 2);
-        }
-    }),
-    Quintic: Object.freeze({
-        In: function(amount) {
-            return amount * amount * amount * amount * amount;
-        },
-        Out: function(amount) {
-            return --amount * amount * amount * amount * amount + 1;
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount * amount;
-            return 0.5 * ((amount -= 2) * amount * amount * amount * amount + 2);
-        }
-    }),
-    Sinusoidal: Object.freeze({
-        In: function(amount) {
-            return 1 - Math.sin((1.0 - amount) * Math.PI / 2);
-        },
-        Out: function(amount) {
-            return Math.sin(amount * Math.PI / 2);
-        },
-        InOut: function(amount) {
-            return 0.5 * (1 - Math.sin(Math.PI * (0.5 - amount)));
-        }
-    }),
-    Exponential: Object.freeze({
-        In: function(amount) {
-            return amount === 0 ? 0 : Math.pow(1024, amount - 1);
-        },
-        Out: function(amount) {
-            return amount === 1 ? 1 : 1 - Math.pow(2, -10 * amount);
-        },
-        InOut: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            if ((amount *= 2) < 1) return 0.5 * Math.pow(1024, amount - 1);
-            return 0.5 * (-Math.pow(2, -10 * (amount - 1)) + 2);
-        }
-    }),
-    Circular: Object.freeze({
-        In: function(amount) {
-            return 1 - Math.sqrt(1 - amount * amount);
-        },
-        Out: function(amount) {
-            return Math.sqrt(1 - --amount * amount);
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return -0.5 * (Math.sqrt(1 - amount * amount) - 1);
-            return 0.5 * (Math.sqrt(1 - (amount -= 2) * amount) + 1);
-        }
-    }),
-    Elastic: Object.freeze({
-        In: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            return -Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
-        },
-        Out: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            return Math.pow(2, -10 * amount) * Math.sin((amount - 0.1) * 5 * Math.PI) + 1;
-        },
-        InOut: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            amount *= 2;
-            if (amount < 1) return -0.5 * Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
-            return 0.5 * Math.pow(2, -10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI) + 1;
-        }
-    }),
-    Back: Object.freeze({
-        In: function(amount) {
-            var s = 1.70158;
-            return amount === 1 ? 1 : amount * amount * ((s + 1) * amount - s);
-        },
-        Out: function(amount) {
-            var s = 1.70158;
-            return amount === 0 ? 0 : --amount * amount * ((s + 1) * amount + s) + 1;
-        },
-        InOut: function(amount) {
-            var s = 2.5949095;
-            if ((amount *= 2) < 1) return 0.5 * (amount * amount * ((s + 1) * amount - s));
-            return 0.5 * ((amount -= 2) * amount * ((s + 1) * amount + s) + 2);
-        }
-    }),
-    Bounce: Object.freeze({
-        In: function(amount) {
-            return 1 - Easing.Bounce.Out(1 - amount);
-        },
-        Out: function(amount) {
-            if (amount < 1 / 2.75) return 7.5625 * amount * amount;
-            else if (amount < 2 / 2.75) return 7.5625 * (amount -= 1.5 / 2.75) * amount + 0.75;
-            else if (amount < 2.5 / 2.75) return 7.5625 * (amount -= 2.25 / 2.75) * amount + 0.9375;
-            else return 7.5625 * (amount -= 2.625 / 2.75) * amount + 0.984375;
-        },
-        InOut: function(amount) {
-            if (amount < 0.5) return Easing.Bounce.In(amount * 2) * 0.5;
-            return Easing.Bounce.Out(amount * 2 - 1) * 0.5 + 0.5;
-        }
-    }),
-    generatePow: function(power) {
-        if (power === void 0) power = 4;
-        power = power < Number.EPSILON ? Number.EPSILON : power;
-        power = power > 10000 ? 10000 : power;
-        return {
-            In: function(amount) {
-                return Math.pow(amount, power);
-            },
-            Out: function(amount) {
-                return 1 - Math.pow(1 - amount, power);
-            },
-            InOut: function(amount) {
-                if (amount < 0.5) return Math.pow(amount * 2, power) / 2;
-                return (1 - Math.pow(2 - amount * 2, power)) / 2 + 0.5;
-            }
-        };
-    }
-});
-var now = function() {
-    return performance.now();
-};
-/**
- * Controlling groups of tweens
- *
- * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
- * In these cases, you may want to create your own smaller groups of tween
- */ var Group = /** @class */ function() {
-    function Group() {
-        this._tweens = {};
-        this._tweensAddedDuringUpdate = {};
-    }
-    Group.prototype.getAll = function() {
-        var _this = this;
-        return Object.keys(this._tweens).map(function(tweenId) {
-            return _this._tweens[tweenId];
-        });
-    };
-    Group.prototype.removeAll = function() {
-        this._tweens = {};
-    };
-    Group.prototype.add = function(tween) {
-        this._tweens[tween.getId()] = tween;
-        this._tweensAddedDuringUpdate[tween.getId()] = tween;
-    };
-    Group.prototype.remove = function(tween) {
-        delete this._tweens[tween.getId()];
-        delete this._tweensAddedDuringUpdate[tween.getId()];
-    };
-    Group.prototype.update = function(time, preserve) {
-        if (time === void 0) time = now();
-        if (preserve === void 0) preserve = false;
-        var tweenIds = Object.keys(this._tweens);
-        if (tweenIds.length === 0) return false;
-        // Tweens are updated in "batches". If you add a new tween during an
-        // update, then the new tween will be updated in the next batch.
-        // If you remove a tween during an update, it may or may not be updated.
-        // However, if the removed tween was added during the current batch,
-        // then it will not be updated.
-        while(tweenIds.length > 0){
-            this._tweensAddedDuringUpdate = {};
-            for(var i = 0; i < tweenIds.length; i++){
-                var tween = this._tweens[tweenIds[i]];
-                var autoStart = !preserve;
-                if (tween && tween.update(time, autoStart) === false && !preserve) delete this._tweens[tweenIds[i]];
-            }
-            tweenIds = Object.keys(this._tweensAddedDuringUpdate);
-        }
-        return true;
-    };
-    return Group;
-}();
-/**
- *
- */ var Interpolation = {
-    Linear: function(v, k) {
-        var m = v.length - 1;
-        var f = m * k;
-        var i = Math.floor(f);
-        var fn = Interpolation.Utils.Linear;
-        if (k < 0) return fn(v[0], v[1], f);
-        if (k > 1) return fn(v[m], v[m - 1], m - f);
-        return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
-    },
-    Bezier: function(v, k) {
-        var b = 0;
-        var n = v.length - 1;
-        var pw = Math.pow;
-        var bn = Interpolation.Utils.Bernstein;
-        for(var i = 0; i <= n; i++)b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
-        return b;
-    },
-    CatmullRom: function(v, k) {
-        var m = v.length - 1;
-        var f = m * k;
-        var i = Math.floor(f);
-        var fn = Interpolation.Utils.CatmullRom;
-        if (v[0] === v[m]) {
-            if (k < 0) i = Math.floor(f = m * (1 + k));
-            return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
-        } else {
-            if (k < 0) return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
-            if (k > 1) return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
-            return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
-        }
-    },
-    Utils: {
-        Linear: function(p0, p1, t) {
-            return (p1 - p0) * t + p0;
-        },
-        Bernstein: function(n, i) {
-            var fc = Interpolation.Utils.Factorial;
-            return fc(n) / fc(i) / fc(n - i);
-        },
-        Factorial: function() {
-            var a = [
-                1
-            ];
-            return function(n) {
-                var s = 1;
-                if (a[n]) return a[n];
-                for(var i = n; i > 1; i--)s *= i;
-                a[n] = s;
-                return s;
-            };
-        }(),
-        CatmullRom: function(p0, p1, p2, p3, t) {
-            var v0 = (p2 - p0) * 0.5;
-            var v1 = (p3 - p1) * 0.5;
-            var t2 = t * t;
-            var t3 = t * t2;
-            return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
-        }
-    }
-};
-/**
- * Utils
- */ var Sequence = /** @class */ function() {
-    function Sequence() {}
-    Sequence.nextId = function() {
-        return Sequence._nextId++;
-    };
-    Sequence._nextId = 0;
-    return Sequence;
-}();
-var mainGroup = new Group();
-/**
- * Tween.js - Licensed under the MIT license
- * https://github.com/tweenjs/tween.js
- * ----------------------------------------------
- *
- * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
- * Thank you all, you're awesome!
- */ var Tween = /** @class */ function() {
-    function Tween(_object, _group) {
-        if (_group === void 0) _group = mainGroup;
-        this._object = _object;
-        this._group = _group;
-        this._isPaused = false;
-        this._pauseStart = 0;
-        this._valuesStart = {};
-        this._valuesEnd = {};
-        this._valuesStartRepeat = {};
-        this._duration = 1000;
-        this._isDynamic = false;
-        this._initialRepeat = 0;
-        this._repeat = 0;
-        this._yoyo = false;
-        this._isPlaying = false;
-        this._reversed = false;
-        this._delayTime = 0;
-        this._startTime = 0;
-        this._easingFunction = Easing.Linear.None;
-        this._interpolationFunction = Interpolation.Linear;
-        // eslint-disable-next-line
-        this._chainedTweens = [];
-        this._onStartCallbackFired = false;
-        this._onEveryStartCallbackFired = false;
-        this._id = Sequence.nextId();
-        this._isChainStopped = false;
-        this._propertiesAreSetUp = false;
-        this._goToEnd = false;
-    }
-    Tween.prototype.getId = function() {
-        return this._id;
-    };
-    Tween.prototype.isPlaying = function() {
-        return this._isPlaying;
-    };
-    Tween.prototype.isPaused = function() {
-        return this._isPaused;
-    };
-    Tween.prototype.to = function(target, duration) {
-        if (duration === void 0) duration = 1000;
-        if (this._isPlaying) throw new Error("Can not call Tween.to() while Tween is already started or paused. Stop the Tween first.");
-        this._valuesEnd = target;
-        this._propertiesAreSetUp = false;
-        this._duration = duration;
-        return this;
-    };
-    Tween.prototype.duration = function(duration) {
-        if (duration === void 0) duration = 1000;
-        this._duration = duration;
-        return this;
-    };
-    Tween.prototype.dynamic = function(dynamic) {
-        if (dynamic === void 0) dynamic = false;
-        this._isDynamic = dynamic;
-        return this;
-    };
-    Tween.prototype.start = function(time, overrideStartingValues) {
-        if (time === void 0) time = now();
-        if (overrideStartingValues === void 0) overrideStartingValues = false;
-        if (this._isPlaying) return this;
-        // eslint-disable-next-line
-        this._group && this._group.add(this);
-        this._repeat = this._initialRepeat;
-        if (this._reversed) {
-            // If we were reversed (f.e. using the yoyo feature) then we need to
-            // flip the tween direction back to forward.
-            this._reversed = false;
-            for(var property in this._valuesStartRepeat){
-                this._swapEndStartRepeatValues(property);
-                this._valuesStart[property] = this._valuesStartRepeat[property];
-            }
-        }
-        this._isPlaying = true;
-        this._isPaused = false;
-        this._onStartCallbackFired = false;
-        this._onEveryStartCallbackFired = false;
-        this._isChainStopped = false;
-        this._startTime = time;
-        this._startTime += this._delayTime;
-        if (!this._propertiesAreSetUp || overrideStartingValues) {
-            this._propertiesAreSetUp = true;
-            // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
-            if (!this._isDynamic) {
-                var tmp = {};
-                for(var prop in this._valuesEnd)tmp[prop] = this._valuesEnd[prop];
-                this._valuesEnd = tmp;
-            }
-            this._setupProperties(this._object, this._valuesStart, this._valuesEnd, this._valuesStartRepeat, overrideStartingValues);
-        }
-        return this;
-    };
-    Tween.prototype.startFromCurrentValues = function(time) {
-        return this.start(time, true);
-    };
-    Tween.prototype._setupProperties = function(_object, _valuesStart, _valuesEnd, _valuesStartRepeat, overrideStartingValues) {
-        for(var property in _valuesEnd){
-            var startValue = _object[property];
-            var startValueIsArray = Array.isArray(startValue);
-            var propType = startValueIsArray ? "array" : typeof startValue;
-            var isInterpolationList = !startValueIsArray && Array.isArray(_valuesEnd[property]);
-            // If `to()` specifies a property that doesn't exist in the source object,
-            // we should not set that property in the object
-            if (propType === "undefined" || propType === "function") continue;
-            // Check if an Array was provided as property value
-            if (isInterpolationList) {
-                var endValues = _valuesEnd[property];
-                if (endValues.length === 0) continue;
-                // Handle an array of relative values.
-                // Creates a local copy of the Array with the start value at the front
-                var temp = [
-                    startValue
-                ];
-                for(var i = 0, l = endValues.length; i < l; i += 1){
-                    var value = this._handleRelativeValue(startValue, endValues[i]);
-                    if (isNaN(value)) {
-                        isInterpolationList = false;
-                        console.warn("Found invalid interpolation list. Skipping.");
-                        break;
-                    }
-                    temp.push(value);
-                }
-                if (isInterpolationList) // if (_valuesStart[property] === undefined) { // handle end values only the first time. NOT NEEDED? setupProperties is now guarded by _propertiesAreSetUp.
-                _valuesEnd[property] = temp;
-            }
-            // handle the deepness of the values
-            if ((propType === "object" || startValueIsArray) && startValue && !isInterpolationList) {
-                _valuesStart[property] = startValueIsArray ? [] : {};
-                var nestedObject = startValue;
-                for(var prop in nestedObject)_valuesStart[property][prop] = nestedObject[prop];
-                // TODO? repeat nested values? And yoyo? And array values?
-                _valuesStartRepeat[property] = startValueIsArray ? [] : {};
-                var endValues = _valuesEnd[property];
-                // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
-                if (!this._isDynamic) {
-                    var tmp = {};
-                    for(var prop in endValues)tmp[prop] = endValues[prop];
-                    _valuesEnd[property] = endValues = tmp;
-                }
-                this._setupProperties(nestedObject, _valuesStart[property], endValues, _valuesStartRepeat[property], overrideStartingValues);
-            } else {
-                // Save the starting value, but only once unless override is requested.
-                if (typeof _valuesStart[property] === "undefined" || overrideStartingValues) _valuesStart[property] = startValue;
-                if (!startValueIsArray) // eslint-disable-next-line
-                // @ts-ignore FIXME?
-                _valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
-                if (isInterpolationList) // eslint-disable-next-line
-                // @ts-ignore FIXME?
-                _valuesStartRepeat[property] = _valuesEnd[property].slice().reverse();
-                else _valuesStartRepeat[property] = _valuesStart[property] || 0;
-            }
-        }
-    };
-    Tween.prototype.stop = function() {
-        if (!this._isChainStopped) {
-            this._isChainStopped = true;
-            this.stopChainedTweens();
-        }
-        if (!this._isPlaying) return this;
-        // eslint-disable-next-line
-        this._group && this._group.remove(this);
-        this._isPlaying = false;
-        this._isPaused = false;
-        if (this._onStopCallback) this._onStopCallback(this._object);
-        return this;
-    };
-    Tween.prototype.end = function() {
-        this._goToEnd = true;
-        this.update(Infinity);
-        return this;
-    };
-    Tween.prototype.pause = function(time) {
-        if (time === void 0) time = now();
-        if (this._isPaused || !this._isPlaying) return this;
-        this._isPaused = true;
-        this._pauseStart = time;
-        // eslint-disable-next-line
-        this._group && this._group.remove(this);
-        return this;
-    };
-    Tween.prototype.resume = function(time) {
-        if (time === void 0) time = now();
-        if (!this._isPaused || !this._isPlaying) return this;
-        this._isPaused = false;
-        this._startTime += time - this._pauseStart;
-        this._pauseStart = 0;
-        // eslint-disable-next-line
-        this._group && this._group.add(this);
-        return this;
-    };
-    Tween.prototype.stopChainedTweens = function() {
-        for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)this._chainedTweens[i].stop();
-        return this;
-    };
-    Tween.prototype.group = function(group) {
-        if (group === void 0) group = mainGroup;
-        this._group = group;
-        return this;
-    };
-    Tween.prototype.delay = function(amount) {
-        if (amount === void 0) amount = 0;
-        this._delayTime = amount;
-        return this;
-    };
-    Tween.prototype.repeat = function(times) {
-        if (times === void 0) times = 0;
-        this._initialRepeat = times;
-        this._repeat = times;
-        return this;
-    };
-    Tween.prototype.repeatDelay = function(amount) {
-        this._repeatDelayTime = amount;
-        return this;
-    };
-    Tween.prototype.yoyo = function(yoyo) {
-        if (yoyo === void 0) yoyo = false;
-        this._yoyo = yoyo;
-        return this;
-    };
-    Tween.prototype.easing = function(easingFunction) {
-        if (easingFunction === void 0) easingFunction = Easing.Linear.None;
-        this._easingFunction = easingFunction;
-        return this;
-    };
-    Tween.prototype.interpolation = function(interpolationFunction) {
-        if (interpolationFunction === void 0) interpolationFunction = Interpolation.Linear;
-        this._interpolationFunction = interpolationFunction;
-        return this;
-    };
-    // eslint-disable-next-line
-    Tween.prototype.chain = function() {
-        var tweens = [];
-        for(var _i = 0; _i < arguments.length; _i++)tweens[_i] = arguments[_i];
-        this._chainedTweens = tweens;
-        return this;
-    };
-    Tween.prototype.onStart = function(callback) {
-        this._onStartCallback = callback;
-        return this;
-    };
-    Tween.prototype.onEveryStart = function(callback) {
-        this._onEveryStartCallback = callback;
-        return this;
-    };
-    Tween.prototype.onUpdate = function(callback) {
-        this._onUpdateCallback = callback;
-        return this;
-    };
-    Tween.prototype.onRepeat = function(callback) {
-        this._onRepeatCallback = callback;
-        return this;
-    };
-    Tween.prototype.onComplete = function(callback) {
-        this._onCompleteCallback = callback;
-        return this;
-    };
-    Tween.prototype.onStop = function(callback) {
-        this._onStopCallback = callback;
-        return this;
-    };
-    /**
-     * @returns true if the tween is still playing after the update, false
-     * otherwise (calling update on a paused tween still returns true because
-     * it is still playing, just paused).
-     */ Tween.prototype.update = function(time, autoStart) {
-        if (time === void 0) time = now();
-        if (autoStart === void 0) autoStart = true;
-        if (this._isPaused) return true;
-        var property;
-        var elapsed;
-        var endTime = this._startTime + this._duration;
-        if (!this._goToEnd && !this._isPlaying) {
-            if (time > endTime) return false;
-            if (autoStart) this.start(time, true);
-        }
-        this._goToEnd = false;
-        if (time < this._startTime) return true;
-        if (this._onStartCallbackFired === false) {
-            if (this._onStartCallback) this._onStartCallback(this._object);
-            this._onStartCallbackFired = true;
-        }
-        if (this._onEveryStartCallbackFired === false) {
-            if (this._onEveryStartCallback) this._onEveryStartCallback(this._object);
-            this._onEveryStartCallbackFired = true;
-        }
-        elapsed = (time - this._startTime) / this._duration;
-        elapsed = this._duration === 0 || elapsed > 1 ? 1 : elapsed;
-        var value = this._easingFunction(elapsed);
-        // properties transformations
-        this._updateProperties(this._object, this._valuesStart, this._valuesEnd, value);
-        if (this._onUpdateCallback) this._onUpdateCallback(this._object, elapsed);
-        if (elapsed === 1) {
-            if (this._repeat > 0) {
-                if (isFinite(this._repeat)) this._repeat--;
-                // Reassign starting values, restart by making startTime = now
-                for(property in this._valuesStartRepeat){
-                    if (!this._yoyo && typeof this._valuesEnd[property] === "string") this._valuesStartRepeat[property] = // eslint-disable-next-line
-                    // @ts-ignore FIXME?
-                    this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
-                    if (this._yoyo) this._swapEndStartRepeatValues(property);
-                    this._valuesStart[property] = this._valuesStartRepeat[property];
-                }
-                if (this._yoyo) this._reversed = !this._reversed;
-                if (this._repeatDelayTime !== undefined) this._startTime = time + this._repeatDelayTime;
-                else this._startTime = time + this._delayTime;
-                if (this._onRepeatCallback) this._onRepeatCallback(this._object);
-                this._onEveryStartCallbackFired = false;
-                return true;
-            } else {
-                if (this._onCompleteCallback) this._onCompleteCallback(this._object);
-                for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)// Make the chained tweens start exactly at the time they should,
-                // even if the `update()` method was called way past the duration of the tween
-                this._chainedTweens[i].start(this._startTime + this._duration, false);
-                this._isPlaying = false;
-                return false;
-            }
-        }
-        return true;
-    };
-    Tween.prototype._updateProperties = function(_object, _valuesStart, _valuesEnd, value) {
-        for(var property in _valuesEnd){
-            // Don't update properties that do not exist in the source object
-            if (_valuesStart[property] === undefined) continue;
-            var start = _valuesStart[property] || 0;
-            var end = _valuesEnd[property];
-            var startIsArray = Array.isArray(_object[property]);
-            var endIsArray = Array.isArray(end);
-            var isInterpolationList = !startIsArray && endIsArray;
-            if (isInterpolationList) _object[property] = this._interpolationFunction(end, value);
-            else if (typeof end === "object" && end) // eslint-disable-next-line
-            // @ts-ignore FIXME?
-            this._updateProperties(_object[property], start, end, value);
-            else {
-                // Parses relative end values with start as base (e.g.: +10, -3)
-                end = this._handleRelativeValue(start, end);
-                // Protect against non numeric properties.
-                if (typeof end === "number") // eslint-disable-next-line
-                // @ts-ignore FIXME?
-                _object[property] = start + (end - start) * value;
-            }
-        }
-    };
-    Tween.prototype._handleRelativeValue = function(start, end) {
-        if (typeof end !== "string") return end;
-        if (end.charAt(0) === "+" || end.charAt(0) === "-") return start + parseFloat(end);
-        return parseFloat(end);
-    };
-    Tween.prototype._swapEndStartRepeatValues = function(property) {
-        var tmp = this._valuesStartRepeat[property];
-        var endValue = this._valuesEnd[property];
-        if (typeof endValue === "string") this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(endValue);
-        else this._valuesStartRepeat[property] = this._valuesEnd[property];
-        this._valuesEnd[property] = tmp;
-    };
-    return Tween;
-}();
-var VERSION = "21.0.0";
-/**
- * Tween.js - Licensed under the MIT license
- * https://github.com/tweenjs/tween.js
- * ----------------------------------------------
- *
- * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
- * Thank you all, you're awesome!
- */ var nextId = Sequence.nextId;
-/**
- * Controlling groups of tweens
- *
- * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
- * In these cases, you may want to create your own smaller groups of tweens.
- */ var TWEEN = mainGroup;
-// This is the best way to export things in a way that's compatible with both ES
-// Modules and CommonJS, without build hacks, and so as not to break the
-// existing API.
-// https://github.com/rollup/rollup/issues/1961#issuecomment-423037881
-var getAll = TWEEN.getAll.bind(TWEEN);
-var removeAll = TWEEN.removeAll.bind(TWEEN);
-var add = TWEEN.add.bind(TWEEN);
-var remove = TWEEN.remove.bind(TWEEN);
-var update = TWEEN.update.bind(TWEEN);
-var exports = {
-    Easing: Easing,
-    Group: Group,
-    Interpolation: Interpolation,
-    now: now,
-    Sequence: Sequence,
-    nextId: nextId,
-    Tween: Tween,
-    VERSION: VERSION,
-    getAll: getAll,
-    removeAll: removeAll,
-    add: add,
-    remove: remove,
-    update: update
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9lwC6":[function(require,module,exports) {
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9lwC6":[function(require,module,exports) {
 // stats.js - http://github.com/mrdoob/stats.js
 (function(f, e) {
     module.exports = e();

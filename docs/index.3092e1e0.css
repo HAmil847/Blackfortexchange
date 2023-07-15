@@ -68,11 +68,11 @@ div.section.active {
 
 .dots-container:has(.active) .section:not(.active) {
   opacity: 0;
-  transition: opacity 4s;
+  transition: opacity 3s;
 }
 
 div.section.active {
-  animation: .8s cubic-bezier(.755, .05, .855, .06) fadeIn;
+  animation: 5.5s cubic-bezier(.755, .05, .855, .06) fadeIn;
 }
 
 @keyframes fadeIn {
@@ -110,6 +110,7 @@ div.content-description {
   font-family: Monzerrat-regular;
   font-size: 11px;
   font-weight: 400;
+  line-height: 16px;
 }
 
 ul.content-subpage-list {
@@ -313,6 +314,57 @@ div.ui-controls button#start-scene:after {
 
 div.ui-controls button#toggle-sound {
   margin-right: 100px;
+}
+
+div.ui-controls button#toggle-sound .icon {
+  width: 150%;
+  height: 150%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+footer#navigator {
+  opacity: 0;
+}
+
+footer#navigator ul {
+  z-index: 100;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 180px;
+  margin: 0;
+  padding: 0 35%;
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+footer#navigator li {
+  list-style: none;
+}
+
+footer#navigator .icon {
+  width: 60px;
+  height: 60px;
+}
+
+footer#navigator.active {
+  animation: 1s cubic-bezier(.755, .05, .855, .06) forwards fadeIn;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /*# sourceMappingURL=index.3092e1e0.css.map */
