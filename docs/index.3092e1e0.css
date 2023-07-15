@@ -63,12 +63,14 @@
 div.section.active {
   flex-direction: column;
   width: 65%;
+  transition: width 1.5s;
   display: flex;
 }
 
 .dots-container:has(.active) .section:not(.active) {
   opacity: 0;
-  transition: opacity 3s;
+  width: 200px;
+  transition: width 50s, opacity 1s;
 }
 
 div.section.active {
@@ -325,12 +327,8 @@ div.ui-controls button#toggle-sound .icon {
   transform: translate(-50%, -50%);
 }
 
-footer#navigator {
+div#navigator {
   opacity: 0;
-}
-
-footer#navigator ul {
-  z-index: 100;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -338,22 +336,29 @@ footer#navigator ul {
   margin: 0;
   padding: 0 35%;
   display: flex;
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
 }
 
-footer#navigator li {
-  list-style: none;
+div#navigator .icon {
+  z-index: 100;
+  pointer-events: all;
 }
 
-footer#navigator .icon {
+div#navigator div.icon:hover {
+  border: 3px solid red;
+}
+
+div#navigator div.icon object {
+  pointer-events: none;
+  z-index: -1;
   width: 60px;
   height: 60px;
 }
 
-footer#navigator.active {
+div#navigator.active {
   animation: 1s cubic-bezier(.755, .05, .855, .06) forwards fadeIn;
 }
 

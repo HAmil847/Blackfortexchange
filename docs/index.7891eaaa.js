@@ -35299,6 +35299,7 @@ var _domLoadContentDefault = parcelHelpers.interopDefault(_domLoadContent);
 var _main = require("../../Main");
 var _cameraHandler = require("../../Handlers/CameraHandler");
 var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
+var _domComponent = require("./DomComponent");
 const NAVIGATOR_REF = document.getElementById("navigator");
 class DomManager {
     constructor(){
@@ -35311,18 +35312,21 @@ class DomManager {
         const element = document.createElement("div");
         element.appendChild(component);
         element.addEventListener("click", (event)=>{
-            console.log("toque al dot");
             console.log("Elemento activo", event.currentTarget.id);
             const element = event.currentTarget;
+            //cargar contenido de la pagina actual
             (0, _domLoadContentDefault.default)(element);
+            //esperar unso segundos
             setTimeout(()=>{
                 (0, _cameraHandlerDefault.default).moveCameraTo(element, ()=>{
                     //mostrar una vez terminada la animacion
+                    NAVIGATOR_REF.style.zIndex = "100";
                     NAVIGATOR_REF.classList.add("active");
                 });
             }, 300);
         });
         const domComponent = new (0, _css3Drenderer.CSS3DObject)(element);
+        element.dataset.id = identifier;
         element.id = identifier;
         element.classList.add("section");
         element.classList.add("no-active");
@@ -35343,6 +35347,7 @@ class DomManager {
             const x = centro.x + domRadio * Math.cos(angle * i);
             const y = centro.y;
             const z = centro.z + domRadio * Math.sin(angle * i);
+            //set position
             this.LIST_ITEM[i].position.set(x, y, z);
             const targetPos = JSON.stringify([
                 x,
@@ -35350,9 +35355,11 @@ class DomManager {
                 z
             ]);
             this.LIST_ITEM[i].element.setAttribute("data-target", targetPos);
+            //calcular el punto de vista
             const xCast = centro.x + castRadio * Math.cos(angle * i);
             const yCast = centro.y;
             const zCast = centro.z + castRadio * Math.sin(angle * i);
+            //set view
             this.LIST_ITEM_CAST[i].set(xCast, yCast, zCast);
             const farPos = JSON.stringify([
                 xCast,
@@ -35360,6 +35367,15 @@ class DomManager {
                 zCast
             ]);
             this.LIST_ITEM[i].element.setAttribute("data-far", farPos);
+            //set navigator icons info
+            const actualItem = this.LIST_ITEM[i].element.dataset.id;
+            const actualIconItem = (0, _domComponent.COMPONENTS_NAVIGATOR)[actualItem];
+            //setup info
+            actualIconItem.setAttribute("data-target", targetPos);
+            actualIconItem.setAttribute("data-far", farPos);
+            actualIconItem.setAttribute("data-id", actualItem);
+            //agregarlo a la escena
+            NAVIGATOR_REF.appendChild(actualIconItem);
         }
     }
 }
@@ -35370,7 +35386,7 @@ function crearAxisHelper(x, y, z, scene) {
 }
 exports.default = DomManager;
 
-},{"three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","three":"ktPTu","./DomLoadContent":"eRo78","../../Main":"jYf5p","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../Handlers/CameraHandler":"bJrvG"}],"eRo78":[function(require,module,exports) {
+},{"three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","three":"ktPTu","./DomLoadContent":"eRo78","../../Main":"jYf5p","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../Handlers/CameraHandler":"bJrvG","./DomComponent":"iuXxG"}],"eRo78":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>loadPage);
@@ -35391,9 +35407,10 @@ function loadPage(mainPage) {
     let jsonData;
     let mainContainer;
     mainContainer = mainPage;
-    mainContainer.innerHTML = "";
-    pageId = mainPage.id;
+    console.log(mainPage);
+    pageId = mainPage.dataset.id;
     jsonData = PAGES[pageId];
+    mainContainer.innerHTML = "";
     if (!jsonData) {
         console.log("No se encontr\xf3 el archivo JSON correspondiente a la p\xe1gina: " + pageId);
         return;
@@ -35546,6 +35563,7 @@ class CameraHandler {
     }
     moveCameraTo(element, callback) {
         // Obtener el valor del atributo
+        console.log("ACTUAL: ", element);
         const targetData = element.getAttribute("data-target");
         const farData = element.getAttribute("data-far");
         // Convertir datos TARGET a vector
@@ -35554,7 +35572,6 @@ class CameraHandler {
         // Convertir datos FAR a vector
         const far = JSON.parse(farData);
         const farPos = new (0, _three.Vector3)(far[0], far[1], far[2]);
-        console.log("far: ", farPos, " target: ", targetPos);
         // Iniciar animación suavizada
         if (!this.isAnimated) {
             const cameraViewAnim = this.animatedCamera(this.targetView, targetPos, 4500);
@@ -36309,6 +36326,7 @@ var exports = {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "COMPONENTS", ()=>COMPONENTS);
+parcelHelpers.export(exports, "COMPONENTS_NAVIGATOR", ()=>COMPONENTS_NAVIGATOR);
 const HOME = {
     span: "",
     title: "Home",
@@ -36341,6 +36359,13 @@ const COMPONENTS = {
     ntfsSection: generateDotElement(NTFS),
     networkSection: generateDotElement(NETWORK)
 };
+const COMPONENTS_NAVIGATOR = {
+    home: generateIconElement(HOME),
+    contact: generateIconElement(CONTACT),
+    blog: generateIconElement(BLOG),
+    ntfs: generateIconElement(NTFS),
+    network: generateIconElement(NETWORK)
+};
 function generateDotElement(dotData) {
     // Crear el elemento principal <div> con la clase "dot"
     const dotElement = document.createElement("div");
@@ -36367,6 +36392,19 @@ function generateDotElement(dotData) {
     dotElement.appendChild(iconElement);
     // Devolver el elemento <div> completo con la estructura generada
     return dotElement;
+}
+function generateIconElement(dotData) {
+    // Crear el elemento principal <div> con la clase "dot"
+    const iconContainer = document.createElement("div");
+    iconContainer.classList.add("icon");
+    // Crear un elemento <object> para cargar el SVG
+    const objectElement = document.createElement("object");
+    objectElement.data = dotData.imgLink;
+    objectElement.type = "image/svg+xml";
+    // Agregar el elemento del ícono al elemento principal <div>
+    iconContainer.appendChild(objectElement);
+    // Devolver el elemento <div> completo con la estructura generada
+    return iconContainer;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","bf4f2cfeb2d89900":"8zI4v","baed1fc4eaf85206":"2VxXl","5aec61c35f940506":"4QvhB","e5b038e9503e43ef":"oktiP","a882148a51d3f250":"2DOKH"}],"8zI4v":[function(require,module,exports) {
@@ -38685,16 +38723,23 @@ var _mouseHandlerDefault = parcelHelpers.interopDefault(_mouseHandler);
 var _textAnimJs = require("../../js/text-anim.js");
 var _three = require("three");
 var _main = require("../Main");
+var _domLoadContent = require("./dom/DomLoadContent");
+var _domLoadContentDefault = parcelHelpers.interopDefault(_domLoadContent);
+var _cameraHandler = require("../Handlers/CameraHandler");
+var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
 //botones
-BEGIN_BTN_REF = document.getElementById("start-scene");
+const BEGIN_BTN_REF = document.getElementById("start-scene");
+const NAVIGATOR_REF = document.getElementById("navigator");
+console.log(NAVIGATOR_REF);
 //escenas
-INTRO_REF = document.getElementById("intro");
-DOTS_MENU_REF = document.getElementById("dots-menu");
+const INTRO_REF = document.getElementById("intro");
+const DOTS_MENU_REF = document.getElementById("dots-menu");
 //DOTS_MENU =
 // Función para configurar los listeners
 function setupListeners() {
     // Detectar cuando el mouse se mueve y llamar a la función de actualización
     BEGIN_BTN_REF.addEventListener("click", startScene);
+    NAVIGATOR_REF.addEventListener("click", navigation);
     document.addEventListener("mousemove", mouseMove);
     document.addEventListener("DOMContentLoaded", pageLoaded);
 }
@@ -38721,6 +38766,31 @@ function pageLoaded() {
     // Eliminar el listener del evento
     document.removeEventListener("DOMContentLoaded", console.log("Evento Removido"));
 }
+function navigation(event) {
+    console.log("click e navigator");
+    const elementId = event.target.dataset.id;
+    const element = document.getElementById(elementId);
+    const activeSection = document.querySelector(".section.active");
+    let wasAnimated = false;
+    if (elementId === activeSection.dataset.id || wasAnimated) {
+        console.log("MISMO ELEMENTO");
+        return;
+    }
+    (0, _domLoadContentDefault.default)(element);
+    //mostrar una vez terminada la animacion
+    activeSection.classList.remove("active");
+    //esperar unso segundos
+    setTimeout(()=>{
+        (0, _cameraHandlerDefault.default).moveCameraTo(element, ()=>{
+            //reactivar animacion
+            //desactivar elemento
+            activeSection.classList.remove("no-active");
+            //reactivar animacion
+            activeSection.classList.add("no-active");
+            wasAnimated = true;
+        });
+    }, 300);
+}
 function startScene(event) {
     //esconder la intro
     (0, _textAnimJs.HideTextAnimation)(".animated-item", 1200, function(completed) {
@@ -38730,7 +38800,7 @@ function startScene(event) {
     });
 }
 
-},{"../Handlers/MouseHandler":"7ESAf","../../js/text-anim.js":"jjSxz","three":"ktPTu","../Main":"jYf5p","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ESAf":[function(require,module,exports) {
+},{"../Handlers/MouseHandler":"7ESAf","../../js/text-anim.js":"jjSxz","three":"ktPTu","../Main":"jYf5p","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./dom/DomLoadContent":"eRo78","../Handlers/CameraHandler":"bJrvG"}],"7ESAf":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _three = require("three");
