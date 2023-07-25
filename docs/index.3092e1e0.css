@@ -60,6 +60,10 @@
   display: grid;
 }
 
+.dot-item-icon img {
+  filter: invert();
+}
+
 div.section.active {
   z-index: 100;
   filter: brightness(2);
@@ -75,6 +79,18 @@ div.section.active {
   opacity: 0;
   width: 200px;
   transition: width 50s, opacity 1s;
+}
+
+.network {
+  display: none;
+}
+
+.dots-container .activeDot {
+  display: block !important;
+}
+
+.dots-container .desactiveDot {
+  display: none !important;
 }
 
 div.section.active {
@@ -209,8 +225,8 @@ div.content-description {
   border-radius: 50%;
   outline: 2px solid #fff;
   place-content: center;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   margin-top: 20px;
   margin-left: 20px;
   display: grid;
@@ -220,8 +236,8 @@ div.content-description {
 }
 
 #back-btn img {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   transform: rotate(90deg);
 }
 
