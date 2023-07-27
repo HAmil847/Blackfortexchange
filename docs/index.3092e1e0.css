@@ -93,6 +93,42 @@ div.section.active {
   display: none !important;
 }
 
+.sub-page-active {
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: 350px auto;
+  grid-template-areas: "image title"
+                       "image description"
+                       "image button";
+  display: grid !important;
+}
+
+.sub-page-active .content-title {
+  text-align: left;
+  grid-area: title;
+  margin-left: 75px;
+}
+
+.sub-page-active .content-description {
+  text-align: left;
+  grid-area: description;
+  margin-right: 0;
+}
+
+.sub-page-active .content-subpage-list {
+  grid-area: button;
+  justify-content: flex-start;
+}
+
+.sub-page-active .content-subpage.item-container {
+  align-self: left;
+  margin-left: 80px !important;
+}
+
+.sub-page-active .content-image {
+  grid-area: image;
+  width: 100%;
+}
+
 div.section.active {
   animation: 5.5s cubic-bezier(.755, .05, .855, .06) fadeIn;
 }
@@ -100,6 +136,10 @@ div.section.active {
 .home-swiper {
   width: 100%;
   height: 100%;
+}
+
+.swiper-wrapper {
+  align-items: center;
 }
 
 .swiper-slide {
@@ -116,14 +156,13 @@ div.section.active {
 }
 
 .swiper-button-next {
-  pointer-events: all;
-  margin-right: -15px;
+  margin-right: -120px;
   z-index: 110 !important;
 }
 
 .swiper-button-prev {
   pointer-events: all;
-  margin-left: -15px;
+  margin-left: -120px;
   z-index: 11 0 !important;
 }
 
@@ -151,6 +190,7 @@ h2.content-title {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-top: 0;
+  margin-bottom: 25px;
   font-family: Monzerrat-medium;
   font-size: 45px;
   font-weight: 500;
@@ -158,7 +198,7 @@ h2.content-title {
 
 div.content-description {
   color: #ffffffb0;
-  margin: 0 80px 50px;
+  margin: 0 190px 50px;
   font-family: Monzerrat-regular;
   font-size: 11px;
   font-weight: 400;
@@ -173,7 +213,7 @@ div.content-description {
 .content-subpage-list {
   justify-content: space-around;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 30px;
   display: flex;
 }
 
@@ -479,6 +519,24 @@ div#navigator.active {
   width: 100%;
   height: 100%;
   position: absolute;
+}
+
+.active-blur {
+  opacity: 0;
+  background-color: unset;
+  animation: 4s cubic-bezier(.4, 0, .2, 1) forwards fadeInAnimation;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+    background-color: unset;
+  }
+
+  to {
+    opacity: 1;
+    background-color: #0006;
+  }
 }
 
 /*# sourceMappingURL=index.3092e1e0.css.map */
