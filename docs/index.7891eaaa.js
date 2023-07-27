@@ -37249,7 +37249,7 @@ function playSound(sound, loop = false) {
     } else console.error("El sonido proporcionado no es v\xe1lido.");
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","7290cff1342e043f":"4U2PY","8d1bf478d2debefa":"4QKE3","c23240d6fe8196b0":"4xFi4","99f00fedf593a43d":"47X6V"}],"4U2PY":[function(require,module,exports) {
+},{"7290cff1342e043f":"4U2PY","8d1bf478d2debefa":"4QKE3","c23240d6fe8196b0":"4xFi4","99f00fedf593a43d":"47X6V","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4U2PY":[function(require,module,exports) {
 module.exports = require("e737036ee2ccc7a6").getBundleURL("8Kyqb") + "start.0befac28.ogg" + "?" + Date.now();
 
 },{"e737036ee2ccc7a6":"lgJ39"}],"4QKE3":[function(require,module,exports) {

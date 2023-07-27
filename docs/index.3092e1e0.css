@@ -85,6 +85,10 @@ div.section.active {
   display: none;
 }
 
+.network .dot-item-icon {
+  filter: invert() !important;
+}
+
 .dots-container .activeDot {
   display: block !important;
 }
