@@ -576,91 +576,12 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"jYf5p":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-/*
-// Create an instance of dat.GUI
-var gui = new dat.GUI();
-
-// Create an object to store parameters
-var params = {
-  posX: cameraPather.position.x,
-  posY: cameraPather.position.y,
-  posZ: cameraPather.position.z,
-  scale: 1,
-};
-
-// Add controls to the GUI
-var folder = gui.addFolder("Propiedades del objeto");
-folder.add(params, "posX", -5000, 5000)
-  .step(1)
-  .name("Posición X")
-  .onChange(updateObjectPosition);
-folder.add(params, "posY", -5000, 5000)
-  .step(1)
-  .name("Posición Y")
-  .onChange(updateObjectPosition);
-folder.add(params, "posZ", -5000, 5000)
-  .step(1)
-  .name("Posición Z")
-  .onChange(updateObjectPosition);
-folder.add(params, "scale", 0.1, 2)
-  .step(0.1)
-  .name("Escala")
-  .onChange(updateObjectScale);
-
-// Function to update the position of the object
-function updateObjectPosition() {
-  cameraPather.position.set(params.posX, params.posY, params.posZ);
-}
-
-// Function to update the scale of the object
-function updateObjectScale() {
-  DOM_MANAGER.LIST_ITEM[0].scale.set(params.scale, params.scale, params.scale);
-}
-
-// Get initial values for rotation
-var initialValues = {
-  rotationX: PORTAL.modelGroup.rotation.x,
-  rotationY: PORTAL.modelGroup.rotation.y,
-  rotationZ: PORTAL.modelGroup.rotation.z,
-};
-
-// Add controls to the GUI
-var rotationControls = gui.addFolder("Rotación");
-rotationControls.add(initialValues, "rotationX", -2, Math.PI * 2)
-  .step(0.1)
-.name("Rotación X")
-  .onChange(updateRotation);
-rotationControls.add(initialValues, "rotationY", -2, Math.PI * 2)
-  .step(0.1)
-  .name("Rotación Y")
-  .onChange(updateRotation);
-rotationControls.add(initialValues, "rotationZ", -2, Math.PI * 2)
-  .step(0.1)
-  .name("Rotación Z")
-  .onChange(updateRotation);
-
-// Function to update the rotation of the group
-function updateRotation() {
-  PORTAL.modelGroup.rotation.set(
-    initialValues.rotationX,
-    initialValues.rotationY,
-    initialValues.rotationZ
-  );
-}
-
-*/ parcelHelpers.export(exports, "createHOMEDomElements", ()=>createHOMEDomElements);
-parcelHelpers.export(exports, "createNetworkDomElements", ()=>createNetworkDomElements);
-// Function to remove all children from the scene
-parcelHelpers.export(exports, "removeAllChildrenFromScene", ()=>removeAllChildrenFromScene) // Call the function to create DOM elements and set positions
-;
+parcelHelpers.export(exports, "MAIN_DOTS", ()=>MAIN_DOTS);
+parcelHelpers.export(exports, "NTW_MAIN_DOT", ()=>NTW_MAIN_DOT);
 var _three = require("three");
-var _orbitControls = require("three/examples/jsm/controls/OrbitControls");
 var _webScene = require("./scene/WebScene");
 var _modelLoader = require("./loader/ModelLoader");
 var _modelLoaderDefault = parcelHelpers.interopDefault(_modelLoader);
-var _domManager = require("./scene/dom/DomManager");
-var _domManagerDefault = parcelHelpers.interopDefault(_domManager);
-var _domComponent = require("./scene/dom/DomComponent");
 var _datGui = require("dat.gui");
 var _listener = require("./scene/Listener");
 var _mouseHandler = require("./Handlers/MouseHandler");
@@ -669,13 +590,13 @@ var _particleSystem = require("./effects/ParticleSystem");
 var _particleSystemDefault = parcelHelpers.interopDefault(_particleSystem);
 var _postProcessing = require("./effects/PostProcessing");
 var _postProcessingDefault = parcelHelpers.interopDefault(_postProcessing);
-var _tweenJs = require("@tweenjs/tween.js");
-var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
-var _css3Drenderer = require("three/examples/jsm/renderers/CSS3DRenderer");
 var _statsJs = require("stats.js");
 var _statsJsDefault = parcelHelpers.interopDefault(_statsJs);
 var _cameraHandler = require("./Handlers/CameraHandler");
 var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
+var _dotManager = require("./scene/dom/DotManager");
+var _dotTemplate = require("./scene/dom/DotTemplate");
+var _css3Drenderer = require("three/examples/jsm/renderers/css3drenderer");
 /*
 const stats = new Stats();
 document.body.appendChild(stats.dom);
@@ -700,11 +621,7 @@ cameraPather.add(camera);
 // Create a web scene
 const WEB = new (0, _webScene.WebScene)(camera);
 const DOM = new (0, _webScene.DomScene)(camera);
-// Set DOM manager
-const DOM_MANAGER = new (0, _domManagerDefault.default)();
-const DOM_MANAGER_NETWORK = new (0, _domManagerDefault.default)();
-createNetworkDomElements();
-createHOMEDomElements();
+//crear particulas
 // Create an instance of ParticleSystem
 const particleSystem = new (0, _particleSystemDefault.default)(WEB);
 // Create and add particles to the scene
@@ -717,10 +634,16 @@ cameraPather.position.set(0, 160, 110);
 (0, _mouseHandlerDefault.default).intensity = 50;
 // Load portal
 LoadPortal();
-//const animateCamera = createTweenAnimation(cameraPather, DOM_MANAGER.LIST_ITEM_CAST[1].position, 5000);
-//const beginAnimation = createTweenAnimation(cameraPather, new THREE.Vector3(), 5000);
+const MAIN_DOTS = new (0, _dotManager.DotManager)(DOM, (0, _dotTemplate.DOT));
+const NTW_MAIN_DOT = new (0, _dotManager.DotManager)(DOM, (0, _dotTemplate.NTW_DOT), true);
+//configurar su posicion
+MAIN_DOTS.setDomItemPosition(75, 240, WEB);
+NTW_MAIN_DOT.setDomItemPosition(50, 140, WEB);
+//mostrar estos dots
+MAIN_DOTS.render();
+NTW_MAIN_DOT.render();
 // Set up post-processing
-WEB.setPostProcessing((0, _postProcessingDefault.default).bloomPass);
+//WEB.setPostProcessing(PostProcessing.bloomPass);
 // Set the scene's animation loop
 //exportar camara 
 WEB.renderer.setAnimationLoop(RenderExperience);
@@ -740,50 +663,20 @@ function RenderExperience() {
 
   */ //asegurar la posicion de la camara
     (0, _cameraHandlerDefault.default).update();
+    //items ven a la camara
+    MAIN_DOTS.viewToCamera();
+    NTW_MAIN_DOT.viewToCamera();
     // Obtener el tiempo transcurrido desde la última actualización
     const elapsedTime = clock.getElapsedTime();
     //animate particles 
     particleSystem.updateTime(elapsedTime);
-    DOM_MANAGER.LIST_ITEM.forEach((element)=>{
-        const vectorSum = new _three.Vector3().addVectors(cameraPather.position, element.position);
-        const relativePos = new _three.Vector3().addVectors(vectorSum, camera.position);
-        element.lookAt(relativePos);
-    });
-    DOM_MANAGER_NETWORK.LIST_ITEM.forEach((element)=>{
-        const vectorSum = new _three.Vector3().addVectors(cameraPather.position, element.position);
-        const relativePos = new _three.Vector3().addVectors(vectorSum, camera.position);
-        element.lookAt(relativePos);
-    });
+    //render scene
     DOM.renderScene();
     WEB.renderScene();
     if (PORTAL.isLoaded) PORTAL.model.rotation.z += 0.005;
     (0, _cameraHandlerDefault.default).setParallax((0, _mouseHandlerDefault.default).normalized, 0.02);
-//TWEEN.update();
 }
-/*
-function createTweenAnimation(object, target, duration) {
-  const offset = 0.01; // Ajuste de posición para evitar z-fighting
-
-  const targetPosition = target.clone().subScalar(offset);
-
-  const tween = new TWEEN.Tween(object.position)
-    .to(targetPosition, duration)
-    .easing(TWEEN.Easing.Exponential.Out)
-    .onComplete(function() {
-      const newPos = new THREE.Vector3(19.67263286166932, 0, 50.546138291252554);
-      const newPosPather = new THREE.Vector3(61.47697769271663, 0, 179.20668216016426);
-      camera.lookAt(newPos);
-      console.log('Animación terminada');
-      console.log(targetPosition, target)
-    });
-
-  console.log('Vector original:', target);
-  console.log('Vector modificado:', targetPosition);
-
-  // Devolver animación
-  return tween;
-}
-*/ // Load the portal
+// Load the portal
 async function LoadPortal() {
     PORTAL.model = await PORTAL.instance.modelo;
     //nuev material
@@ -830,42 +723,32 @@ async function LoadPortal() {
     PORTAL.model.rotation.x = Math.PI / 2;
     PORTAL.model.scale.set(5, 5, 5);
     PORTAL.isLoaded = true;
-}
-function createHOMEDomElements() {
-    // Create DOM elements
-    DOM_MANAGER.createElement(DOM, "ntfs", (0, _domComponent.COMPONENTS).ntfsSection);
-    DOM_MANAGER.createElement(DOM, "home", (0, _domComponent.COMPONENTS).homeSection);
-    DOM_MANAGER.createElement(DOM, "network", (0, _domComponent.COMPONENTS).networkSection);
-    DOM_MANAGER.createElement(DOM, "contact", (0, _domComponent.COMPONENTS).contactSection);
-    DOM_MANAGER.createElement(DOM, "blog", (0, _domComponent.COMPONENTS).blogSection);
-    console.log(DOM.scene);
-    // Set DOM item positions
-    DOM_MANAGER.setDomItemPosition(WEB, 80, 240, false);
-}
-function createNetworkDomElements() {
-    //pruebas con networks
-    console.log("HIJOS CREADOS");
-    // Create DOM elements
-    DOM_MANAGER_NETWORK.createElement(DOM, "enviromentaly", (0, _domComponent.NETWORK_PAGES).enviromentaly, true);
-    DOM_MANAGER_NETWORK.createElement(DOM, "tokenising", (0, _domComponent.NETWORK_PAGES).tokenising, true);
-    DOM_MANAGER_NETWORK.createElement(DOM, "optimized", (0, _domComponent.NETWORK_PAGES).optimised, true);
-    DOM_MANAGER_NETWORK.createElement(DOM, "global", (0, _domComponent.NETWORK_PAGES).global, true);
-    DOM_MANAGER_NETWORK.createElement(DOM, "proof", (0, _domComponent.NETWORK_PAGES).proof, true);
-    DOM_MANAGER_NETWORK.createElement(DOM, "smart", (0, _domComponent.NETWORK_PAGES).smart, true);
-    DOM_MANAGER_NETWORK.createElement(DOM, "fast", (0, _domComponent.NETWORK_PAGES).fast, true);
-    DOM_MANAGER_NETWORK.createElement(DOM, "bxn", (0, _domComponent.NETWORK_PAGES).bxn, true);
-    // Set DOM item positions
-    DOM_MANAGER_NETWORK.setDomItemPosition(WEB, 58, 160, true);
-// Update the scene to reflect the changes
-}
-function removeAllChildrenFromScene() {
-    while(DOM.scene.children.length > 0){
-        const child = DOM.scene.children[0];
-        DOM.scene.remove(child);
-    }
-}
+} /*
+const gui = new dat.GUI();
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls":"7mqRv","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","./scene/dom/DomManager":"2jBvr","./scene/dom/DomComponent":"iuXxG","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","@tweenjs/tween.js":"7DfAI","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","stats.js":"9lwC6","./Handlers/CameraHandler":"bJrvG","ddd27ad91f13ba8c":"97wAT","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
+// Configuración inicial de la cámara
+
+// Parámetros para modificar la posición de la cámara
+const cameraControls = {
+  cameraX: cameraPather.position.x,
+  cameraY: cameraPather.position.y,
+  cameraZ: cameraPather.position.z,
+};
+
+// Creación de la GUI y agregar los controles
+gui.add(cameraControls, 'cameraX', -1000, 1000).name('Camera X').onChange((value) => {
+  cameraPather.position.x = value;
+});
+gui.add(cameraControls, 'cameraY', -1000, 1000).name('Camera Y').onChange((value) => {
+  cameraPather.position.y = value;
+});
+gui.add(cameraControls, 'cameraZ', -1000, 1000).name('Camera Z').onChange((value) => {
+  cameraPather.position.z = value;
+});
+
+*/ 
+
+},{"three":"ktPTu","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","stats.js":"9lwC6","./Handlers/CameraHandler":"bJrvG","./scene/dom/DotManager":"ei2FO","./scene/dom/DotTemplate":"6OcLf","three/examples/jsm/renderers/css3drenderer":"gmEI9","ddd27ad91f13ba8c":"97wAT","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -30943,683 +30826,7 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"7mqRv":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "OrbitControls", ()=>OrbitControls);
-var _three = require("three");
-// OrbitControls performs orbiting, dollying (zooming), and panning.
-// Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
-//
-//    Orbit - left mouse / touch: one-finger move
-//    Zoom - middle mouse, or mousewheel / touch: two-finger spread or squish
-//    Pan - right mouse, or left mouse + ctrl/meta/shiftKey, or arrow keys / touch: two-finger move
-const _changeEvent = {
-    type: "change"
-};
-const _startEvent = {
-    type: "start"
-};
-const _endEvent = {
-    type: "end"
-};
-class OrbitControls extends (0, _three.EventDispatcher) {
-    constructor(object, domElement){
-        super();
-        this.object = object;
-        this.domElement = domElement;
-        this.domElement.style.touchAction = "none"; // disable touch scroll
-        // Set to false to disable this control
-        this.enabled = true;
-        // "target" sets the location of focus, where the object orbits around
-        this.target = new (0, _three.Vector3)();
-        // How far you can dolly in and out ( PerspectiveCamera only )
-        this.minDistance = 0;
-        this.maxDistance = Infinity;
-        // How far you can zoom in and out ( OrthographicCamera only )
-        this.minZoom = 0;
-        this.maxZoom = Infinity;
-        // How far you can orbit vertically, upper and lower limits.
-        // Range is 0 to Math.PI radians.
-        this.minPolarAngle = 0; // radians
-        this.maxPolarAngle = Math.PI; // radians
-        // How far you can orbit horizontally, upper and lower limits.
-        // If set, the interval [ min, max ] must be a sub-interval of [ - 2 PI, 2 PI ], with ( max - min < 2 PI )
-        this.minAzimuthAngle = -Infinity; // radians
-        this.maxAzimuthAngle = Infinity; // radians
-        // Set to true to enable damping (inertia)
-        // If damping is enabled, you must call controls.update() in your animation loop
-        this.enableDamping = false;
-        this.dampingFactor = 0.05;
-        // This option actually enables dollying in and out; left as "zoom" for backwards compatibility.
-        // Set to false to disable zooming
-        this.enableZoom = true;
-        this.zoomSpeed = 1.0;
-        // Set to false to disable rotating
-        this.enableRotate = true;
-        this.rotateSpeed = 1.0;
-        // Set to false to disable panning
-        this.enablePan = true;
-        this.panSpeed = 1.0;
-        this.screenSpacePanning = true; // if false, pan orthogonal to world-space direction camera.up
-        this.keyPanSpeed = 7.0; // pixels moved per arrow key push
-        // Set to true to automatically rotate around the target
-        // If auto-rotate is enabled, you must call controls.update() in your animation loop
-        this.autoRotate = false;
-        this.autoRotateSpeed = 2.0; // 30 seconds per orbit when fps is 60
-        // The four arrow keys
-        this.keys = {
-            LEFT: "ArrowLeft",
-            UP: "ArrowUp",
-            RIGHT: "ArrowRight",
-            BOTTOM: "ArrowDown"
-        };
-        // Mouse buttons
-        this.mouseButtons = {
-            LEFT: (0, _three.MOUSE).ROTATE,
-            MIDDLE: (0, _three.MOUSE).DOLLY,
-            RIGHT: (0, _three.MOUSE).PAN
-        };
-        // Touch fingers
-        this.touches = {
-            ONE: (0, _three.TOUCH).ROTATE,
-            TWO: (0, _three.TOUCH).DOLLY_PAN
-        };
-        // for reset
-        this.target0 = this.target.clone();
-        this.position0 = this.object.position.clone();
-        this.zoom0 = this.object.zoom;
-        // the target DOM element for key events
-        this._domElementKeyEvents = null;
-        //
-        // public methods
-        //
-        this.getPolarAngle = function() {
-            return spherical.phi;
-        };
-        this.getAzimuthalAngle = function() {
-            return spherical.theta;
-        };
-        this.getDistance = function() {
-            return this.object.position.distanceTo(this.target);
-        };
-        this.listenToKeyEvents = function(domElement) {
-            domElement.addEventListener("keydown", onKeyDown);
-            this._domElementKeyEvents = domElement;
-        };
-        this.stopListenToKeyEvents = function() {
-            this._domElementKeyEvents.removeEventListener("keydown", onKeyDown);
-            this._domElementKeyEvents = null;
-        };
-        this.saveState = function() {
-            scope.target0.copy(scope.target);
-            scope.position0.copy(scope.object.position);
-            scope.zoom0 = scope.object.zoom;
-        };
-        this.reset = function() {
-            scope.target.copy(scope.target0);
-            scope.object.position.copy(scope.position0);
-            scope.object.zoom = scope.zoom0;
-            scope.object.updateProjectionMatrix();
-            scope.dispatchEvent(_changeEvent);
-            scope.update();
-            state = STATE.NONE;
-        };
-        // this method is exposed, but perhaps it would be better if we can make it private...
-        this.update = function() {
-            const offset = new (0, _three.Vector3)();
-            // so camera.up is the orbit axis
-            const quat = new (0, _three.Quaternion)().setFromUnitVectors(object.up, new (0, _three.Vector3)(0, 1, 0));
-            const quatInverse = quat.clone().invert();
-            const lastPosition = new (0, _three.Vector3)();
-            const lastQuaternion = new (0, _three.Quaternion)();
-            const lastTargetPosition = new (0, _three.Vector3)();
-            const twoPI = 2 * Math.PI;
-            return function update() {
-                const position = scope.object.position;
-                offset.copy(position).sub(scope.target);
-                // rotate offset to "y-axis-is-up" space
-                offset.applyQuaternion(quat);
-                // angle from z-axis around y-axis
-                spherical.setFromVector3(offset);
-                if (scope.autoRotate && state === STATE.NONE) rotateLeft(getAutoRotationAngle());
-                if (scope.enableDamping) {
-                    spherical.theta += sphericalDelta.theta * scope.dampingFactor;
-                    spherical.phi += sphericalDelta.phi * scope.dampingFactor;
-                } else {
-                    spherical.theta += sphericalDelta.theta;
-                    spherical.phi += sphericalDelta.phi;
-                }
-                // restrict theta to be between desired limits
-                let min = scope.minAzimuthAngle;
-                let max = scope.maxAzimuthAngle;
-                if (isFinite(min) && isFinite(max)) {
-                    if (min < -Math.PI) min += twoPI;
-                    else if (min > Math.PI) min -= twoPI;
-                    if (max < -Math.PI) max += twoPI;
-                    else if (max > Math.PI) max -= twoPI;
-                    if (min <= max) spherical.theta = Math.max(min, Math.min(max, spherical.theta));
-                    else spherical.theta = spherical.theta > (min + max) / 2 ? Math.max(min, spherical.theta) : Math.min(max, spherical.theta);
-                }
-                // restrict phi to be between desired limits
-                spherical.phi = Math.max(scope.minPolarAngle, Math.min(scope.maxPolarAngle, spherical.phi));
-                spherical.makeSafe();
-                spherical.radius *= scale;
-                // restrict radius to be between desired limits
-                spherical.radius = Math.max(scope.minDistance, Math.min(scope.maxDistance, spherical.radius));
-                // move target to panned location
-                if (scope.enableDamping === true) scope.target.addScaledVector(panOffset, scope.dampingFactor);
-                else scope.target.add(panOffset);
-                offset.setFromSpherical(spherical);
-                // rotate offset back to "camera-up-vector-is-up" space
-                offset.applyQuaternion(quatInverse);
-                position.copy(scope.target).add(offset);
-                scope.object.lookAt(scope.target);
-                if (scope.enableDamping === true) {
-                    sphericalDelta.theta *= 1 - scope.dampingFactor;
-                    sphericalDelta.phi *= 1 - scope.dampingFactor;
-                    panOffset.multiplyScalar(1 - scope.dampingFactor);
-                } else {
-                    sphericalDelta.set(0, 0, 0);
-                    panOffset.set(0, 0, 0);
-                }
-                scale = 1;
-                // update condition is:
-                // min(camera displacement, camera rotation in radians)^2 > EPS
-                // using small-angle approximation cos(x/2) = 1 - x^2 / 8
-                if (zoomChanged || lastPosition.distanceToSquared(scope.object.position) > EPS || 8 * (1 - lastQuaternion.dot(scope.object.quaternion)) > EPS || lastTargetPosition.distanceToSquared(scope.target) > 0) {
-                    scope.dispatchEvent(_changeEvent);
-                    lastPosition.copy(scope.object.position);
-                    lastQuaternion.copy(scope.object.quaternion);
-                    lastTargetPosition.copy(scope.target);
-                    zoomChanged = false;
-                    return true;
-                }
-                return false;
-            };
-        }();
-        this.dispose = function() {
-            scope.domElement.removeEventListener("contextmenu", onContextMenu);
-            scope.domElement.removeEventListener("pointerdown", onPointerDown);
-            scope.domElement.removeEventListener("pointercancel", onPointerUp);
-            scope.domElement.removeEventListener("wheel", onMouseWheel);
-            scope.domElement.removeEventListener("pointermove", onPointerMove);
-            scope.domElement.removeEventListener("pointerup", onPointerUp);
-            if (scope._domElementKeyEvents !== null) {
-                scope._domElementKeyEvents.removeEventListener("keydown", onKeyDown);
-                scope._domElementKeyEvents = null;
-            }
-        //scope.dispatchEvent( { type: 'dispose' } ); // should this be added here?
-        };
-        //
-        // internals
-        //
-        const scope = this;
-        const STATE = {
-            NONE: -1,
-            ROTATE: 0,
-            DOLLY: 1,
-            PAN: 2,
-            TOUCH_ROTATE: 3,
-            TOUCH_PAN: 4,
-            TOUCH_DOLLY_PAN: 5,
-            TOUCH_DOLLY_ROTATE: 6
-        };
-        let state = STATE.NONE;
-        const EPS = 0.000001;
-        // current position in spherical coordinates
-        const spherical = new (0, _three.Spherical)();
-        const sphericalDelta = new (0, _three.Spherical)();
-        let scale = 1;
-        const panOffset = new (0, _three.Vector3)();
-        let zoomChanged = false;
-        const rotateStart = new (0, _three.Vector2)();
-        const rotateEnd = new (0, _three.Vector2)();
-        const rotateDelta = new (0, _three.Vector2)();
-        const panStart = new (0, _three.Vector2)();
-        const panEnd = new (0, _three.Vector2)();
-        const panDelta = new (0, _three.Vector2)();
-        const dollyStart = new (0, _three.Vector2)();
-        const dollyEnd = new (0, _three.Vector2)();
-        const dollyDelta = new (0, _three.Vector2)();
-        const pointers = [];
-        const pointerPositions = {};
-        function getAutoRotationAngle() {
-            return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
-        }
-        function getZoomScale() {
-            return Math.pow(0.95, scope.zoomSpeed);
-        }
-        function rotateLeft(angle) {
-            sphericalDelta.theta -= angle;
-        }
-        function rotateUp(angle) {
-            sphericalDelta.phi -= angle;
-        }
-        const panLeft = function() {
-            const v = new (0, _three.Vector3)();
-            return function panLeft(distance, objectMatrix) {
-                v.setFromMatrixColumn(objectMatrix, 0); // get X column of objectMatrix
-                v.multiplyScalar(-distance);
-                panOffset.add(v);
-            };
-        }();
-        const panUp = function() {
-            const v = new (0, _three.Vector3)();
-            return function panUp(distance, objectMatrix) {
-                if (scope.screenSpacePanning === true) v.setFromMatrixColumn(objectMatrix, 1);
-                else {
-                    v.setFromMatrixColumn(objectMatrix, 0);
-                    v.crossVectors(scope.object.up, v);
-                }
-                v.multiplyScalar(distance);
-                panOffset.add(v);
-            };
-        }();
-        // deltaX and deltaY are in pixels; right and down are positive
-        const pan = function() {
-            const offset = new (0, _three.Vector3)();
-            return function pan(deltaX, deltaY) {
-                const element = scope.domElement;
-                if (scope.object.isPerspectiveCamera) {
-                    // perspective
-                    const position = scope.object.position;
-                    offset.copy(position).sub(scope.target);
-                    let targetDistance = offset.length();
-                    // half of the fov is center to top of screen
-                    targetDistance *= Math.tan(scope.object.fov / 2 * Math.PI / 180.0);
-                    // we use only clientHeight here so aspect ratio does not distort speed
-                    panLeft(2 * deltaX * targetDistance / element.clientHeight, scope.object.matrix);
-                    panUp(2 * deltaY * targetDistance / element.clientHeight, scope.object.matrix);
-                } else if (scope.object.isOrthographicCamera) {
-                    // orthographic
-                    panLeft(deltaX * (scope.object.right - scope.object.left) / scope.object.zoom / element.clientWidth, scope.object.matrix);
-                    panUp(deltaY * (scope.object.top - scope.object.bottom) / scope.object.zoom / element.clientHeight, scope.object.matrix);
-                } else {
-                    // camera neither orthographic nor perspective
-                    console.warn("WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.");
-                    scope.enablePan = false;
-                }
-            };
-        }();
-        function dollyOut(dollyScale) {
-            if (scope.object.isPerspectiveCamera) scale /= dollyScale;
-            else if (scope.object.isOrthographicCamera) {
-                scope.object.zoom = Math.max(scope.minZoom, Math.min(scope.maxZoom, scope.object.zoom * dollyScale));
-                scope.object.updateProjectionMatrix();
-                zoomChanged = true;
-            } else {
-                console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
-                scope.enableZoom = false;
-            }
-        }
-        function dollyIn(dollyScale) {
-            if (scope.object.isPerspectiveCamera) scale *= dollyScale;
-            else if (scope.object.isOrthographicCamera) {
-                scope.object.zoom = Math.max(scope.minZoom, Math.min(scope.maxZoom, scope.object.zoom / dollyScale));
-                scope.object.updateProjectionMatrix();
-                zoomChanged = true;
-            } else {
-                console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
-                scope.enableZoom = false;
-            }
-        }
-        //
-        // event callbacks - update the object state
-        //
-        function handleMouseDownRotate(event) {
-            rotateStart.set(event.clientX, event.clientY);
-        }
-        function handleMouseDownDolly(event) {
-            dollyStart.set(event.clientX, event.clientY);
-        }
-        function handleMouseDownPan(event) {
-            panStart.set(event.clientX, event.clientY);
-        }
-        function handleMouseMoveRotate(event) {
-            rotateEnd.set(event.clientX, event.clientY);
-            rotateDelta.subVectors(rotateEnd, rotateStart).multiplyScalar(scope.rotateSpeed);
-            const element = scope.domElement;
-            rotateLeft(2 * Math.PI * rotateDelta.x / element.clientHeight); // yes, height
-            rotateUp(2 * Math.PI * rotateDelta.y / element.clientHeight);
-            rotateStart.copy(rotateEnd);
-            scope.update();
-        }
-        function handleMouseMoveDolly(event) {
-            dollyEnd.set(event.clientX, event.clientY);
-            dollyDelta.subVectors(dollyEnd, dollyStart);
-            if (dollyDelta.y > 0) dollyOut(getZoomScale());
-            else if (dollyDelta.y < 0) dollyIn(getZoomScale());
-            dollyStart.copy(dollyEnd);
-            scope.update();
-        }
-        function handleMouseMovePan(event) {
-            panEnd.set(event.clientX, event.clientY);
-            panDelta.subVectors(panEnd, panStart).multiplyScalar(scope.panSpeed);
-            pan(panDelta.x, panDelta.y);
-            panStart.copy(panEnd);
-            scope.update();
-        }
-        function handleMouseWheel(event) {
-            if (event.deltaY < 0) dollyIn(getZoomScale());
-            else if (event.deltaY > 0) dollyOut(getZoomScale());
-            scope.update();
-        }
-        function handleKeyDown(event) {
-            let needsUpdate = false;
-            switch(event.code){
-                case scope.keys.UP:
-                    if (event.ctrlKey || event.metaKey || event.shiftKey) rotateUp(2 * Math.PI * scope.rotateSpeed / scope.domElement.clientHeight);
-                    else pan(0, scope.keyPanSpeed);
-                    needsUpdate = true;
-                    break;
-                case scope.keys.BOTTOM:
-                    if (event.ctrlKey || event.metaKey || event.shiftKey) rotateUp(-2 * Math.PI * scope.rotateSpeed / scope.domElement.clientHeight);
-                    else pan(0, -scope.keyPanSpeed);
-                    needsUpdate = true;
-                    break;
-                case scope.keys.LEFT:
-                    if (event.ctrlKey || event.metaKey || event.shiftKey) rotateLeft(2 * Math.PI * scope.rotateSpeed / scope.domElement.clientHeight);
-                    else pan(scope.keyPanSpeed, 0);
-                    needsUpdate = true;
-                    break;
-                case scope.keys.RIGHT:
-                    if (event.ctrlKey || event.metaKey || event.shiftKey) rotateLeft(-2 * Math.PI * scope.rotateSpeed / scope.domElement.clientHeight);
-                    else pan(-scope.keyPanSpeed, 0);
-                    needsUpdate = true;
-                    break;
-            }
-            if (needsUpdate) {
-                // prevent the browser from scrolling on cursor keys
-                event.preventDefault();
-                scope.update();
-            }
-        }
-        function handleTouchStartRotate() {
-            if (pointers.length === 1) rotateStart.set(pointers[0].pageX, pointers[0].pageY);
-            else {
-                const x = 0.5 * (pointers[0].pageX + pointers[1].pageX);
-                const y = 0.5 * (pointers[0].pageY + pointers[1].pageY);
-                rotateStart.set(x, y);
-            }
-        }
-        function handleTouchStartPan() {
-            if (pointers.length === 1) panStart.set(pointers[0].pageX, pointers[0].pageY);
-            else {
-                const x = 0.5 * (pointers[0].pageX + pointers[1].pageX);
-                const y = 0.5 * (pointers[0].pageY + pointers[1].pageY);
-                panStart.set(x, y);
-            }
-        }
-        function handleTouchStartDolly() {
-            const dx = pointers[0].pageX - pointers[1].pageX;
-            const dy = pointers[0].pageY - pointers[1].pageY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            dollyStart.set(0, distance);
-        }
-        function handleTouchStartDollyPan() {
-            if (scope.enableZoom) handleTouchStartDolly();
-            if (scope.enablePan) handleTouchStartPan();
-        }
-        function handleTouchStartDollyRotate() {
-            if (scope.enableZoom) handleTouchStartDolly();
-            if (scope.enableRotate) handleTouchStartRotate();
-        }
-        function handleTouchMoveRotate(event) {
-            if (pointers.length == 1) rotateEnd.set(event.pageX, event.pageY);
-            else {
-                const position = getSecondPointerPosition(event);
-                const x = 0.5 * (event.pageX + position.x);
-                const y = 0.5 * (event.pageY + position.y);
-                rotateEnd.set(x, y);
-            }
-            rotateDelta.subVectors(rotateEnd, rotateStart).multiplyScalar(scope.rotateSpeed);
-            const element = scope.domElement;
-            rotateLeft(2 * Math.PI * rotateDelta.x / element.clientHeight); // yes, height
-            rotateUp(2 * Math.PI * rotateDelta.y / element.clientHeight);
-            rotateStart.copy(rotateEnd);
-        }
-        function handleTouchMovePan(event) {
-            if (pointers.length === 1) panEnd.set(event.pageX, event.pageY);
-            else {
-                const position = getSecondPointerPosition(event);
-                const x = 0.5 * (event.pageX + position.x);
-                const y = 0.5 * (event.pageY + position.y);
-                panEnd.set(x, y);
-            }
-            panDelta.subVectors(panEnd, panStart).multiplyScalar(scope.panSpeed);
-            pan(panDelta.x, panDelta.y);
-            panStart.copy(panEnd);
-        }
-        function handleTouchMoveDolly(event) {
-            const position = getSecondPointerPosition(event);
-            const dx = event.pageX - position.x;
-            const dy = event.pageY - position.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            dollyEnd.set(0, distance);
-            dollyDelta.set(0, Math.pow(dollyEnd.y / dollyStart.y, scope.zoomSpeed));
-            dollyOut(dollyDelta.y);
-            dollyStart.copy(dollyEnd);
-        }
-        function handleTouchMoveDollyPan(event) {
-            if (scope.enableZoom) handleTouchMoveDolly(event);
-            if (scope.enablePan) handleTouchMovePan(event);
-        }
-        function handleTouchMoveDollyRotate(event) {
-            if (scope.enableZoom) handleTouchMoveDolly(event);
-            if (scope.enableRotate) handleTouchMoveRotate(event);
-        }
-        //
-        // event handlers - FSM: listen for events and reset state
-        //
-        function onPointerDown(event) {
-            if (scope.enabled === false) return;
-            if (pointers.length === 0) {
-                scope.domElement.setPointerCapture(event.pointerId);
-                scope.domElement.addEventListener("pointermove", onPointerMove);
-                scope.domElement.addEventListener("pointerup", onPointerUp);
-            }
-            //
-            addPointer(event);
-            if (event.pointerType === "touch") onTouchStart(event);
-            else onMouseDown(event);
-        }
-        function onPointerMove(event) {
-            if (scope.enabled === false) return;
-            if (event.pointerType === "touch") onTouchMove(event);
-            else onMouseMove(event);
-        }
-        function onPointerUp(event) {
-            removePointer(event);
-            if (pointers.length === 0) {
-                scope.domElement.releasePointerCapture(event.pointerId);
-                scope.domElement.removeEventListener("pointermove", onPointerMove);
-                scope.domElement.removeEventListener("pointerup", onPointerUp);
-            }
-            scope.dispatchEvent(_endEvent);
-            state = STATE.NONE;
-        }
-        function onMouseDown(event) {
-            let mouseAction;
-            switch(event.button){
-                case 0:
-                    mouseAction = scope.mouseButtons.LEFT;
-                    break;
-                case 1:
-                    mouseAction = scope.mouseButtons.MIDDLE;
-                    break;
-                case 2:
-                    mouseAction = scope.mouseButtons.RIGHT;
-                    break;
-                default:
-                    mouseAction = -1;
-            }
-            switch(mouseAction){
-                case (0, _three.MOUSE).DOLLY:
-                    if (scope.enableZoom === false) return;
-                    handleMouseDownDolly(event);
-                    state = STATE.DOLLY;
-                    break;
-                case (0, _three.MOUSE).ROTATE:
-                    if (event.ctrlKey || event.metaKey || event.shiftKey) {
-                        if (scope.enablePan === false) return;
-                        handleMouseDownPan(event);
-                        state = STATE.PAN;
-                    } else {
-                        if (scope.enableRotate === false) return;
-                        handleMouseDownRotate(event);
-                        state = STATE.ROTATE;
-                    }
-                    break;
-                case (0, _three.MOUSE).PAN:
-                    if (event.ctrlKey || event.metaKey || event.shiftKey) {
-                        if (scope.enableRotate === false) return;
-                        handleMouseDownRotate(event);
-                        state = STATE.ROTATE;
-                    } else {
-                        if (scope.enablePan === false) return;
-                        handleMouseDownPan(event);
-                        state = STATE.PAN;
-                    }
-                    break;
-                default:
-                    state = STATE.NONE;
-            }
-            if (state !== STATE.NONE) scope.dispatchEvent(_startEvent);
-        }
-        function onMouseMove(event) {
-            switch(state){
-                case STATE.ROTATE:
-                    if (scope.enableRotate === false) return;
-                    handleMouseMoveRotate(event);
-                    break;
-                case STATE.DOLLY:
-                    if (scope.enableZoom === false) return;
-                    handleMouseMoveDolly(event);
-                    break;
-                case STATE.PAN:
-                    if (scope.enablePan === false) return;
-                    handleMouseMovePan(event);
-                    break;
-            }
-        }
-        function onMouseWheel(event) {
-            if (scope.enabled === false || scope.enableZoom === false || state !== STATE.NONE) return;
-            event.preventDefault();
-            scope.dispatchEvent(_startEvent);
-            handleMouseWheel(event);
-            scope.dispatchEvent(_endEvent);
-        }
-        function onKeyDown(event) {
-            if (scope.enabled === false || scope.enablePan === false) return;
-            handleKeyDown(event);
-        }
-        function onTouchStart(event) {
-            trackPointer(event);
-            switch(pointers.length){
-                case 1:
-                    switch(scope.touches.ONE){
-                        case (0, _three.TOUCH).ROTATE:
-                            if (scope.enableRotate === false) return;
-                            handleTouchStartRotate();
-                            state = STATE.TOUCH_ROTATE;
-                            break;
-                        case (0, _three.TOUCH).PAN:
-                            if (scope.enablePan === false) return;
-                            handleTouchStartPan();
-                            state = STATE.TOUCH_PAN;
-                            break;
-                        default:
-                            state = STATE.NONE;
-                    }
-                    break;
-                case 2:
-                    switch(scope.touches.TWO){
-                        case (0, _three.TOUCH).DOLLY_PAN:
-                            if (scope.enableZoom === false && scope.enablePan === false) return;
-                            handleTouchStartDollyPan();
-                            state = STATE.TOUCH_DOLLY_PAN;
-                            break;
-                        case (0, _three.TOUCH).DOLLY_ROTATE:
-                            if (scope.enableZoom === false && scope.enableRotate === false) return;
-                            handleTouchStartDollyRotate();
-                            state = STATE.TOUCH_DOLLY_ROTATE;
-                            break;
-                        default:
-                            state = STATE.NONE;
-                    }
-                    break;
-                default:
-                    state = STATE.NONE;
-            }
-            if (state !== STATE.NONE) scope.dispatchEvent(_startEvent);
-        }
-        function onTouchMove(event) {
-            trackPointer(event);
-            switch(state){
-                case STATE.TOUCH_ROTATE:
-                    if (scope.enableRotate === false) return;
-                    handleTouchMoveRotate(event);
-                    scope.update();
-                    break;
-                case STATE.TOUCH_PAN:
-                    if (scope.enablePan === false) return;
-                    handleTouchMovePan(event);
-                    scope.update();
-                    break;
-                case STATE.TOUCH_DOLLY_PAN:
-                    if (scope.enableZoom === false && scope.enablePan === false) return;
-                    handleTouchMoveDollyPan(event);
-                    scope.update();
-                    break;
-                case STATE.TOUCH_DOLLY_ROTATE:
-                    if (scope.enableZoom === false && scope.enableRotate === false) return;
-                    handleTouchMoveDollyRotate(event);
-                    scope.update();
-                    break;
-                default:
-                    state = STATE.NONE;
-            }
-        }
-        function onContextMenu(event) {
-            if (scope.enabled === false) return;
-            event.preventDefault();
-        }
-        function addPointer(event) {
-            pointers.push(event);
-        }
-        function removePointer(event) {
-            delete pointerPositions[event.pointerId];
-            for(let i = 0; i < pointers.length; i++)if (pointers[i].pointerId == event.pointerId) {
-                pointers.splice(i, 1);
-                return;
-            }
-        }
-        function trackPointer(event) {
-            let position = pointerPositions[event.pointerId];
-            if (position === undefined) {
-                position = new (0, _three.Vector2)();
-                pointerPositions[event.pointerId] = position;
-            }
-            position.set(event.pageX, event.pageY);
-        }
-        function getSecondPointerPosition(event) {
-            const pointer = event.pointerId === pointers[0].pointerId ? pointers[1] : pointers[0];
-            return pointerPositions[pointer.pointerId];
-        }
-        //
-        scope.domElement.addEventListener("contextmenu", onContextMenu);
-        scope.domElement.addEventListener("pointerdown", onPointerDown);
-        scope.domElement.addEventListener("pointercancel", onPointerUp);
-        scope.domElement.addEventListener("wheel", onMouseWheel, {
-            passive: false
-        });
-        // force an update at start
-        this.update();
-    }
-}
-
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"53Grz":[function(require,module,exports) {
+},{}],"53Grz":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "WebScene", ()=>WebScene);
@@ -35330,6123 +34537,6 @@ function mergeBufferAttributes(attributes) {
     return mergeAttributes(attributes);
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2jBvr":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _css3Drenderer = require("three/examples/jsm/renderers/CSS3DRenderer");
-var _three = require("three");
-var _domLoadContent = require("./DomLoadContent");
-var _domLoadContentDefault = parcelHelpers.interopDefault(_domLoadContent);
-var _main = require("../../Main");
-var _cameraHandler = require("../../Handlers/CameraHandler");
-var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
-var _domComponent = require("./DomComponent");
-var _swiper = require("swiper");
-var _swiperDefault = parcelHelpers.interopDefault(_swiper);
-var _state = require("./state");
-var _textAnim = require("../../../js/text-anim");
-var _soundEffects = require("../../effects/SoundEffects");
-var _mouseHandler = require("../../Handlers/MouseHandler");
-var _mouseHandlerDefault = parcelHelpers.interopDefault(_mouseHandler);
-const NAVIGATOR_REF = document.getElementById("navigator");
-class DomManager {
-    constructor(){
-        this.LIST_ITEM = [];
-        this.LIST_ITEM_CAST = [];
-        console.log("Escena para dots creada");
-    }
-    createElement(domScene, identifier, component, isNetwork) {
-        const scaleFactor = 1 / 6;
-        const element = document.createElement("div");
-        let swiper;
-        element.appendChild(component);
-        //eventos de cada icono
-        element.addEventListener("click", (event)=>{
-            console.log(event.target, "TARGET ACTIVO");
-            (0, _state.SECTION).isSectionActive = true;
-            //cortina de desenfoque
-            const desenfoque = document.getElementById("blur");
-            //activa el desenfoque
-            desenfoque.classList.add("active-blur");
-            const element = event.currentTarget;
-            const targetId = event.currentTarget.dataset.id;
-            if (event.target.classList.contains("dot")) {
-                (0, _state.LAST_ITEM).activeElement = element.innerHTML;
-                element.innerHTML = "";
-                //reiniicar fuerza del mouse 
-                (0, _mouseHandlerDefault.default).intensity = 10;
-                //reproducir sonido de click
-                (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
-                if (targetId === "home") {
-                    console.log("HOOOOMEE");
-                    const container = document.createElement("div");
-                    container.classList.add("home-swiper");
-                    //sub-container
-                    const innerContainer = document.createElement("div");
-                    innerContainer.classList.add("swiper-wrapper");
-                    //agreagar slides a el objeto
-                    let slide = (0, _domLoadContentDefault.default)(element, 0, true);
-                    slide.classList.add("swiper-slide");
-                    innerContainer.appendChild(slide);
-                    slide = (0, _domLoadContentDefault.default)(element, 1, true);
-                    slide.classList.add("swiper-slide");
-                    innerContainer.appendChild(slide);
-                    console.log((0, _state.LAST_ITEM));
-                    //organizar los elementos
-                    container.appendChild(innerContainer);
-                    slide = document.createElement("div");
-                    slide.classList.add("swiper-button-next");
-                    container.appendChild(slide);
-                    slide = document.createElement("div");
-                    slide.classList.add("swiper-button-prev");
-                    container.appendChild(slide);
-                    //agregar el ultimo item a la lista de estados
-                    (0, _state.LAST_ITEM).lastContainer = element;
-                    (0, _state.LAST_ITEM).pageIndex = 0;
-                    (0, _state.LAST_ITEM).isHome = true;
-                    console.log((0, _state.LAST_ITEM), "ELEMTTO STATE ACTUALIZOADO CON HOME");
-                    //agregar el slide al dot
-                    element.appendChild(container);
-                    swiper = new (0, _swiperDefault.default)(".home-swiper", {
-                        navigation: {
-                            nextEl: ".swiper-button-next",
-                            prevEl: ".swiper-button-prev"
-                        }
-                    });
-                    setTimeout(()=>{
-                        (0, _cameraHandlerDefault.default).moveCameraTo(element, ()=>{
-                            // Mostrar una vez terminada la animación
-                            NAVIGATOR_REF.style.zIndex = "100";
-                            NAVIGATOR_REF.classList.add("active");
-                            // Desactivar los eventos para el objeto actual
-                            element.style.pointerEvents = "none";
-                        });
-                    }, 300);
-                } else if (targetId === "network") {
-                    console.log("ES NETwORK");
-                    // Get all elements with class "network"
-                    const homeElements = document.querySelectorAll(".home");
-                    const networkElements = document.querySelectorAll(".network");
-                    if (element.dataset.index) {
-                        (0, _domLoadContentDefault.default)(element, element.dataset.index, false);
-                        // Esperar unos segundos
-                        setTimeout(()=>{
-                            (0, _cameraHandlerDefault.default).moveCameraTo(element, ()=>{
-                                // Mostrar una vez terminada la animación
-                                NAVIGATOR_REF.style.zIndex = "100";
-                                NAVIGATOR_REF.classList.add("active");
-                                // Desactivar los eventos para el objeto actual
-                                element.style.pointerEvents = "none";
-                            });
-                        }, 300);
-                    } else {
-                        networkElements.forEach((element)=>{
-                            element.classList.add("activeDot");
-                        });
-                        // Loop through each element and set the display property to "none"
-                        homeElements.forEach((element)=>{
-                            element.classList.add("desactiveDot");
-                        });
-                    }
-                } else {
-                    console.log("OTROS ITEMS");
-                    //agregar el ultimo item a la lista de estados
-                    (0, _domLoadContentDefault.default)(element, 0, false);
-                    // Esperar unos segundos
-                    setTimeout(()=>{
-                        (0, _cameraHandlerDefault.default).moveCameraTo(element, ()=>{
-                            // Mostrar una vez terminada la animación
-                            NAVIGATOR_REF.style.zIndex = "100";
-                            NAVIGATOR_REF.classList.add("active");
-                            // Desactivar los eventos para el objeto actual
-                            element.style.pointerEvents = "none";
-                        });
-                    }, 300);
-                }
-            }
-            // Condicional 1: Verificar si el target es igual a swiper-button-next
-            if (event.target.classList.contains("swiper-button-next")) {
-                // Código a ejecutar si el target es swiper-button-next
-                console.log("Se hizo click en el bot\xf3n Siguiente (swiper-button-next)");
-                // Now you can use all slider methods like
-                swiper.slideNext(1200);
-            }
-            // Condicional 2: Verificar si el target es igual a swiper-button-prev
-            if (event.target.classList.contains("swiper-button-prev")) {
-                // Código a ejecutar si el target es swiper-button-prev
-                console.log("Se hizo click en el bot\xf3n Anterior (swiper-button-prev)");
-                swiper.slidePrev(1800);
-            }
-        });
-        element.addEventListener("mouseenter", (event)=>{
-            console.log(event.target, "mouse sobre el icono\n reproducir sonido");
-            if (!event.target.classList.contains("active") && !(0, _state.SECTION).isSectionActive) (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
-        });
-        const domComponent = new (0, _css3Drenderer.CSS3DObject)(element);
-        element.dataset.id = identifier;
-        element.id = identifier;
-        element.classList.add("section");
-        if (isNetwork) element.classList.add("network");
-        else {
-            element.classList.add("home");
-            element.classList.add("no-active");
-        }
-        domComponent.name = identifier;
-        domComponent.scale.set(scaleFactor, scaleFactor, scaleFactor);
-        domComponent.position.set(0, 0, 0);
-        const vectorPosition = new (0, _three.Vector3)();
-        domScene.add(domComponent);
-        this.LIST_ITEM.push(domComponent);
-        this.LIST_ITEM_CAST.push(vectorPosition);
-    }
-    setDomItemPosition(scene, rangeIn, rangeOut, isNetwork) {
-        const centro = new (0, _three.Vector3)(0, 0, -10);
-        const angle = 2 * Math.PI / this.LIST_ITEM.length;
-        const domRadio = rangeIn / angle;
-        const castRadio = rangeOut / angle;
-        for(let i = 0; i < this.LIST_ITEM.length; i++){
-            const x = centro.x + domRadio * Math.cos(angle * i);
-            const y = centro.y;
-            const z = centro.z + domRadio * Math.sin(angle * i);
-            //set position
-            this.LIST_ITEM[i].position.set(x, y, z);
-            const targetPos = JSON.stringify([
-                x,
-                y,
-                z
-            ]);
-            this.LIST_ITEM[i].element.setAttribute("data-target", targetPos);
-            //calcular el punto de vista
-            const xCast = centro.x + castRadio * Math.cos(angle * i);
-            const yCast = centro.y;
-            const zCast = centro.z + castRadio * Math.sin(angle * i);
-            //set view
-            this.LIST_ITEM_CAST[i].set(xCast, yCast, zCast);
-            const farPos = JSON.stringify([
-                xCast,
-                yCast,
-                zCast
-            ]);
-            this.LIST_ITEM[i].element.setAttribute("data-far", farPos);
-            if (!isNetwork) {
-                //set navigator icons info
-                const actualItem = this.LIST_ITEM[i].element.dataset.id;
-                const actualIconItem = (0, _domComponent.COMPONENTS_NAVIGATOR)[actualItem];
-                //setup info
-                actualIconItem.setAttribute("data-target", targetPos);
-                actualIconItem.setAttribute("data-far", farPos);
-                actualIconItem.setAttribute("data-id", actualItem);
-                console.log(actualIconItem);
-                //agregarlo a la escena
-                NAVIGATOR_REF.appendChild(actualIconItem);
-            } else {
-                this.LIST_ITEM[i].element.setAttribute("data-index", i);
-                this.LIST_ITEM[i].element.setAttribute("data-id", "network");
-            }
-        }
-    }
-}
-function crearAxisHelper(x, y, z, scene) {
-    const axisHelper = new (0, _three.AxesHelper)(20);
-    axisHelper.position.set(x, y, z);
-    scene.add(axisHelper);
-}
-exports.default = DomManager;
-
-},{"three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","three":"ktPTu","./DomLoadContent":"eRo78","../../Main":"jYf5p","../../Handlers/CameraHandler":"bJrvG","./DomComponent":"iuXxG","swiper":"iM6UL","./state":"9LNsG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../../js/text-anim":"jjSxz","../../effects/SoundEffects":"7K3aZ","../../Handlers/MouseHandler":"7ESAf"}],"eRo78":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>loadPage);
-var _homeJson = require("./view/home.json");
-var _homeJsonDefault = parcelHelpers.interopDefault(_homeJson);
-var _ntfsJson = require("./view/ntfs.json");
-var _ntfsJsonDefault = parcelHelpers.interopDefault(_ntfsJson);
-var _blogJson = require("./view/blog.json");
-var _blogJsonDefault = parcelHelpers.interopDefault(_blogJson);
-var _networkJson = require("./view/network.json");
-var _networkJsonDefault = parcelHelpers.interopDefault(_networkJson);
-var _textAnim = require("../../../js/text-anim");
-var _state = require("./state");
-var _soundEffects = require("../../effects/SoundEffects");
-const PAGES = {
-    home: (0, _homeJsonDefault.default),
-    ntfs: (0, _ntfsJsonDefault.default),
-    blog: (0, _blogJsonDefault.default),
-    network: (0, _networkJsonDefault.default)
-};
-const childIcon = new URL(require("3501a7c40bedf306"));
-const dotImg = new URL(require("80de5feca22d900a"));
-function loadPage(mainPage, index, isHome, info) {
-    let pageId;
-    let jsonData;
-    let mainContainer;
-    console.log(mainPage);
-    //obtiene el archivo de la pagina principal
-    mainContainer = mainPage;
-    //es una sub pagina
-    if (info) {
-        console.log(info);
-        const containerId = info.dataset.id;
-        const subPageIndex = info.dataset.index;
-        //se agigna el contenido de subpage
-        jsonData = PAGES[containerId].SubPage[subPageIndex];
-        console.log("`SUBPAGINA`", jsonData);
-        mainContainer.innerHTML = "";
-    } else {
-        //se agina el contenido de content
-        mainContainer.innerHTML = "";
-        pageId = mainPage.dataset.id;
-        jsonData = PAGES[pageId].MainPage[index];
-        console.log("GENERAR PAGINA: ", jsonData);
-    }
-    if (!jsonData) {
-        console.log("No se encontr\xf3 el archivo JSON correspondiente a la p\xe1gina: " + pageId);
-        return;
-    }
-    //si la pagina no es el home
-    if (!isHome) {
-        console.log("NO ES HOOOME");
-        const container = loadContent(jsonData, mainPage);
-        // Asigna el objeto recién creado
-        removeClass(mainPage, "active");
-        addClass(mainPage, "active");
-        return container;
-    } else {
-        console.log("ES HOOOOMEEE");
-        //genera el conteniod basado en el json
-        const container = document.createElement("div");
-        loadContent(jsonData, container);
-        // Asigna el objeto recién creado
-        removeClass(mainPage, "active");
-        addClass(mainPage, "active");
-        return container;
-    }
-/*
-  // Crea los componentes internos de este objeto
-  const newPage = loadLevel(jsonData, mainContainer, isSubPage);
-  console.log(newPage);
-  retu
-
-  */ //configurar comprobacion
-}
-function removeClass(element, className) {
-    element.classList.remove(className);
-}
-function addClass(element, className) {
-    element.classList.add(className);
-}
-function addNavigationButton(data, page) {}
-function createButton(text, onClick) {
-    const button = document.createElement("button");
-    button.innerText = text;
-    button.addEventListener("click", onClick);
-    return button;
-}
-//funciones renovadas
-function loadLevel(content, container, isSubPage) {
-    //console.log(content);
-    //crear contenedor principal
-    const mainContainer = container;
-    if (!isSubPage) mainContainer.dataset.state = true;
-    //recorrer cada elemento
-    content.forEach((element)=>{
-        //si el elemento tiene hijos
-        //recorrer el nievl de forma iterativa
-        if (element.haveSon) {
-            //console.log(element, " tiene hijos");
-            //console.log(element.content.length, " numero de hijos");
-            const container = createHTMLElement(element);
-            const tempPage = loadLevel(element.content, container);
-            //console.log(container, " << su contenedor es");
-            mainContainer.appendChild(tempPage);
-        } else mainContainer.appendChild(createHTMLElement(element));
-    });
-    //regresar elemento
-    return mainContainer;
-}
-function createHTMLElement(className, type, content) {
-    const elemento = document.createElement(type);
-    elemento.className = className;
-    if (type !== "img") elemento.innerText = content;
-    else elemento.src = content;
-    return elemento;
-}
-//mover a la funcion listener
-function handleClick(event) {
-    // Acciones a realizar cuando se produce un clic
-    if (event.target.classList.contains("icon")) {
-        const actualItem = event.target;
-        //console.log(actualItem, " : ITEM DE SUBPAGINA");
-        const id = actualItem.dataset.id;
-        const mainContainer = document.getElementById(id);
-        console.log("CARGAR SUBPAGINA");
-        mainContainer.classList.add("sub-page-active");
-        //sonido de click
-        (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
-        //a partir de aqui
-        //console.log(mainContainer, " AQUI ESTA EL CONTENEDOR PRINCIPAL");
-        //si el ID del eleento es == a home, entonces 
-        if (id === "home") {
-            (0, _state.LAST_ITEM).element = mainContainer.innerHTML;
-            (0, _state.LAST_ITEM).pageIndex = 0;
-            (0, _state.LAST_ITEM).isHome = true;
-            console.log("ULTIMO ITEM ES EL HOME");
-            console.log((0, _state.LAST_ITEM), "ELEMTO ACTUALIZADO");
-        } else {
-            (0, _state.LAST_ITEM).element = mainContainer.innerHTML;
-            (0, _state.LAST_ITEM).pageIndex = 0;
-            (0, _state.LAST_ITEM).isHome = false;
-            console.log((0, _state.LAST_ITEM), "ELEMENTO ACTUALIZADO");
-        }
-        //configurar el maincontainer
-        console.log(mainContainer);
-        (0, _state.LAST_ITEM).childCount++;
-        console.log((0, _state.LAST_ITEM).childCount, "HiJO NUMERO");
-        loadPage(mainContainer, -1, false, actualItem);
-    }
-}
-function handleHover(event) {
-    // Acciones a realizar cuando se produce un clic
-    if (event.target.classList.contains("icon")) (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
-}
-function loadContent(jsonData, mainContainer) {
-    for(prop in jsonData){
-        const className = getElementClass(prop);
-        const type = getElementType(prop);
-        const htmlElement = createHTMLElement(className, type, jsonData[prop]);
-        if (prop === "buttons" || prop === "extLink") {
-            //console.log("botones");
-            //console.log("ELEMENTOS: ", jsonData[prop]);
-            const newhtmlElement = loadContentChilds(jsonData[prop], htmlElement);
-            if (prop === "buttons") {
-                newhtmlElement.addEventListener("click", handleClick);
-                newhtmlElement.addEventListener("mouseenter", handleHover);
-            }
-            mainContainer.appendChild(newhtmlElement);
-        } else mainContainer.appendChild(htmlElement);
-    }
-}
-function loadContentChilds(jsonData, mainContainer) {
-    mainContainer.innerHTML = "";
-    console.log(jsonData, ": ELEMTO DE HIJOS");
-    jsonData.forEach((element)=>{
-        const containerClassName = getElementClass("button-container");
-        const childContainer = createHTMLElement(containerClassName, "div", element.name);
-        if (element.index) {
-            const clasNameChild = getElementClass("button-img");
-            const childImg = createHTMLElement(clasNameChild, "img", childIcon.href);
-            childImg.dataset.id = element.id;
-            childImg.dataset.index = element.index;
-            childContainer.appendChild(childImg);
-        } else childContainer.classList.add("item-container");
-        mainContainer.appendChild(childContainer);
-    });
-    return mainContainer;
-}
-//asigna un tipo para cada item
-function getElementType(actualElement) {
-    switch(actualElement){
-        case "subTitle":
-            return "span";
-        case "title":
-            return "h2";
-        case "description":
-            return "div";
-        case "imgLink":
-            return "img";
-        case "buttons":
-            return "div";
-        default:
-            return "div";
-    }
-}
-//crea una clase para cada item
-function getElementClass(actualElement) {
-    switch(actualElement){
-        case "subTitle":
-            return "content-span";
-        case "title":
-            return "content-title";
-        case "description":
-            return "content-description";
-        case "imgLink":
-            return "content-image";
-        case "extLink":
-            return "content-subpage-list";
-        case "extLink-container":
-            return "bottom-container";
-        case "buttons":
-            return "content-subpage-list";
-        case "button-container":
-            return "content-subpage";
-        case "button-img":
-            return "icon";
-        default:
-            return "undefinied";
-    }
-}
-
-},{"./view/home.json":"la34J","./view/ntfs.json":"5egMc","./view/blog.json":"2VY0o","../../../js/text-anim":"jjSxz","./state":"9LNsG","3501a7c40bedf306":"lSDFi","80de5feca22d900a":"2oYJH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./view/network.json":"eKe8m","../../effects/SoundEffects":"7K3aZ"}],"la34J":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"what is it?","title":"BlackFort Exchange Network","description":"BlackFort is an innovative blockchain platform that has all the attributes needed for a top–tier blockchain. It is a Layer 1 blockchain that is EVM compatible, fast, scalable, secure, and efficient, with POSA and easy access to become a delegator. Transparency is a key priority for BlackFort, ensuring that all parties in a transaction have the information they need to feel secure. This combination of features makes BlackFort an ideal platform for anyone looking to build a blockchain–based solution.","buttons":[{"id":"home","index":"0","name":"BXN Smartchain"},{"id":"home","index":"1","name":"BlackFort Explorer"},{"id":"home","index":"2","name":"Audited Code"},{"id":"home","index":"3","name":"PoSA & Decentralization"}],"custom":""},{"title":"BlackFort Wallet &\\n Exchange APP","imgLink":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Logo_of_YouTube_%282015-2017%29.svg/1024px-Logo_of_YouTube_%282015-2017%29.svg.png","buttons":[{"id":"home","index":"0","name":"Client side wallet"},{"id":"home","index":"1","name":"Swap Function"},{"id":"home","index":"2","name":"Buy & Sell with FIAT"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}],"custom":""}],"SubPage":[{"title":"BXN Smartchain","description":"BlackFort Exchange Network is a smartchain technology. this form of Blockchain is a revolutionary way to manage digital assets more securely and efficiently. With a smartchain, users can quickly and easily transfer digital assets between multiple parties in a secure and transparent manner. The smartchain can also be used to facilitate smart contracts, allowing for the automation of complex transactions and smart contract interactions. This technology has the potential to open up new possibilities for the global economy.","imgLink":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"title":"BlackFort Explorer","description":"A Cryptocurrency smartchain explorer is a tool that provides users with access to the blockchain data associated with a given cryptocurrency. It can be used to view the transactions and blocks associated with a particular altcoin, as well as the address balances, network hashrate, and block rewards. The information provided can be used to analyze the activity of a given Blockchain Network.  ","imgLink":"https://i.imgur.com/nYxaD5Y_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"title":"Audited Code","description":"Auditing is an important step for any cryptocurrency project, as it ensures that the code is secure, efficient, and compliant with the latest industry standards. By enlisting the services of an experienced and reputable third–party auditor like Certik, a project can ensure that its code is thoroughly reviewed and tested, and that any potential issues are identified and addressed. Additionally, auditing provides an important layer of transparency and trust for a project, which can go a long way in helping to build and maintain a strong and engaged community.","imgLink":"https://i.imgur.com/E9Rs9kK_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"Certik Audit Report","link":"link"}]},{"title":"PoSA & Decentralization","description":"Proof-of-staked-authority is an efficient and secure way to validate a Cryptocurrency smartchain. BXN Blockchain has implemented this system, and is reaping the rewards, with over 60,000 delegators from over 120 countries, it ensures that the network is well-distributed. This allows for a much greater level of decentralization and security than other PoS or PoW methods, as well as increased scalability. BXN Blockchain is clearly at the forefront of the latest technologies, and is an excellent example of the benefits of using PoSA.","imgLink":"https://i.imgur.com/nYxaD5Y_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"More Info","link":"link"}]}]}');
-
-},{}],"5egMc":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BlackFort Genesis Knights NFTs","description":"We’re glad to introduce you our Exclusive Genesis NFT collection! Only 500 NFTs will be minted. These limited NFTs provide additional, elite opportunities…. First sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!Second sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!! Third sales Phase of 150 pieces: ENDED SUCCESSFULLY LAST PHASE COMING SOON","imgLink":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Logo_of_YouTube_%282015-2017%29.svg/1024px-Logo_of_YouTube_%282015-2017%29.svg.png","custom":"ref to element"}]}');
-
-},{}],"2VY0o":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"Blackfort Blog","description":"Welcome to the BlackFort blog section, where you’ll find the latest news, announcements, press releases, and informative articles on a variety of topics related to blockchain, client-side applications, smart contracts, DeFi, cryptocurrency news, and more. Our expert team consistently updates the blog with valuable insights and industry trends to keep you informed and up-to-date on the latest developments in the blockchain and cryptocurrency space.","buttons":[{"id":"blog","index":"0","name":"Blog Posts"},{"id":"blog","index":"1","name":"Announcements"},{"id":"blog","index":"2","name":"Medium"}]}],"SubPage":[{"title":"Blog Posts","description":"BLOGS HERE","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"title":"Announcements","description":"Announcements HERE","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"title":"Medium","description":"Medium HERE","extLink":[{"name":"Certik Audit Report","link":"link"}]}]}');
-
-},{}],"jjSxz":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "HideTextAnimation", ()=>HideTextAnimation);
-parcelHelpers.export(exports, "ShowTextAnimation", ()=>ShowTextAnimation);
-var _animejs = require("animejs");
-var _animejsDefault = parcelHelpers.interopDefault(_animejs);
-// Elementos del DOM
-const INTRO_REF = document.getElementById("intro");
-const TITLE_REF = document.getElementById("title");
-const TITLE_SPAN_REF = document.getElementById("title-span");
-const SUBTITLE_REF = document.getElementById("sub-title");
-const DESCRIPTION_REF = document.getElementById("description");
-const FOOTER_REF = document.getElementById("start-ui");
-// Iconos
-const arrowUpIcon = new URL(require("3b531f2ebd263c17"));
-const soundIcon = new URL(require("bd1902df3feafb99"));
-// Objeto con el texto de cada una de las presentaciones
-const TEXT_INTRO = {
-    title: "BXN BLACKFORT",
-    title_span: "EXCHANGE NETWORK",
-    description: "At BlackFort, we specialize in creating innovative blockchain–based products and services. Our offerings include client–side wallet applications, Layer 1 blockchain technology, efficient payment solutions, and secure smart contracts. We are committed to providing the best possible solutions for our customers.",
-    subtitle: "BLOCKCHAIN • STORAGE • EXCHANGE • ECOSYSTEM",
-    footer: "BXN Blockchain"
-};
-// Estilizar texto en span para el título
-TITLE_REF.innerHTML = TEXT_INTRO.title.replace(/\S/g, "<span class='animated-item'>$&</span>");
-// Estilizar texto en span para el título span
-TITLE_SPAN_REF.innerHTML = TEXT_INTRO.title_span.replace(/\S/g, "<span class='animated-item'>$&</span>");
-// Establecer otros textos
-DESCRIPTION_REF.innerHTML = `<div class="animated-item">${TEXT_INTRO.description}</div>`;
-SUBTITLE_REF.innerHTML = `<div class="animated-item">${TEXT_INTRO.subtitle}</div>`;
-FOOTER_REF.innerHTML = `
-  <button class="ui-title animated-item">${TEXT_INTRO.footer}</button>
-  <div class="ui-controls">
-    <button id="start-scene" class="control animated-item">
-      <img src="${arrowUpIcon.href}" alt="" srcset="">
-    </button>
-    <button id="toggle-sound" class="control animated-item">
-    <object
-    class="icon"
-    data="${soundIcon.href}"
-    type="image/svg+xml"
-  ></object>
-    </button>
-  </div>
-`;
-// Animar la primera escena
-function ShowTextAnimation(target) {
-    (0, _animejsDefault.default).timeline({
-        loop: false
-    }).add({
-        targets: target,
-        bottom: [
-            -220,
-            0
-        ],
-        opacity: [
-            0,
-            1
-        ],
-        easing: "easeOutExpo",
-        display: "block",
-        duration: 1500,
-        delay: (0, _animejsDefault.default).stagger(30)
-    });
-}
-function HideTextAnimation(target, animationDuration, callback) {
-    const opacityAnimationDuration = animationDuration - 600; // Duración de la animación de opacidad
-    (0, _animejsDefault.default).timeline({
-        loop: false
-    }).add({
-        targets: target,
-        top: [
-            0,
-            -500
-        ],
-        delay: 1000,
-        direction: "reverse",
-        easing: "easeInExpo",
-        duration: animationDuration,
-        delay: (0, _animejsDefault.default).stagger(30),
-        complete: callback
-    }).add({
-        targets: target,
-        opacity: 0,
-        duration: opacityAnimationDuration,
-        easing: "linear"
-    });
-}
-
-},{"animejs":"jokr5","3b531f2ebd263c17":"lSDFi","bd1902df3feafb99":"68K6w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jokr5":[function(require,module,exports) {
-/*
- * anime.js v3.2.1
- * (c) 2020 Julian Garnier
- * Released under the MIT license
- * animejs.com
- */ // Defaults
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var defaultInstanceSettings = {
-    update: null,
-    begin: null,
-    loopBegin: null,
-    changeBegin: null,
-    change: null,
-    changeComplete: null,
-    loopComplete: null,
-    complete: null,
-    loop: 1,
-    direction: "normal",
-    autoplay: true,
-    timelineOffset: 0
-};
-var defaultTweenSettings = {
-    duration: 1000,
-    delay: 0,
-    endDelay: 0,
-    easing: "easeOutElastic(1, .5)",
-    round: 0
-};
-var validTransforms = [
-    "translateX",
-    "translateY",
-    "translateZ",
-    "rotate",
-    "rotateX",
-    "rotateY",
-    "rotateZ",
-    "scale",
-    "scaleX",
-    "scaleY",
-    "scaleZ",
-    "skew",
-    "skewX",
-    "skewY",
-    "perspective",
-    "matrix",
-    "matrix3d"
-];
-// Caching
-var cache = {
-    CSS: {},
-    springs: {}
-};
-// Utils
-function minMax(val, min, max) {
-    return Math.min(Math.max(val, min), max);
-}
-function stringContains(str, text) {
-    return str.indexOf(text) > -1;
-}
-function applyArguments(func, args) {
-    return func.apply(null, args);
-}
-var is = {
-    arr: function(a) {
-        return Array.isArray(a);
-    },
-    obj: function(a) {
-        return stringContains(Object.prototype.toString.call(a), "Object");
-    },
-    pth: function(a) {
-        return is.obj(a) && a.hasOwnProperty("totalLength");
-    },
-    svg: function(a) {
-        return a instanceof SVGElement;
-    },
-    inp: function(a) {
-        return a instanceof HTMLInputElement;
-    },
-    dom: function(a) {
-        return a.nodeType || is.svg(a);
-    },
-    str: function(a) {
-        return typeof a === "string";
-    },
-    fnc: function(a) {
-        return typeof a === "function";
-    },
-    und: function(a) {
-        return typeof a === "undefined";
-    },
-    nil: function(a) {
-        return is.und(a) || a === null;
-    },
-    hex: function(a) {
-        return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(a);
-    },
-    rgb: function(a) {
-        return /^rgb/.test(a);
-    },
-    hsl: function(a) {
-        return /^hsl/.test(a);
-    },
-    col: function(a) {
-        return is.hex(a) || is.rgb(a) || is.hsl(a);
-    },
-    key: function(a) {
-        return !defaultInstanceSettings.hasOwnProperty(a) && !defaultTweenSettings.hasOwnProperty(a) && a !== "targets" && a !== "keyframes";
-    }
-};
-// Easings
-function parseEasingParameters(string) {
-    var match = /\(([^)]+)\)/.exec(string);
-    return match ? match[1].split(",").map(function(p) {
-        return parseFloat(p);
-    }) : [];
-}
-// Spring solver inspired by Webkit Copyright © 2016 Apple Inc. All rights reserved. https://webkit.org/demos/spring/spring.js
-function spring(string, duration) {
-    var params = parseEasingParameters(string);
-    var mass = minMax(is.und(params[0]) ? 1 : params[0], .1, 100);
-    var stiffness = minMax(is.und(params[1]) ? 100 : params[1], .1, 100);
-    var damping = minMax(is.und(params[2]) ? 10 : params[2], .1, 100);
-    var velocity = minMax(is.und(params[3]) ? 0 : params[3], .1, 100);
-    var w0 = Math.sqrt(stiffness / mass);
-    var zeta = damping / (2 * Math.sqrt(stiffness * mass));
-    var wd = zeta < 1 ? w0 * Math.sqrt(1 - zeta * zeta) : 0;
-    var a = 1;
-    var b = zeta < 1 ? (zeta * w0 + -velocity) / wd : -velocity + w0;
-    function solver(t) {
-        var progress = duration ? duration * t / 1000 : t;
-        if (zeta < 1) progress = Math.exp(-progress * zeta * w0) * (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
-        else progress = (a + b * progress) * Math.exp(-progress * w0);
-        if (t === 0 || t === 1) return t;
-        return 1 - progress;
-    }
-    function getDuration() {
-        var cached = cache.springs[string];
-        if (cached) return cached;
-        var frame = 1 / 6;
-        var elapsed = 0;
-        var rest = 0;
-        while(true){
-            elapsed += frame;
-            if (solver(elapsed) === 1) {
-                rest++;
-                if (rest >= 16) break;
-            } else rest = 0;
-        }
-        var duration = elapsed * frame * 1000;
-        cache.springs[string] = duration;
-        return duration;
-    }
-    return duration ? solver : getDuration;
-}
-// Basic steps easing implementation https://developer.mozilla.org/fr/docs/Web/CSS/transition-timing-function
-function steps(steps) {
-    if (steps === void 0) steps = 10;
-    return function(t) {
-        return Math.ceil(minMax(t, 0.000001, 1) * steps) * (1 / steps);
-    };
-}
-// BezierEasing https://github.com/gre/bezier-easing
-var bezier = function() {
-    var kSplineTableSize = 11;
-    var kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
-    function A(aA1, aA2) {
-        return 1.0 - 3.0 * aA2 + 3.0 * aA1;
-    }
-    function B(aA1, aA2) {
-        return 3.0 * aA2 - 6.0 * aA1;
-    }
-    function C(aA1) {
-        return 3.0 * aA1;
-    }
-    function calcBezier(aT, aA1, aA2) {
-        return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
-    }
-    function getSlope(aT, aA1, aA2) {
-        return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
-    }
-    function binarySubdivide(aX, aA, aB, mX1, mX2) {
-        var currentX, currentT, i = 0;
-        do {
-            currentT = aA + (aB - aA) / 2.0;
-            currentX = calcBezier(currentT, mX1, mX2) - aX;
-            if (currentX > 0.0) aB = currentT;
-            else aA = currentT;
-        }while (Math.abs(currentX) > 0.0000001 && ++i < 10);
-        return currentT;
-    }
-    function newtonRaphsonIterate(aX, aGuessT, mX1, mX2) {
-        for(var i = 0; i < 4; ++i){
-            var currentSlope = getSlope(aGuessT, mX1, mX2);
-            if (currentSlope === 0.0) return aGuessT;
-            var currentX = calcBezier(aGuessT, mX1, mX2) - aX;
-            aGuessT -= currentX / currentSlope;
-        }
-        return aGuessT;
-    }
-    function bezier(mX1, mY1, mX2, mY2) {
-        if (!(0 <= mX1 && mX1 <= 1 && 0 <= mX2 && mX2 <= 1)) return;
-        var sampleValues = new Float32Array(kSplineTableSize);
-        if (mX1 !== mY1 || mX2 !== mY2) for(var i = 0; i < kSplineTableSize; ++i)sampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
-        function getTForX(aX) {
-            var intervalStart = 0;
-            var currentSample = 1;
-            var lastSample = kSplineTableSize - 1;
-            for(; currentSample !== lastSample && sampleValues[currentSample] <= aX; ++currentSample)intervalStart += kSampleStepSize;
-            --currentSample;
-            var dist = (aX - sampleValues[currentSample]) / (sampleValues[currentSample + 1] - sampleValues[currentSample]);
-            var guessForT = intervalStart + dist * kSampleStepSize;
-            var initialSlope = getSlope(guessForT, mX1, mX2);
-            if (initialSlope >= 0.001) return newtonRaphsonIterate(aX, guessForT, mX1, mX2);
-            else if (initialSlope === 0.0) return guessForT;
-            else return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize, mX1, mX2);
-        }
-        return function(x) {
-            if (mX1 === mY1 && mX2 === mY2) return x;
-            if (x === 0 || x === 1) return x;
-            return calcBezier(getTForX(x), mY1, mY2);
-        };
-    }
-    return bezier;
-}();
-var penner = function() {
-    // Based on jQuery UI's implemenation of easing equations from Robert Penner (http://www.robertpenner.com/easing)
-    var eases = {
-        linear: function() {
-            return function(t) {
-                return t;
-            };
-        }
-    };
-    var functionEasings = {
-        Sine: function() {
-            return function(t) {
-                return 1 - Math.cos(t * Math.PI / 2);
-            };
-        },
-        Circ: function() {
-            return function(t) {
-                return 1 - Math.sqrt(1 - t * t);
-            };
-        },
-        Back: function() {
-            return function(t) {
-                return t * t * (3 * t - 2);
-            };
-        },
-        Bounce: function() {
-            return function(t) {
-                var pow2, b = 4;
-                while(t < ((pow2 = Math.pow(2, --b)) - 1) / 11);
-                return 1 / Math.pow(4, 3 - b) - 7.5625 * Math.pow((pow2 * 3 - 2) / 22 - t, 2);
-            };
-        },
-        Elastic: function(amplitude, period) {
-            if (amplitude === void 0) amplitude = 1;
-            if (period === void 0) period = .5;
-            var a = minMax(amplitude, 1, 10);
-            var p = minMax(period, .1, 2);
-            return function(t) {
-                return t === 0 || t === 1 ? t : -a * Math.pow(2, 10 * (t - 1)) * Math.sin((t - 1 - p / (Math.PI * 2) * Math.asin(1 / a)) * (Math.PI * 2) / p);
-            };
-        }
-    };
-    var baseEasings = [
-        "Quad",
-        "Cubic",
-        "Quart",
-        "Quint",
-        "Expo"
-    ];
-    baseEasings.forEach(function(name, i) {
-        functionEasings[name] = function() {
-            return function(t) {
-                return Math.pow(t, i + 2);
-            };
-        };
-    });
-    Object.keys(functionEasings).forEach(function(name) {
-        var easeIn = functionEasings[name];
-        eases["easeIn" + name] = easeIn;
-        eases["easeOut" + name] = function(a, b) {
-            return function(t) {
-                return 1 - easeIn(a, b)(1 - t);
-            };
-        };
-        eases["easeInOut" + name] = function(a, b) {
-            return function(t) {
-                return t < 0.5 ? easeIn(a, b)(t * 2) / 2 : 1 - easeIn(a, b)(t * -2 + 2) / 2;
-            };
-        };
-        eases["easeOutIn" + name] = function(a, b) {
-            return function(t) {
-                return t < 0.5 ? (1 - easeIn(a, b)(1 - t * 2)) / 2 : (easeIn(a, b)(t * 2 - 1) + 1) / 2;
-            };
-        };
-    });
-    return eases;
-}();
-function parseEasings(easing, duration) {
-    if (is.fnc(easing)) return easing;
-    var name = easing.split("(")[0];
-    var ease = penner[name];
-    var args = parseEasingParameters(easing);
-    switch(name){
-        case "spring":
-            return spring(easing, duration);
-        case "cubicBezier":
-            return applyArguments(bezier, args);
-        case "steps":
-            return applyArguments(steps, args);
-        default:
-            return applyArguments(ease, args);
-    }
-}
-// Strings
-function selectString(str) {
-    try {
-        var nodes = document.querySelectorAll(str);
-        return nodes;
-    } catch (e) {
-        return;
-    }
-}
-// Arrays
-function filterArray(arr, callback) {
-    var len = arr.length;
-    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
-    var result = [];
-    for(var i = 0; i < len; i++)if (i in arr) {
-        var val = arr[i];
-        if (callback.call(thisArg, val, i, arr)) result.push(val);
-    }
-    return result;
-}
-function flattenArray(arr) {
-    return arr.reduce(function(a, b) {
-        return a.concat(is.arr(b) ? flattenArray(b) : b);
-    }, []);
-}
-function toArray(o) {
-    if (is.arr(o)) return o;
-    if (is.str(o)) o = selectString(o) || o;
-    if (o instanceof NodeList || o instanceof HTMLCollection) return [].slice.call(o);
-    return [
-        o
-    ];
-}
-function arrayContains(arr, val) {
-    return arr.some(function(a) {
-        return a === val;
-    });
-}
-// Objects
-function cloneObject(o) {
-    var clone = {};
-    for(var p in o)clone[p] = o[p];
-    return clone;
-}
-function replaceObjectProps(o1, o2) {
-    var o = cloneObject(o1);
-    for(var p in o1)o[p] = o2.hasOwnProperty(p) ? o2[p] : o1[p];
-    return o;
-}
-function mergeObjects(o1, o2) {
-    var o = cloneObject(o1);
-    for(var p in o2)o[p] = is.und(o1[p]) ? o2[p] : o1[p];
-    return o;
-}
-// Colors
-function rgbToRgba(rgbValue) {
-    var rgb = /rgb\((\d+,\s*[\d]+,\s*[\d]+)\)/g.exec(rgbValue);
-    return rgb ? "rgba(" + rgb[1] + ",1)" : rgbValue;
-}
-function hexToRgba(hexValue) {
-    var rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    var hex = hexValue.replace(rgx, function(m, r, g, b) {
-        return r + r + g + g + b + b;
-    });
-    var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    var r = parseInt(rgb[1], 16);
-    var g = parseInt(rgb[2], 16);
-    var b = parseInt(rgb[3], 16);
-    return "rgba(" + r + "," + g + "," + b + ",1)";
-}
-function hslToRgba(hslValue) {
-    var hsl = /hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/g.exec(hslValue) || /hsla\((\d+),\s*([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)\)/g.exec(hslValue);
-    var h = parseInt(hsl[1], 10) / 360;
-    var s = parseInt(hsl[2], 10) / 100;
-    var l = parseInt(hsl[3], 10) / 100;
-    var a = hsl[4] || 1;
-    function hue2rgb(p, q, t) {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1 / 6) return p + (q - p) * 6 * t;
-        if (t < 0.5) return q;
-        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
-    }
-    var r, g, b;
-    if (s == 0) r = g = b = l;
-    else {
-        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        var p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1 / 3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1 / 3);
-    }
-    return "rgba(" + r * 255 + "," + g * 255 + "," + b * 255 + "," + a + ")";
-}
-function colorToRgb(val) {
-    if (is.rgb(val)) return rgbToRgba(val);
-    if (is.hex(val)) return hexToRgba(val);
-    if (is.hsl(val)) return hslToRgba(val);
-}
-// Units
-function getUnit(val) {
-    var split = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(val);
-    if (split) return split[1];
-}
-function getTransformUnit(propName) {
-    if (stringContains(propName, "translate") || propName === "perspective") return "px";
-    if (stringContains(propName, "rotate") || stringContains(propName, "skew")) return "deg";
-}
-// Values
-function getFunctionValue(val, animatable) {
-    if (!is.fnc(val)) return val;
-    return val(animatable.target, animatable.id, animatable.total);
-}
-function getAttribute(el, prop) {
-    return el.getAttribute(prop);
-}
-function convertPxToUnit(el, value, unit) {
-    var valueUnit = getUnit(value);
-    if (arrayContains([
-        unit,
-        "deg",
-        "rad",
-        "turn"
-    ], valueUnit)) return value;
-    var cached = cache.CSS[value + unit];
-    if (!is.und(cached)) return cached;
-    var baseline = 100;
-    var tempEl = document.createElement(el.tagName);
-    var parentEl = el.parentNode && el.parentNode !== document ? el.parentNode : document.body;
-    parentEl.appendChild(tempEl);
-    tempEl.style.position = "absolute";
-    tempEl.style.width = baseline + unit;
-    var factor = baseline / tempEl.offsetWidth;
-    parentEl.removeChild(tempEl);
-    var convertedUnit = factor * parseFloat(value);
-    cache.CSS[value + unit] = convertedUnit;
-    return convertedUnit;
-}
-function getCSSValue(el, prop, unit) {
-    if (prop in el.style) {
-        var uppercasePropName = prop.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-        var value = el.style[prop] || getComputedStyle(el).getPropertyValue(uppercasePropName) || "0";
-        return unit ? convertPxToUnit(el, value, unit) : value;
-    }
-}
-function getAnimationType(el, prop) {
-    if (is.dom(el) && !is.inp(el) && (!is.nil(getAttribute(el, prop)) || is.svg(el) && el[prop])) return "attribute";
-    if (is.dom(el) && arrayContains(validTransforms, prop)) return "transform";
-    if (is.dom(el) && prop !== "transform" && getCSSValue(el, prop)) return "css";
-    if (el[prop] != null) return "object";
-}
-function getElementTransforms(el) {
-    if (!is.dom(el)) return;
-    var str = el.style.transform || "";
-    var reg = /(\w+)\(([^)]*)\)/g;
-    var transforms = new Map();
-    var m;
-    while(m = reg.exec(str))transforms.set(m[1], m[2]);
-    return transforms;
-}
-function getTransformValue(el, propName, animatable, unit) {
-    var defaultVal = stringContains(propName, "scale") ? 1 : 0 + getTransformUnit(propName);
-    var value = getElementTransforms(el).get(propName) || defaultVal;
-    if (animatable) {
-        animatable.transforms.list.set(propName, value);
-        animatable.transforms["last"] = propName;
-    }
-    return unit ? convertPxToUnit(el, value, unit) : value;
-}
-function getOriginalTargetValue(target, propName, unit, animatable) {
-    switch(getAnimationType(target, propName)){
-        case "transform":
-            return getTransformValue(target, propName, animatable, unit);
-        case "css":
-            return getCSSValue(target, propName, unit);
-        case "attribute":
-            return getAttribute(target, propName);
-        default:
-            return target[propName] || 0;
-    }
-}
-function getRelativeValue(to, from) {
-    var operator = /^(\*=|\+=|-=)/.exec(to);
-    if (!operator) return to;
-    var u = getUnit(to) || 0;
-    var x = parseFloat(from);
-    var y = parseFloat(to.replace(operator[0], ""));
-    switch(operator[0][0]){
-        case "+":
-            return x + y + u;
-        case "-":
-            return x - y + u;
-        case "*":
-            return x * y + u;
-    }
-}
-function validateValue(val, unit) {
-    if (is.col(val)) return colorToRgb(val);
-    if (/\s/g.test(val)) return val;
-    var originalUnit = getUnit(val);
-    var unitLess = originalUnit ? val.substr(0, val.length - originalUnit.length) : val;
-    if (unit) return unitLess + unit;
-    return unitLess;
-}
-// getTotalLength() equivalent for circle, rect, polyline, polygon and line shapes
-// adapted from https://gist.github.com/SebLambla/3e0550c496c236709744
-function getDistance(p1, p2) {
-    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-}
-function getCircleLength(el) {
-    return Math.PI * 2 * getAttribute(el, "r");
-}
-function getRectLength(el) {
-    return getAttribute(el, "width") * 2 + getAttribute(el, "height") * 2;
-}
-function getLineLength(el) {
-    return getDistance({
-        x: getAttribute(el, "x1"),
-        y: getAttribute(el, "y1")
-    }, {
-        x: getAttribute(el, "x2"),
-        y: getAttribute(el, "y2")
-    });
-}
-function getPolylineLength(el) {
-    var points = el.points;
-    var totalLength = 0;
-    var previousPos;
-    for(var i = 0; i < points.numberOfItems; i++){
-        var currentPos = points.getItem(i);
-        if (i > 0) totalLength += getDistance(previousPos, currentPos);
-        previousPos = currentPos;
-    }
-    return totalLength;
-}
-function getPolygonLength(el) {
-    var points = el.points;
-    return getPolylineLength(el) + getDistance(points.getItem(points.numberOfItems - 1), points.getItem(0));
-}
-// Path animation
-function getTotalLength(el) {
-    if (el.getTotalLength) return el.getTotalLength();
-    switch(el.tagName.toLowerCase()){
-        case "circle":
-            return getCircleLength(el);
-        case "rect":
-            return getRectLength(el);
-        case "line":
-            return getLineLength(el);
-        case "polyline":
-            return getPolylineLength(el);
-        case "polygon":
-            return getPolygonLength(el);
-    }
-}
-function setDashoffset(el) {
-    var pathLength = getTotalLength(el);
-    el.setAttribute("stroke-dasharray", pathLength);
-    return pathLength;
-}
-// Motion path
-function getParentSvgEl(el) {
-    var parentEl = el.parentNode;
-    while(is.svg(parentEl)){
-        if (!is.svg(parentEl.parentNode)) break;
-        parentEl = parentEl.parentNode;
-    }
-    return parentEl;
-}
-function getParentSvg(pathEl, svgData) {
-    var svg = svgData || {};
-    var parentSvgEl = svg.el || getParentSvgEl(pathEl);
-    var rect = parentSvgEl.getBoundingClientRect();
-    var viewBoxAttr = getAttribute(parentSvgEl, "viewBox");
-    var width = rect.width;
-    var height = rect.height;
-    var viewBox = svg.viewBox || (viewBoxAttr ? viewBoxAttr.split(" ") : [
-        0,
-        0,
-        width,
-        height
-    ]);
-    return {
-        el: parentSvgEl,
-        viewBox: viewBox,
-        x: viewBox[0] / 1,
-        y: viewBox[1] / 1,
-        w: width,
-        h: height,
-        vW: viewBox[2],
-        vH: viewBox[3]
-    };
-}
-function getPath(path, percent) {
-    var pathEl = is.str(path) ? selectString(path)[0] : path;
-    var p = percent || 100;
-    return function(property) {
-        return {
-            property: property,
-            el: pathEl,
-            svg: getParentSvg(pathEl),
-            totalLength: getTotalLength(pathEl) * (p / 100)
-        };
-    };
-}
-function getPathProgress(path, progress, isPathTargetInsideSVG) {
-    function point(offset) {
-        if (offset === void 0) offset = 0;
-        var l = progress + offset >= 1 ? progress + offset : 0;
-        return path.el.getPointAtLength(l);
-    }
-    var svg = getParentSvg(path.el, path.svg);
-    var p = point();
-    var p0 = point(-1);
-    var p1 = point(1);
-    var scaleX = isPathTargetInsideSVG ? 1 : svg.w / svg.vW;
-    var scaleY = isPathTargetInsideSVG ? 1 : svg.h / svg.vH;
-    switch(path.property){
-        case "x":
-            return (p.x - svg.x) * scaleX;
-        case "y":
-            return (p.y - svg.y) * scaleY;
-        case "angle":
-            return Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
-    }
-}
-// Decompose value
-function decomposeValue(val, unit) {
-    // const rgx = /-?\d*\.?\d+/g; // handles basic numbers
-    // const rgx = /[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
-    var rgx = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
-    var value = validateValue(is.pth(val) ? val.totalLength : val, unit) + "";
-    return {
-        original: value,
-        numbers: value.match(rgx) ? value.match(rgx).map(Number) : [
-            0
-        ],
-        strings: is.str(val) || unit ? value.split(rgx) : []
-    };
-}
-// Animatables
-function parseTargets(targets) {
-    var targetsArray = targets ? flattenArray(is.arr(targets) ? targets.map(toArray) : toArray(targets)) : [];
-    return filterArray(targetsArray, function(item, pos, self) {
-        return self.indexOf(item) === pos;
-    });
-}
-function getAnimatables(targets) {
-    var parsed = parseTargets(targets);
-    return parsed.map(function(t, i) {
-        return {
-            target: t,
-            id: i,
-            total: parsed.length,
-            transforms: {
-                list: getElementTransforms(t)
-            }
-        };
-    });
-}
-// Properties
-function normalizePropertyTweens(prop, tweenSettings) {
-    var settings = cloneObject(tweenSettings);
-    // Override duration if easing is a spring
-    if (/^spring/.test(settings.easing)) settings.duration = spring(settings.easing);
-    if (is.arr(prop)) {
-        var l = prop.length;
-        var isFromTo = l === 2 && !is.obj(prop[0]);
-        if (!isFromTo) // Duration divided by the number of tweens
-        {
-            if (!is.fnc(tweenSettings.duration)) settings.duration = tweenSettings.duration / l;
-        } else // Transform [from, to] values shorthand to a valid tween value
-        prop = {
-            value: prop
-        };
-    }
-    var propArray = is.arr(prop) ? prop : [
-        prop
-    ];
-    return propArray.map(function(v, i) {
-        var obj = is.obj(v) && !is.pth(v) ? v : {
-            value: v
-        };
-        // Default delay value should only be applied to the first tween
-        if (is.und(obj.delay)) obj.delay = !i ? tweenSettings.delay : 0;
-        // Default endDelay value should only be applied to the last tween
-        if (is.und(obj.endDelay)) obj.endDelay = i === propArray.length - 1 ? tweenSettings.endDelay : 0;
-        return obj;
-    }).map(function(k) {
-        return mergeObjects(k, settings);
-    });
-}
-function flattenKeyframes(keyframes) {
-    var propertyNames = filterArray(flattenArray(keyframes.map(function(key) {
-        return Object.keys(key);
-    })), function(p) {
-        return is.key(p);
-    }).reduce(function(a, b) {
-        if (a.indexOf(b) < 0) a.push(b);
-        return a;
-    }, []);
-    var properties = {};
-    var loop = function(i) {
-        var propName = propertyNames[i];
-        properties[propName] = keyframes.map(function(key) {
-            var newKey = {};
-            for(var p in key){
-                if (is.key(p)) {
-                    if (p == propName) newKey.value = key[p];
-                } else newKey[p] = key[p];
-            }
-            return newKey;
-        });
-    };
-    for(var i = 0; i < propertyNames.length; i++)loop(i);
-    return properties;
-}
-function getProperties(tweenSettings, params) {
-    var properties = [];
-    var keyframes = params.keyframes;
-    if (keyframes) params = mergeObjects(flattenKeyframes(keyframes), params);
-    for(var p in params)if (is.key(p)) properties.push({
-        name: p,
-        tweens: normalizePropertyTweens(params[p], tweenSettings)
-    });
-    return properties;
-}
-// Tweens
-function normalizeTweenValues(tween, animatable) {
-    var t = {};
-    for(var p in tween){
-        var value = getFunctionValue(tween[p], animatable);
-        if (is.arr(value)) {
-            value = value.map(function(v) {
-                return getFunctionValue(v, animatable);
-            });
-            if (value.length === 1) value = value[0];
-        }
-        t[p] = value;
-    }
-    t.duration = parseFloat(t.duration);
-    t.delay = parseFloat(t.delay);
-    return t;
-}
-function normalizeTweens(prop, animatable) {
-    var previousTween;
-    return prop.tweens.map(function(t) {
-        var tween = normalizeTweenValues(t, animatable);
-        var tweenValue = tween.value;
-        var to = is.arr(tweenValue) ? tweenValue[1] : tweenValue;
-        var toUnit = getUnit(to);
-        var originalValue = getOriginalTargetValue(animatable.target, prop.name, toUnit, animatable);
-        var previousValue = previousTween ? previousTween.to.original : originalValue;
-        var from = is.arr(tweenValue) ? tweenValue[0] : previousValue;
-        var fromUnit = getUnit(from) || getUnit(originalValue);
-        var unit = toUnit || fromUnit;
-        if (is.und(to)) to = previousValue;
-        tween.from = decomposeValue(from, unit);
-        tween.to = decomposeValue(getRelativeValue(to, from), unit);
-        tween.start = previousTween ? previousTween.end : 0;
-        tween.end = tween.start + tween.delay + tween.duration + tween.endDelay;
-        tween.easing = parseEasings(tween.easing, tween.duration);
-        tween.isPath = is.pth(tweenValue);
-        tween.isPathTargetInsideSVG = tween.isPath && is.svg(animatable.target);
-        tween.isColor = is.col(tween.from.original);
-        if (tween.isColor) tween.round = 1;
-        previousTween = tween;
-        return tween;
-    });
-}
-// Tween progress
-var setProgressValue = {
-    css: function(t, p, v) {
-        return t.style[p] = v;
-    },
-    attribute: function(t, p, v) {
-        return t.setAttribute(p, v);
-    },
-    object: function(t, p, v) {
-        return t[p] = v;
-    },
-    transform: function(t, p, v, transforms, manual) {
-        transforms.list.set(p, v);
-        if (p === transforms.last || manual) {
-            var str = "";
-            transforms.list.forEach(function(value, prop) {
-                str += prop + "(" + value + ") ";
-            });
-            t.style.transform = str;
-        }
-    }
-};
-// Set Value helper
-function setTargetsValue(targets, properties) {
-    var animatables = getAnimatables(targets);
-    animatables.forEach(function(animatable) {
-        for(var property in properties){
-            var value = getFunctionValue(properties[property], animatable);
-            var target = animatable.target;
-            var valueUnit = getUnit(value);
-            var originalValue = getOriginalTargetValue(target, property, valueUnit, animatable);
-            var unit = valueUnit || getUnit(originalValue);
-            var to = getRelativeValue(validateValue(value, unit), originalValue);
-            var animType = getAnimationType(target, property);
-            setProgressValue[animType](target, property, to, animatable.transforms, true);
-        }
-    });
-}
-// Animations
-function createAnimation(animatable, prop) {
-    var animType = getAnimationType(animatable.target, prop.name);
-    if (animType) {
-        var tweens = normalizeTweens(prop, animatable);
-        var lastTween = tweens[tweens.length - 1];
-        return {
-            type: animType,
-            property: prop.name,
-            animatable: animatable,
-            tweens: tweens,
-            duration: lastTween.end,
-            delay: tweens[0].delay,
-            endDelay: lastTween.endDelay
-        };
-    }
-}
-function getAnimations(animatables, properties) {
-    return filterArray(flattenArray(animatables.map(function(animatable) {
-        return properties.map(function(prop) {
-            return createAnimation(animatable, prop);
-        });
-    })), function(a) {
-        return !is.und(a);
-    });
-}
-// Create Instance
-function getInstanceTimings(animations, tweenSettings) {
-    var animLength = animations.length;
-    var getTlOffset = function(anim) {
-        return anim.timelineOffset ? anim.timelineOffset : 0;
-    };
-    var timings = {};
-    timings.duration = animLength ? Math.max.apply(Math, animations.map(function(anim) {
-        return getTlOffset(anim) + anim.duration;
-    })) : tweenSettings.duration;
-    timings.delay = animLength ? Math.min.apply(Math, animations.map(function(anim) {
-        return getTlOffset(anim) + anim.delay;
-    })) : tweenSettings.delay;
-    timings.endDelay = animLength ? timings.duration - Math.max.apply(Math, animations.map(function(anim) {
-        return getTlOffset(anim) + anim.duration - anim.endDelay;
-    })) : tweenSettings.endDelay;
-    return timings;
-}
-var instanceID = 0;
-function createNewInstance(params) {
-    var instanceSettings = replaceObjectProps(defaultInstanceSettings, params);
-    var tweenSettings = replaceObjectProps(defaultTweenSettings, params);
-    var properties = getProperties(tweenSettings, params);
-    var animatables = getAnimatables(params.targets);
-    var animations = getAnimations(animatables, properties);
-    var timings = getInstanceTimings(animations, tweenSettings);
-    var id = instanceID;
-    instanceID++;
-    return mergeObjects(instanceSettings, {
-        id: id,
-        children: [],
-        animatables: animatables,
-        animations: animations,
-        duration: timings.duration,
-        delay: timings.delay,
-        endDelay: timings.endDelay
-    });
-}
-// Core
-var activeInstances = [];
-var engine = function() {
-    var raf;
-    function play() {
-        if (!raf && (!isDocumentHidden() || !anime.suspendWhenDocumentHidden) && activeInstances.length > 0) raf = requestAnimationFrame(step);
-    }
-    function step(t) {
-        // memo on algorithm issue:
-        // dangerous iteration over mutable `activeInstances`
-        // (that collection may be updated from within callbacks of `tick`-ed animation instances)
-        var activeInstancesLength = activeInstances.length;
-        var i = 0;
-        while(i < activeInstancesLength){
-            var activeInstance = activeInstances[i];
-            if (!activeInstance.paused) {
-                activeInstance.tick(t);
-                i++;
-            } else {
-                activeInstances.splice(i, 1);
-                activeInstancesLength--;
-            }
-        }
-        raf = i > 0 ? requestAnimationFrame(step) : undefined;
-    }
-    function handleVisibilityChange() {
-        if (!anime.suspendWhenDocumentHidden) return;
-        if (isDocumentHidden()) // suspend ticks
-        raf = cancelAnimationFrame(raf);
-        else {
-            // first adjust animations to consider the time that ticks were suspended
-            activeInstances.forEach(function(instance) {
-                return instance._onDocumentVisibility();
-            });
-            engine();
-        }
-    }
-    if (typeof document !== "undefined") document.addEventListener("visibilitychange", handleVisibilityChange);
-    return play;
-}();
-function isDocumentHidden() {
-    return !!document && document.hidden;
-}
-// Public Instance
-function anime(params) {
-    if (params === void 0) params = {};
-    var startTime = 0, lastTime = 0, now = 0;
-    var children, childrenLength = 0;
-    var resolve = null;
-    function makePromise(instance) {
-        var promise = window.Promise && new Promise(function(_resolve) {
-            return resolve = _resolve;
-        });
-        instance.finished = promise;
-        return promise;
-    }
-    var instance = createNewInstance(params);
-    var promise = makePromise(instance);
-    function toggleInstanceDirection() {
-        var direction = instance.direction;
-        if (direction !== "alternate") instance.direction = direction !== "normal" ? "normal" : "reverse";
-        instance.reversed = !instance.reversed;
-        children.forEach(function(child) {
-            return child.reversed = instance.reversed;
-        });
-    }
-    function adjustTime(time) {
-        return instance.reversed ? instance.duration - time : time;
-    }
-    function resetTime() {
-        startTime = 0;
-        lastTime = adjustTime(instance.currentTime) * (1 / anime.speed);
-    }
-    function seekChild(time, child) {
-        if (child) child.seek(time - child.timelineOffset);
-    }
-    function syncInstanceChildren(time) {
-        if (!instance.reversePlayback) for(var i = 0; i < childrenLength; i++)seekChild(time, children[i]);
-        else for(var i$1 = childrenLength; i$1--;)seekChild(time, children[i$1]);
-    }
-    function setAnimationsProgress(insTime) {
-        var i = 0;
-        var animations = instance.animations;
-        var animationsLength = animations.length;
-        while(i < animationsLength){
-            var anim = animations[i];
-            var animatable = anim.animatable;
-            var tweens = anim.tweens;
-            var tweenLength = tweens.length - 1;
-            var tween = tweens[tweenLength];
-            // Only check for keyframes if there is more than one tween
-            if (tweenLength) tween = filterArray(tweens, function(t) {
-                return insTime < t.end;
-            })[0] || tween;
-            var elapsed = minMax(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
-            var eased = isNaN(elapsed) ? 1 : tween.easing(elapsed);
-            var strings = tween.to.strings;
-            var round = tween.round;
-            var numbers = [];
-            var toNumbersLength = tween.to.numbers.length;
-            var progress = void 0;
-            for(var n = 0; n < toNumbersLength; n++){
-                var value = void 0;
-                var toNumber = tween.to.numbers[n];
-                var fromNumber = tween.from.numbers[n] || 0;
-                if (!tween.isPath) value = fromNumber + eased * (toNumber - fromNumber);
-                else value = getPathProgress(tween.value, eased * toNumber, tween.isPathTargetInsideSVG);
-                if (round) {
-                    if (!(tween.isColor && n > 2)) value = Math.round(value * round) / round;
-                }
-                numbers.push(value);
-            }
-            // Manual Array.reduce for better performances
-            var stringsLength = strings.length;
-            if (!stringsLength) progress = numbers[0];
-            else {
-                progress = strings[0];
-                for(var s = 0; s < stringsLength; s++){
-                    var a = strings[s];
-                    var b = strings[s + 1];
-                    var n$1 = numbers[s];
-                    if (!isNaN(n$1)) {
-                        if (!b) progress += n$1 + " ";
-                        else progress += n$1 + b;
-                    }
-                }
-            }
-            setProgressValue[anim.type](animatable.target, anim.property, progress, animatable.transforms);
-            anim.currentValue = progress;
-            i++;
-        }
-    }
-    function setCallback(cb) {
-        if (instance[cb] && !instance.passThrough) instance[cb](instance);
-    }
-    function countIteration() {
-        if (instance.remaining && instance.remaining !== true) instance.remaining--;
-    }
-    function setInstanceProgress(engineTime) {
-        var insDuration = instance.duration;
-        var insDelay = instance.delay;
-        var insEndDelay = insDuration - instance.endDelay;
-        var insTime = adjustTime(engineTime);
-        instance.progress = minMax(insTime / insDuration * 100, 0, 100);
-        instance.reversePlayback = insTime < instance.currentTime;
-        if (children) syncInstanceChildren(insTime);
-        if (!instance.began && instance.currentTime > 0) {
-            instance.began = true;
-            setCallback("begin");
-        }
-        if (!instance.loopBegan && instance.currentTime > 0) {
-            instance.loopBegan = true;
-            setCallback("loopBegin");
-        }
-        if (insTime <= insDelay && instance.currentTime !== 0) setAnimationsProgress(0);
-        if (insTime >= insEndDelay && instance.currentTime !== insDuration || !insDuration) setAnimationsProgress(insDuration);
-        if (insTime > insDelay && insTime < insEndDelay) {
-            if (!instance.changeBegan) {
-                instance.changeBegan = true;
-                instance.changeCompleted = false;
-                setCallback("changeBegin");
-            }
-            setCallback("change");
-            setAnimationsProgress(insTime);
-        } else if (instance.changeBegan) {
-            instance.changeCompleted = true;
-            instance.changeBegan = false;
-            setCallback("changeComplete");
-        }
-        instance.currentTime = minMax(insTime, 0, insDuration);
-        if (instance.began) setCallback("update");
-        if (engineTime >= insDuration) {
-            lastTime = 0;
-            countIteration();
-            if (!instance.remaining) {
-                instance.paused = true;
-                if (!instance.completed) {
-                    instance.completed = true;
-                    setCallback("loopComplete");
-                    setCallback("complete");
-                    if (!instance.passThrough && "Promise" in window) {
-                        resolve();
-                        promise = makePromise(instance);
-                    }
-                }
-            } else {
-                startTime = now;
-                setCallback("loopComplete");
-                instance.loopBegan = false;
-                if (instance.direction === "alternate") toggleInstanceDirection();
-            }
-        }
-    }
-    instance.reset = function() {
-        var direction = instance.direction;
-        instance.passThrough = false;
-        instance.currentTime = 0;
-        instance.progress = 0;
-        instance.paused = true;
-        instance.began = false;
-        instance.loopBegan = false;
-        instance.changeBegan = false;
-        instance.completed = false;
-        instance.changeCompleted = false;
-        instance.reversePlayback = false;
-        instance.reversed = direction === "reverse";
-        instance.remaining = instance.loop;
-        children = instance.children;
-        childrenLength = children.length;
-        for(var i = childrenLength; i--;)instance.children[i].reset();
-        if (instance.reversed && instance.loop !== true || direction === "alternate" && instance.loop === 1) instance.remaining++;
-        setAnimationsProgress(instance.reversed ? instance.duration : 0);
-    };
-    // internal method (for engine) to adjust animation timings before restoring engine ticks (rAF)
-    instance._onDocumentVisibility = resetTime;
-    // Set Value helper
-    instance.set = function(targets, properties) {
-        setTargetsValue(targets, properties);
-        return instance;
-    };
-    instance.tick = function(t) {
-        now = t;
-        if (!startTime) startTime = now;
-        setInstanceProgress((now + (lastTime - startTime)) * anime.speed);
-    };
-    instance.seek = function(time) {
-        setInstanceProgress(adjustTime(time));
-    };
-    instance.pause = function() {
-        instance.paused = true;
-        resetTime();
-    };
-    instance.play = function() {
-        if (!instance.paused) return;
-        if (instance.completed) instance.reset();
-        instance.paused = false;
-        activeInstances.push(instance);
-        resetTime();
-        engine();
-    };
-    instance.reverse = function() {
-        toggleInstanceDirection();
-        instance.completed = instance.reversed ? false : true;
-        resetTime();
-    };
-    instance.restart = function() {
-        instance.reset();
-        instance.play();
-    };
-    instance.remove = function(targets) {
-        var targetsArray = parseTargets(targets);
-        removeTargetsFromInstance(targetsArray, instance);
-    };
-    instance.reset();
-    if (instance.autoplay) instance.play();
-    return instance;
-}
-// Remove targets from animation
-function removeTargetsFromAnimations(targetsArray, animations) {
-    for(var a = animations.length; a--;)if (arrayContains(targetsArray, animations[a].animatable.target)) animations.splice(a, 1);
-}
-function removeTargetsFromInstance(targetsArray, instance) {
-    var animations = instance.animations;
-    var children = instance.children;
-    removeTargetsFromAnimations(targetsArray, animations);
-    for(var c = children.length; c--;){
-        var child = children[c];
-        var childAnimations = child.animations;
-        removeTargetsFromAnimations(targetsArray, childAnimations);
-        if (!childAnimations.length && !child.children.length) children.splice(c, 1);
-    }
-    if (!animations.length && !children.length) instance.pause();
-}
-function removeTargetsFromActiveInstances(targets) {
-    var targetsArray = parseTargets(targets);
-    for(var i = activeInstances.length; i--;){
-        var instance = activeInstances[i];
-        removeTargetsFromInstance(targetsArray, instance);
-    }
-}
-// Stagger helpers
-function stagger(val, params) {
-    if (params === void 0) params = {};
-    var direction = params.direction || "normal";
-    var easing = params.easing ? parseEasings(params.easing) : null;
-    var grid = params.grid;
-    var axis = params.axis;
-    var fromIndex = params.from || 0;
-    var fromFirst = fromIndex === "first";
-    var fromCenter = fromIndex === "center";
-    var fromLast = fromIndex === "last";
-    var isRange = is.arr(val);
-    var val1 = isRange ? parseFloat(val[0]) : parseFloat(val);
-    var val2 = isRange ? parseFloat(val[1]) : 0;
-    var unit = getUnit(isRange ? val[1] : val) || 0;
-    var start = params.start || 0 + (isRange ? val1 : 0);
-    var values = [];
-    var maxValue = 0;
-    return function(el, i, t) {
-        if (fromFirst) fromIndex = 0;
-        if (fromCenter) fromIndex = (t - 1) / 2;
-        if (fromLast) fromIndex = t - 1;
-        if (!values.length) {
-            for(var index = 0; index < t; index++){
-                if (!grid) values.push(Math.abs(fromIndex - index));
-                else {
-                    var fromX = !fromCenter ? fromIndex % grid[0] : (grid[0] - 1) / 2;
-                    var fromY = !fromCenter ? Math.floor(fromIndex / grid[0]) : (grid[1] - 1) / 2;
-                    var toX = index % grid[0];
-                    var toY = Math.floor(index / grid[0]);
-                    var distanceX = fromX - toX;
-                    var distanceY = fromY - toY;
-                    var value = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-                    if (axis === "x") value = -distanceX;
-                    if (axis === "y") value = -distanceY;
-                    values.push(value);
-                }
-                maxValue = Math.max.apply(Math, values);
-            }
-            if (easing) values = values.map(function(val) {
-                return easing(val / maxValue) * maxValue;
-            });
-            if (direction === "reverse") values = values.map(function(val) {
-                return axis ? val < 0 ? val * -1 : -val : Math.abs(maxValue - val);
-            });
-        }
-        var spacing = isRange ? (val2 - val1) / maxValue : val1;
-        return start + spacing * (Math.round(values[i] * 100) / 100) + unit;
-    };
-}
-// Timeline
-function timeline(params) {
-    if (params === void 0) params = {};
-    var tl = anime(params);
-    tl.duration = 0;
-    tl.add = function(instanceParams, timelineOffset) {
-        var tlIndex = activeInstances.indexOf(tl);
-        var children = tl.children;
-        if (tlIndex > -1) activeInstances.splice(tlIndex, 1);
-        function passThrough(ins) {
-            ins.passThrough = true;
-        }
-        for(var i = 0; i < children.length; i++)passThrough(children[i]);
-        var insParams = mergeObjects(instanceParams, replaceObjectProps(defaultTweenSettings, params));
-        insParams.targets = insParams.targets || params.targets;
-        var tlDuration = tl.duration;
-        insParams.autoplay = false;
-        insParams.direction = tl.direction;
-        insParams.timelineOffset = is.und(timelineOffset) ? tlDuration : getRelativeValue(timelineOffset, tlDuration);
-        passThrough(tl);
-        tl.seek(insParams.timelineOffset);
-        var ins = anime(insParams);
-        passThrough(ins);
-        children.push(ins);
-        var timings = getInstanceTimings(children, params);
-        tl.delay = timings.delay;
-        tl.endDelay = timings.endDelay;
-        tl.duration = timings.duration;
-        tl.seek(0);
-        tl.reset();
-        if (tl.autoplay) tl.play();
-        return tl;
-    };
-    return tl;
-}
-anime.version = "3.2.1";
-anime.speed = 1;
-// TODO:#review: naming, documentation
-anime.suspendWhenDocumentHidden = true;
-anime.running = activeInstances;
-anime.remove = removeTargetsFromActiveInstances;
-anime.get = getOriginalTargetValue;
-anime.set = setTargetsValue;
-anime.convertPx = convertPxToUnit;
-anime.path = getPath;
-anime.setDashoffset = setDashoffset;
-anime.stagger = stagger;
-anime.timeline = timeline;
-anime.easing = parseEasings;
-anime.penner = penner;
-anime.random = function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-exports.default = anime;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lSDFi":[function(require,module,exports) {
-module.exports = require("3d0b759233c7b30a").getBundleURL("8Kyqb") + "arrowup-icon.6a03358b.png" + "?" + Date.now();
-
-},{"3d0b759233c7b30a":"lgJ39"}],"lgJ39":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-}
-// TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"68K6w":[function(require,module,exports) {
-module.exports = require("ee93f26d89823c7e").getBundleURL("8Kyqb") + "sound.965fd49b.svg" + "?" + Date.now();
-
-},{"ee93f26d89823c7e":"lgJ39"}],"9LNsG":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "LAST_ITEM", ()=>LAST_ITEM);
-parcelHelpers.export(exports, "SECTION", ()=>SECTION);
-let LAST_ITEM = {
-    element: null,
-    activeElement: null,
-    pageIndex: null,
-    isHome: null,
-    childCount: 0
-};
-let SECTION = {
-    isSectionActive: false
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2oYJH":[function(require,module,exports) {
-module.exports = require("db7f43b85ce1413b").getBundleURL("8Kyqb") + "dot.fbaad3b5.png" + "?" + Date.now();
-
-},{"db7f43b85ce1413b":"lgJ39"}],"eKe8m":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BXN NFT Node Network","description":"BXN is a unique blockchain that introduces NFTs as a key element of its validation process. Users can acquire NFTs from the BlackFort knight collection, where each NFT represents a certain weight in the network’s validation process. By staking the NFT, users can participate in node and validator rewards in BXN. Additionally, opting out of delegation increases the rarity of the remaining NFT nodes, while any delegated NFTs can be transferred at any time to any address on the BXN blockchain network using a client-side wallet that supports BXN. The use of NFTs as keys in the validation process adds decentralization to the network and creates a unique approach to blockchain validation.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"},{"subTitle":"","title":"Environmentally friendly","description":"As a Proof-of-Staked-Authority driven blockchain, BXN offers the benefits of staking, including reduced energy consumption and the elimination of the need for expensive and advanced hardware. With a focus on stability, scalability, and energy savings, BXN provides a reliable and efficient platform for decentralization. Furthermore, BXN ensures the safety and security of blockchain attributes, such as immutability and transparency, through its use of advanced cryptographic algorithms and consensus mechanisms. The combination of staking benefits and robust security measures makes BXN a compelling option for those seeking a high-performance and secure blockchain platform.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"},{"subTitle":"","title":"Fast Transactions","description":"The speed of a blockchain network is a critical factor for businesses and individuals looking to engage in transactions on a blockchain platform. BXN offers a high transaction per second throughput and low block time, creating an almost immediate transaction execution environment. This speed enables businesses to prosper and provides certainty in transaction confirmations, ensuring a reliable and efficient platform for users. By providing a fast and efficient blockchain network, BXN offers a high-performance platform that can meet the demands of businesses and individuals looking to engage in fast and secure transactions. Overall, the speed of the BXN platform is a critical aspect that contributes to its overall reliability and appeal to users.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"},{"subTitle":"","title":"Global scalability","description":"Scalability is a crucial factor in the success of any blockchain project, and BXN has prioritized scalability in its design. The blockchain platform is built to cater to the needs of individuals, researchers, and businesses without compromising on features or the need for complicated updates. The efficiency of validation, block height, and transaction speed are all factors that have been carefully considered in the development of BXN. The platform is designed to provide reliable and efficient services to users, regardless of the scale of their project or transaction volume. With its focus on scalability, BXN offers a high-performance blockchain platform that is suitable for a wide range of use cases.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"},{"subTitle":"","title":"Optimised fee mechanism","description":"Fee optimization is an essential aspect of blockchain technology, and BXN has implemented an efficient fee system that ensures network congestion will not lead to a surge in prices as we know it up until today. Fees for transactions are calculated dynamically and denominated in BXN, with different types of transactions attracting different fees. The validation system on the BXN blockchain is highly resource-efficient, ensuring fair and transparent value to users. Additionally, BXN provides an opportunity for anyone to become a delegator in the network, further promoting decentralization and fairness in the blockchain ecosystem.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"},{"subTitle":"","title":"Proof-of-Algorithm Staking","description":"BlackFort Network has developed its own staking method called Proof-of-Staked-Authority (PoSA), which is designed to provide a truly decentralized and effortless staking experience. PoSA is a consensus mechanism that allows users to stake their tokens and earn rewards by validating transactions on the network. The staking process is simple and can be done through validator nodes, delegation, or a do-it-yourself (DIY) approach. By staking through PoSA, users can participate in the validation process and contribute to the overall security and efficiency of the network. The use of PoSA also eliminates the need for energy-intensive processes and expensive hardware, making staking accessible to all. Overall, PoSA is a reliable and efficient staking method that allows for greater decentralization and accessibility on the BXN blockchain platform.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"},{"subTitle":"","title":"Smart contract operability","description":"BlackFort Network is an easy-to-use blockchain platform that simplifies the creation and management of smart contracts. Its user-friendly interface allows anyone to launch their own tokens and projects on the blockchain without needing specialized knowledge. Additionally, the platform offers migration services for users who want to switch from other EVM blockchains to BXN, providing a seamless transition with all the new features and benefits. By using BXN, users can leverage innovative capabilities and be part of a community that is shaping the future of decentralized finance.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"},{"subTitle":"","title":"Tokenising to Blockchain","description":"BXN offers a unique feature that enables users to bring liquidity and assets from other blockchain networks to the BXN platform and receive incentives in BXN tokens. By tokenizing assets and creating NFTs, users can transfer liquidity and other assets to the BlackFort Network Vault at an equivalent value on the BXN chain. This feature provides a simple and efficient way to bring assets and liquidity to the BXN platform and take advantage of the benefits offered by the BXN blockchain network. Overall, BXN’s asset transfer feature enables users to easily move assets and liquidity between blockchain networks, further promoting decentralization and accessibility in the blockchain ecosystem.","imgLink":"","buttons":[],"extLink":[],"custom":"ref to element"}]}');
-
-},{}],"7K3aZ":[function(require,module,exports) {
-// Definir el objeto literal de sonidos
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "sounEffect", ()=>sounEffect);
-// Definir la función playSound
-parcelHelpers.export(exports, "playSound", ()=>playSound) // Ejemplo de uso
- //  playSound(sonidos.sonidoA); // Reproducirá el sonidoA
-;
-const sounEffect = {
-    start: new Audio(new URL(require("7290cff1342e043f")).href),
-    click: new Audio(new URL(require("8d1bf478d2debefa")).href),
-    hover: new Audio(new URL(require("c23240d6fe8196b0")).href),
-    background: new Audio(new URL(require("99f00fedf593a43d")).href)
-};
-function playSound(sound, loop = false) {
-    if (sound && sound instanceof Audio) {
-        // sound.loop = loop; // Configuramos la propiedad loop del objeto Audio
-        sound.play();
-        console.log(sound, " >>REPRODUCIR SONIDO");
-    } else console.error("El sonido proporcionado no es v\xe1lido.");
-}
-
-},{"7290cff1342e043f":"4U2PY","8d1bf478d2debefa":"4QKE3","c23240d6fe8196b0":"4xFi4","99f00fedf593a43d":"47X6V","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4U2PY":[function(require,module,exports) {
-module.exports = require("e737036ee2ccc7a6").getBundleURL("8Kyqb") + "start.0befac28.ogg" + "?" + Date.now();
-
-},{"e737036ee2ccc7a6":"lgJ39"}],"4QKE3":[function(require,module,exports) {
-module.exports = require("c6a9bd1701eca9e1").getBundleURL("8Kyqb") + "click.12d770f3.ogg" + "?" + Date.now();
-
-},{"c6a9bd1701eca9e1":"lgJ39"}],"4xFi4":[function(require,module,exports) {
-module.exports = require("2a7058d48cbbe70").getBundleURL("8Kyqb") + "hover.346c2b95.ogg" + "?" + Date.now();
-
-},{"2a7058d48cbbe70":"lgJ39"}],"47X6V":[function(require,module,exports) {
-module.exports = require("db8993148a34c6e7").getBundleURL("8Kyqb") + "background.e29eed9b.ogg" + "?" + Date.now();
-
-},{"db8993148a34c6e7":"lgJ39"}],"bJrvG":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _three = require("three");
-var _tweenJs = require("@tweenjs/tween.js");
-var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
-class CameraHandler {
-    constructor(){
-        this.camera = null;
-        this.cameraGroup = null;
-        this.targetView = new (0, _three.Vector3)();
-        this.targetPosition = new (0, _three.Vector3)();
-        this.lastTargetView = null;
-        this.lastTargetPosition = null;
-        this.isAnimated = false;
-        this.isLoadOver = false;
-        this.timing = 500;
-    }
-    setCamera(component) {
-        this.camera = component.camera;
-        this.cameraGroup = component.cameraGroup;
-        // Setup
-        this.targetView = new (0, _three.Vector3)();
-        component.camera.getWorldDirection(this.targetView);
-        this.targetPosition = this.cameraGroup.position.clone();
-        // Asignar durante unos segundos
-        setTimeout(()=>{
-            console.log("");
-            this.isLoadOver = false;
-            console.log("Camara INICIADA");
-        }, this.timing);
-        console.log("camera is ready:", this.camera, this.cameraGroup);
-        console.log("last pos updated: ", this.targetView, this.targetPosition);
-    }
-    animatedCamera(object, target, duration) {
-        // Crear animacion suavizada
-        const tween = new (0, _tweenJsDefault.default).Tween(object).to(target, duration).easing((0, _tweenJsDefault.default).Easing.Quadratic.InOut).onComplete(()=>{
-            this.isAnimated = false;
-            console.log("ANIM END: ", this.isAnimated);
-        });
-        // Devolver animación
-        return tween;
-    }
-    setParallax(target, time) {
-        this.camera.position.lerp(target, time);
-    }
-    moveCameraTo(element, callback) {
-        // Obtener el valor del atributo
-        //console.log("ACTUAL: ", element);
-        const targetData = element.getAttribute("data-target");
-        const farData = element.getAttribute("data-far");
-        // Convertir datos TARGET a vector
-        const target = JSON.parse(targetData);
-        const targetPos = new (0, _three.Vector3)(target[0], target[1], target[2]);
-        // Convertir datos FAR a vector
-        const far = JSON.parse(farData);
-        const farPos = new (0, _three.Vector3)(far[0], far[1], far[2]);
-        // Iniciar animación suavizada
-        if (!this.isAnimated) {
-            const cameraViewAnim = this.animatedCamera(this.targetView, targetPos, 4500);
-            cameraViewAnim.start();
-            cameraViewAnim.onStart(()=>{
-                this.isAnimated = true;
-                console.log("ANIM START: ", this.isAnimated);
-            });
-            cameraViewAnim.onComplete(()=>{
-                callback();
-            });
-            const cameraPosAnim = this.animatedCamera(this.targetPosition, farPos, 6000);
-            cameraPosAnim.start();
-        }
-    }
-    updateComponents() {
-        this.cameraGroup.position.copy(this.targetPosition);
-        this.camera.lookAt(this.targetView);
-    }
-    update() {
-        // Actualizar animación
-        (0, _tweenJsDefault.default).update();
-        if (this.isAnimated) this.updateComponents();
-        else console.log("Modulo c\xe1mara en REPOSO");
-        if (!this.isLoadOver) this.updateComponents();
-    }
-}
-const cameraHandler = new CameraHandler();
-exports.default = cameraHandler;
-
-},{"three":"ktPTu","@tweenjs/tween.js":"7DfAI","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7DfAI":[function(require,module,exports) {
-/**
- * The Ease class provides a collection of easing functions for use with tween.js.
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Easing", ()=>Easing);
-parcelHelpers.export(exports, "Group", ()=>Group);
-parcelHelpers.export(exports, "Interpolation", ()=>Interpolation);
-parcelHelpers.export(exports, "Sequence", ()=>Sequence);
-parcelHelpers.export(exports, "Tween", ()=>Tween);
-parcelHelpers.export(exports, "VERSION", ()=>VERSION);
-parcelHelpers.export(exports, "add", ()=>add);
-parcelHelpers.export(exports, "default", ()=>exports);
-parcelHelpers.export(exports, "getAll", ()=>getAll);
-parcelHelpers.export(exports, "nextId", ()=>nextId);
-parcelHelpers.export(exports, "now", ()=>now);
-parcelHelpers.export(exports, "remove", ()=>remove);
-parcelHelpers.export(exports, "removeAll", ()=>removeAll);
-parcelHelpers.export(exports, "update", ()=>update);
-var Easing = Object.freeze({
-    Linear: Object.freeze({
-        None: function(amount) {
-            return amount;
-        },
-        In: function(amount) {
-            return this.None(amount);
-        },
-        Out: function(amount) {
-            return this.None(amount);
-        },
-        InOut: function(amount) {
-            return this.None(amount);
-        }
-    }),
-    Quadratic: Object.freeze({
-        In: function(amount) {
-            return amount * amount;
-        },
-        Out: function(amount) {
-            return amount * (2 - amount);
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount;
-            return -0.5 * (--amount * (amount - 2) - 1);
-        }
-    }),
-    Cubic: Object.freeze({
-        In: function(amount) {
-            return amount * amount * amount;
-        },
-        Out: function(amount) {
-            return --amount * amount * amount + 1;
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount;
-            return 0.5 * ((amount -= 2) * amount * amount + 2);
-        }
-    }),
-    Quartic: Object.freeze({
-        In: function(amount) {
-            return amount * amount * amount * amount;
-        },
-        Out: function(amount) {
-            return 1 - --amount * amount * amount * amount;
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount;
-            return -0.5 * ((amount -= 2) * amount * amount * amount - 2);
-        }
-    }),
-    Quintic: Object.freeze({
-        In: function(amount) {
-            return amount * amount * amount * amount * amount;
-        },
-        Out: function(amount) {
-            return --amount * amount * amount * amount * amount + 1;
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount * amount;
-            return 0.5 * ((amount -= 2) * amount * amount * amount * amount + 2);
-        }
-    }),
-    Sinusoidal: Object.freeze({
-        In: function(amount) {
-            return 1 - Math.sin((1.0 - amount) * Math.PI / 2);
-        },
-        Out: function(amount) {
-            return Math.sin(amount * Math.PI / 2);
-        },
-        InOut: function(amount) {
-            return 0.5 * (1 - Math.sin(Math.PI * (0.5 - amount)));
-        }
-    }),
-    Exponential: Object.freeze({
-        In: function(amount) {
-            return amount === 0 ? 0 : Math.pow(1024, amount - 1);
-        },
-        Out: function(amount) {
-            return amount === 1 ? 1 : 1 - Math.pow(2, -10 * amount);
-        },
-        InOut: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            if ((amount *= 2) < 1) return 0.5 * Math.pow(1024, amount - 1);
-            return 0.5 * (-Math.pow(2, -10 * (amount - 1)) + 2);
-        }
-    }),
-    Circular: Object.freeze({
-        In: function(amount) {
-            return 1 - Math.sqrt(1 - amount * amount);
-        },
-        Out: function(amount) {
-            return Math.sqrt(1 - --amount * amount);
-        },
-        InOut: function(amount) {
-            if ((amount *= 2) < 1) return -0.5 * (Math.sqrt(1 - amount * amount) - 1);
-            return 0.5 * (Math.sqrt(1 - (amount -= 2) * amount) + 1);
-        }
-    }),
-    Elastic: Object.freeze({
-        In: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            return -Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
-        },
-        Out: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            return Math.pow(2, -10 * amount) * Math.sin((amount - 0.1) * 5 * Math.PI) + 1;
-        },
-        InOut: function(amount) {
-            if (amount === 0) return 0;
-            if (amount === 1) return 1;
-            amount *= 2;
-            if (amount < 1) return -0.5 * Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
-            return 0.5 * Math.pow(2, -10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI) + 1;
-        }
-    }),
-    Back: Object.freeze({
-        In: function(amount) {
-            var s = 1.70158;
-            return amount === 1 ? 1 : amount * amount * ((s + 1) * amount - s);
-        },
-        Out: function(amount) {
-            var s = 1.70158;
-            return amount === 0 ? 0 : --amount * amount * ((s + 1) * amount + s) + 1;
-        },
-        InOut: function(amount) {
-            var s = 2.5949095;
-            if ((amount *= 2) < 1) return 0.5 * (amount * amount * ((s + 1) * amount - s));
-            return 0.5 * ((amount -= 2) * amount * ((s + 1) * amount + s) + 2);
-        }
-    }),
-    Bounce: Object.freeze({
-        In: function(amount) {
-            return 1 - Easing.Bounce.Out(1 - amount);
-        },
-        Out: function(amount) {
-            if (amount < 1 / 2.75) return 7.5625 * amount * amount;
-            else if (amount < 2 / 2.75) return 7.5625 * (amount -= 1.5 / 2.75) * amount + 0.75;
-            else if (amount < 2.5 / 2.75) return 7.5625 * (amount -= 2.25 / 2.75) * amount + 0.9375;
-            else return 7.5625 * (amount -= 2.625 / 2.75) * amount + 0.984375;
-        },
-        InOut: function(amount) {
-            if (amount < 0.5) return Easing.Bounce.In(amount * 2) * 0.5;
-            return Easing.Bounce.Out(amount * 2 - 1) * 0.5 + 0.5;
-        }
-    }),
-    generatePow: function(power) {
-        if (power === void 0) power = 4;
-        power = power < Number.EPSILON ? Number.EPSILON : power;
-        power = power > 10000 ? 10000 : power;
-        return {
-            In: function(amount) {
-                return Math.pow(amount, power);
-            },
-            Out: function(amount) {
-                return 1 - Math.pow(1 - amount, power);
-            },
-            InOut: function(amount) {
-                if (amount < 0.5) return Math.pow(amount * 2, power) / 2;
-                return (1 - Math.pow(2 - amount * 2, power)) / 2 + 0.5;
-            }
-        };
-    }
-});
-var now = function() {
-    return performance.now();
-};
-/**
- * Controlling groups of tweens
- *
- * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
- * In these cases, you may want to create your own smaller groups of tween
- */ var Group = /** @class */ function() {
-    function Group() {
-        this._tweens = {};
-        this._tweensAddedDuringUpdate = {};
-    }
-    Group.prototype.getAll = function() {
-        var _this = this;
-        return Object.keys(this._tweens).map(function(tweenId) {
-            return _this._tweens[tweenId];
-        });
-    };
-    Group.prototype.removeAll = function() {
-        this._tweens = {};
-    };
-    Group.prototype.add = function(tween) {
-        this._tweens[tween.getId()] = tween;
-        this._tweensAddedDuringUpdate[tween.getId()] = tween;
-    };
-    Group.prototype.remove = function(tween) {
-        delete this._tweens[tween.getId()];
-        delete this._tweensAddedDuringUpdate[tween.getId()];
-    };
-    Group.prototype.update = function(time, preserve) {
-        if (time === void 0) time = now();
-        if (preserve === void 0) preserve = false;
-        var tweenIds = Object.keys(this._tweens);
-        if (tweenIds.length === 0) return false;
-        // Tweens are updated in "batches". If you add a new tween during an
-        // update, then the new tween will be updated in the next batch.
-        // If you remove a tween during an update, it may or may not be updated.
-        // However, if the removed tween was added during the current batch,
-        // then it will not be updated.
-        while(tweenIds.length > 0){
-            this._tweensAddedDuringUpdate = {};
-            for(var i = 0; i < tweenIds.length; i++){
-                var tween = this._tweens[tweenIds[i]];
-                var autoStart = !preserve;
-                if (tween && tween.update(time, autoStart) === false && !preserve) delete this._tweens[tweenIds[i]];
-            }
-            tweenIds = Object.keys(this._tweensAddedDuringUpdate);
-        }
-        return true;
-    };
-    return Group;
-}();
-/**
- *
- */ var Interpolation = {
-    Linear: function(v, k) {
-        var m = v.length - 1;
-        var f = m * k;
-        var i = Math.floor(f);
-        var fn = Interpolation.Utils.Linear;
-        if (k < 0) return fn(v[0], v[1], f);
-        if (k > 1) return fn(v[m], v[m - 1], m - f);
-        return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
-    },
-    Bezier: function(v, k) {
-        var b = 0;
-        var n = v.length - 1;
-        var pw = Math.pow;
-        var bn = Interpolation.Utils.Bernstein;
-        for(var i = 0; i <= n; i++)b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
-        return b;
-    },
-    CatmullRom: function(v, k) {
-        var m = v.length - 1;
-        var f = m * k;
-        var i = Math.floor(f);
-        var fn = Interpolation.Utils.CatmullRom;
-        if (v[0] === v[m]) {
-            if (k < 0) i = Math.floor(f = m * (1 + k));
-            return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
-        } else {
-            if (k < 0) return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
-            if (k > 1) return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
-            return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
-        }
-    },
-    Utils: {
-        Linear: function(p0, p1, t) {
-            return (p1 - p0) * t + p0;
-        },
-        Bernstein: function(n, i) {
-            var fc = Interpolation.Utils.Factorial;
-            return fc(n) / fc(i) / fc(n - i);
-        },
-        Factorial: function() {
-            var a = [
-                1
-            ];
-            return function(n) {
-                var s = 1;
-                if (a[n]) return a[n];
-                for(var i = n; i > 1; i--)s *= i;
-                a[n] = s;
-                return s;
-            };
-        }(),
-        CatmullRom: function(p0, p1, p2, p3, t) {
-            var v0 = (p2 - p0) * 0.5;
-            var v1 = (p3 - p1) * 0.5;
-            var t2 = t * t;
-            var t3 = t * t2;
-            return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
-        }
-    }
-};
-/**
- * Utils
- */ var Sequence = /** @class */ function() {
-    function Sequence() {}
-    Sequence.nextId = function() {
-        return Sequence._nextId++;
-    };
-    Sequence._nextId = 0;
-    return Sequence;
-}();
-var mainGroup = new Group();
-/**
- * Tween.js - Licensed under the MIT license
- * https://github.com/tweenjs/tween.js
- * ----------------------------------------------
- *
- * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
- * Thank you all, you're awesome!
- */ var Tween = /** @class */ function() {
-    function Tween(_object, _group) {
-        if (_group === void 0) _group = mainGroup;
-        this._object = _object;
-        this._group = _group;
-        this._isPaused = false;
-        this._pauseStart = 0;
-        this._valuesStart = {};
-        this._valuesEnd = {};
-        this._valuesStartRepeat = {};
-        this._duration = 1000;
-        this._isDynamic = false;
-        this._initialRepeat = 0;
-        this._repeat = 0;
-        this._yoyo = false;
-        this._isPlaying = false;
-        this._reversed = false;
-        this._delayTime = 0;
-        this._startTime = 0;
-        this._easingFunction = Easing.Linear.None;
-        this._interpolationFunction = Interpolation.Linear;
-        // eslint-disable-next-line
-        this._chainedTweens = [];
-        this._onStartCallbackFired = false;
-        this._onEveryStartCallbackFired = false;
-        this._id = Sequence.nextId();
-        this._isChainStopped = false;
-        this._propertiesAreSetUp = false;
-        this._goToEnd = false;
-    }
-    Tween.prototype.getId = function() {
-        return this._id;
-    };
-    Tween.prototype.isPlaying = function() {
-        return this._isPlaying;
-    };
-    Tween.prototype.isPaused = function() {
-        return this._isPaused;
-    };
-    Tween.prototype.to = function(target, duration) {
-        if (duration === void 0) duration = 1000;
-        if (this._isPlaying) throw new Error("Can not call Tween.to() while Tween is already started or paused. Stop the Tween first.");
-        this._valuesEnd = target;
-        this._propertiesAreSetUp = false;
-        this._duration = duration;
-        return this;
-    };
-    Tween.prototype.duration = function(duration) {
-        if (duration === void 0) duration = 1000;
-        this._duration = duration;
-        return this;
-    };
-    Tween.prototype.dynamic = function(dynamic) {
-        if (dynamic === void 0) dynamic = false;
-        this._isDynamic = dynamic;
-        return this;
-    };
-    Tween.prototype.start = function(time, overrideStartingValues) {
-        if (time === void 0) time = now();
-        if (overrideStartingValues === void 0) overrideStartingValues = false;
-        if (this._isPlaying) return this;
-        // eslint-disable-next-line
-        this._group && this._group.add(this);
-        this._repeat = this._initialRepeat;
-        if (this._reversed) {
-            // If we were reversed (f.e. using the yoyo feature) then we need to
-            // flip the tween direction back to forward.
-            this._reversed = false;
-            for(var property in this._valuesStartRepeat){
-                this._swapEndStartRepeatValues(property);
-                this._valuesStart[property] = this._valuesStartRepeat[property];
-            }
-        }
-        this._isPlaying = true;
-        this._isPaused = false;
-        this._onStartCallbackFired = false;
-        this._onEveryStartCallbackFired = false;
-        this._isChainStopped = false;
-        this._startTime = time;
-        this._startTime += this._delayTime;
-        if (!this._propertiesAreSetUp || overrideStartingValues) {
-            this._propertiesAreSetUp = true;
-            // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
-            if (!this._isDynamic) {
-                var tmp = {};
-                for(var prop in this._valuesEnd)tmp[prop] = this._valuesEnd[prop];
-                this._valuesEnd = tmp;
-            }
-            this._setupProperties(this._object, this._valuesStart, this._valuesEnd, this._valuesStartRepeat, overrideStartingValues);
-        }
-        return this;
-    };
-    Tween.prototype.startFromCurrentValues = function(time) {
-        return this.start(time, true);
-    };
-    Tween.prototype._setupProperties = function(_object, _valuesStart, _valuesEnd, _valuesStartRepeat, overrideStartingValues) {
-        for(var property in _valuesEnd){
-            var startValue = _object[property];
-            var startValueIsArray = Array.isArray(startValue);
-            var propType = startValueIsArray ? "array" : typeof startValue;
-            var isInterpolationList = !startValueIsArray && Array.isArray(_valuesEnd[property]);
-            // If `to()` specifies a property that doesn't exist in the source object,
-            // we should not set that property in the object
-            if (propType === "undefined" || propType === "function") continue;
-            // Check if an Array was provided as property value
-            if (isInterpolationList) {
-                var endValues = _valuesEnd[property];
-                if (endValues.length === 0) continue;
-                // Handle an array of relative values.
-                // Creates a local copy of the Array with the start value at the front
-                var temp = [
-                    startValue
-                ];
-                for(var i = 0, l = endValues.length; i < l; i += 1){
-                    var value = this._handleRelativeValue(startValue, endValues[i]);
-                    if (isNaN(value)) {
-                        isInterpolationList = false;
-                        console.warn("Found invalid interpolation list. Skipping.");
-                        break;
-                    }
-                    temp.push(value);
-                }
-                if (isInterpolationList) // if (_valuesStart[property] === undefined) { // handle end values only the first time. NOT NEEDED? setupProperties is now guarded by _propertiesAreSetUp.
-                _valuesEnd[property] = temp;
-            }
-            // handle the deepness of the values
-            if ((propType === "object" || startValueIsArray) && startValue && !isInterpolationList) {
-                _valuesStart[property] = startValueIsArray ? [] : {};
-                var nestedObject = startValue;
-                for(var prop in nestedObject)_valuesStart[property][prop] = nestedObject[prop];
-                // TODO? repeat nested values? And yoyo? And array values?
-                _valuesStartRepeat[property] = startValueIsArray ? [] : {};
-                var endValues = _valuesEnd[property];
-                // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
-                if (!this._isDynamic) {
-                    var tmp = {};
-                    for(var prop in endValues)tmp[prop] = endValues[prop];
-                    _valuesEnd[property] = endValues = tmp;
-                }
-                this._setupProperties(nestedObject, _valuesStart[property], endValues, _valuesStartRepeat[property], overrideStartingValues);
-            } else {
-                // Save the starting value, but only once unless override is requested.
-                if (typeof _valuesStart[property] === "undefined" || overrideStartingValues) _valuesStart[property] = startValue;
-                if (!startValueIsArray) // eslint-disable-next-line
-                // @ts-ignore FIXME?
-                _valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
-                if (isInterpolationList) // eslint-disable-next-line
-                // @ts-ignore FIXME?
-                _valuesStartRepeat[property] = _valuesEnd[property].slice().reverse();
-                else _valuesStartRepeat[property] = _valuesStart[property] || 0;
-            }
-        }
-    };
-    Tween.prototype.stop = function() {
-        if (!this._isChainStopped) {
-            this._isChainStopped = true;
-            this.stopChainedTweens();
-        }
-        if (!this._isPlaying) return this;
-        // eslint-disable-next-line
-        this._group && this._group.remove(this);
-        this._isPlaying = false;
-        this._isPaused = false;
-        if (this._onStopCallback) this._onStopCallback(this._object);
-        return this;
-    };
-    Tween.prototype.end = function() {
-        this._goToEnd = true;
-        this.update(Infinity);
-        return this;
-    };
-    Tween.prototype.pause = function(time) {
-        if (time === void 0) time = now();
-        if (this._isPaused || !this._isPlaying) return this;
-        this._isPaused = true;
-        this._pauseStart = time;
-        // eslint-disable-next-line
-        this._group && this._group.remove(this);
-        return this;
-    };
-    Tween.prototype.resume = function(time) {
-        if (time === void 0) time = now();
-        if (!this._isPaused || !this._isPlaying) return this;
-        this._isPaused = false;
-        this._startTime += time - this._pauseStart;
-        this._pauseStart = 0;
-        // eslint-disable-next-line
-        this._group && this._group.add(this);
-        return this;
-    };
-    Tween.prototype.stopChainedTweens = function() {
-        for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)this._chainedTweens[i].stop();
-        return this;
-    };
-    Tween.prototype.group = function(group) {
-        if (group === void 0) group = mainGroup;
-        this._group = group;
-        return this;
-    };
-    Tween.prototype.delay = function(amount) {
-        if (amount === void 0) amount = 0;
-        this._delayTime = amount;
-        return this;
-    };
-    Tween.prototype.repeat = function(times) {
-        if (times === void 0) times = 0;
-        this._initialRepeat = times;
-        this._repeat = times;
-        return this;
-    };
-    Tween.prototype.repeatDelay = function(amount) {
-        this._repeatDelayTime = amount;
-        return this;
-    };
-    Tween.prototype.yoyo = function(yoyo) {
-        if (yoyo === void 0) yoyo = false;
-        this._yoyo = yoyo;
-        return this;
-    };
-    Tween.prototype.easing = function(easingFunction) {
-        if (easingFunction === void 0) easingFunction = Easing.Linear.None;
-        this._easingFunction = easingFunction;
-        return this;
-    };
-    Tween.prototype.interpolation = function(interpolationFunction) {
-        if (interpolationFunction === void 0) interpolationFunction = Interpolation.Linear;
-        this._interpolationFunction = interpolationFunction;
-        return this;
-    };
-    // eslint-disable-next-line
-    Tween.prototype.chain = function() {
-        var tweens = [];
-        for(var _i = 0; _i < arguments.length; _i++)tweens[_i] = arguments[_i];
-        this._chainedTweens = tweens;
-        return this;
-    };
-    Tween.prototype.onStart = function(callback) {
-        this._onStartCallback = callback;
-        return this;
-    };
-    Tween.prototype.onEveryStart = function(callback) {
-        this._onEveryStartCallback = callback;
-        return this;
-    };
-    Tween.prototype.onUpdate = function(callback) {
-        this._onUpdateCallback = callback;
-        return this;
-    };
-    Tween.prototype.onRepeat = function(callback) {
-        this._onRepeatCallback = callback;
-        return this;
-    };
-    Tween.prototype.onComplete = function(callback) {
-        this._onCompleteCallback = callback;
-        return this;
-    };
-    Tween.prototype.onStop = function(callback) {
-        this._onStopCallback = callback;
-        return this;
-    };
-    /**
-     * @returns true if the tween is still playing after the update, false
-     * otherwise (calling update on a paused tween still returns true because
-     * it is still playing, just paused).
-     */ Tween.prototype.update = function(time, autoStart) {
-        if (time === void 0) time = now();
-        if (autoStart === void 0) autoStart = true;
-        if (this._isPaused) return true;
-        var property;
-        var elapsed;
-        var endTime = this._startTime + this._duration;
-        if (!this._goToEnd && !this._isPlaying) {
-            if (time > endTime) return false;
-            if (autoStart) this.start(time, true);
-        }
-        this._goToEnd = false;
-        if (time < this._startTime) return true;
-        if (this._onStartCallbackFired === false) {
-            if (this._onStartCallback) this._onStartCallback(this._object);
-            this._onStartCallbackFired = true;
-        }
-        if (this._onEveryStartCallbackFired === false) {
-            if (this._onEveryStartCallback) this._onEveryStartCallback(this._object);
-            this._onEveryStartCallbackFired = true;
-        }
-        elapsed = (time - this._startTime) / this._duration;
-        elapsed = this._duration === 0 || elapsed > 1 ? 1 : elapsed;
-        var value = this._easingFunction(elapsed);
-        // properties transformations
-        this._updateProperties(this._object, this._valuesStart, this._valuesEnd, value);
-        if (this._onUpdateCallback) this._onUpdateCallback(this._object, elapsed);
-        if (elapsed === 1) {
-            if (this._repeat > 0) {
-                if (isFinite(this._repeat)) this._repeat--;
-                // Reassign starting values, restart by making startTime = now
-                for(property in this._valuesStartRepeat){
-                    if (!this._yoyo && typeof this._valuesEnd[property] === "string") this._valuesStartRepeat[property] = // eslint-disable-next-line
-                    // @ts-ignore FIXME?
-                    this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
-                    if (this._yoyo) this._swapEndStartRepeatValues(property);
-                    this._valuesStart[property] = this._valuesStartRepeat[property];
-                }
-                if (this._yoyo) this._reversed = !this._reversed;
-                if (this._repeatDelayTime !== undefined) this._startTime = time + this._repeatDelayTime;
-                else this._startTime = time + this._delayTime;
-                if (this._onRepeatCallback) this._onRepeatCallback(this._object);
-                this._onEveryStartCallbackFired = false;
-                return true;
-            } else {
-                if (this._onCompleteCallback) this._onCompleteCallback(this._object);
-                for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)// Make the chained tweens start exactly at the time they should,
-                // even if the `update()` method was called way past the duration of the tween
-                this._chainedTweens[i].start(this._startTime + this._duration, false);
-                this._isPlaying = false;
-                return false;
-            }
-        }
-        return true;
-    };
-    Tween.prototype._updateProperties = function(_object, _valuesStart, _valuesEnd, value) {
-        for(var property in _valuesEnd){
-            // Don't update properties that do not exist in the source object
-            if (_valuesStart[property] === undefined) continue;
-            var start = _valuesStart[property] || 0;
-            var end = _valuesEnd[property];
-            var startIsArray = Array.isArray(_object[property]);
-            var endIsArray = Array.isArray(end);
-            var isInterpolationList = !startIsArray && endIsArray;
-            if (isInterpolationList) _object[property] = this._interpolationFunction(end, value);
-            else if (typeof end === "object" && end) // eslint-disable-next-line
-            // @ts-ignore FIXME?
-            this._updateProperties(_object[property], start, end, value);
-            else {
-                // Parses relative end values with start as base (e.g.: +10, -3)
-                end = this._handleRelativeValue(start, end);
-                // Protect against non numeric properties.
-                if (typeof end === "number") // eslint-disable-next-line
-                // @ts-ignore FIXME?
-                _object[property] = start + (end - start) * value;
-            }
-        }
-    };
-    Tween.prototype._handleRelativeValue = function(start, end) {
-        if (typeof end !== "string") return end;
-        if (end.charAt(0) === "+" || end.charAt(0) === "-") return start + parseFloat(end);
-        return parseFloat(end);
-    };
-    Tween.prototype._swapEndStartRepeatValues = function(property) {
-        var tmp = this._valuesStartRepeat[property];
-        var endValue = this._valuesEnd[property];
-        if (typeof endValue === "string") this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(endValue);
-        else this._valuesStartRepeat[property] = this._valuesEnd[property];
-        this._valuesEnd[property] = tmp;
-    };
-    return Tween;
-}();
-var VERSION = "21.0.0";
-/**
- * Tween.js - Licensed under the MIT license
- * https://github.com/tweenjs/tween.js
- * ----------------------------------------------
- *
- * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
- * Thank you all, you're awesome!
- */ var nextId = Sequence.nextId;
-/**
- * Controlling groups of tweens
- *
- * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
- * In these cases, you may want to create your own smaller groups of tweens.
- */ var TWEEN = mainGroup;
-// This is the best way to export things in a way that's compatible with both ES
-// Modules and CommonJS, without build hacks, and so as not to break the
-// existing API.
-// https://github.com/rollup/rollup/issues/1961#issuecomment-423037881
-var getAll = TWEEN.getAll.bind(TWEEN);
-var removeAll = TWEEN.removeAll.bind(TWEEN);
-var add = TWEEN.add.bind(TWEEN);
-var remove = TWEEN.remove.bind(TWEEN);
-var update = TWEEN.update.bind(TWEEN);
-var exports = {
-    Easing: Easing,
-    Group: Group,
-    Interpolation: Interpolation,
-    now: now,
-    Sequence: Sequence,
-    nextId: nextId,
-    Tween: Tween,
-    VERSION: VERSION,
-    getAll: getAll,
-    removeAll: removeAll,
-    add: add,
-    remove: remove,
-    update: update
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iuXxG":[function(require,module,exports) {
-//AQUI SE DEFINEN TODOS LOS ELEMENTOS HTML/CSS
-//QUE SE INSERTARAN EN LA ESCENA
-//LOS ELEMENTOS DECLARADOS SE ELIMINAN UN AVEZ CARGADOS, EL OBJETO NO PUEDE
-//REFERENCIARSE MAS DE 1 VEZ
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "COMPONENTS", ()=>COMPONENTS);
-parcelHelpers.export(exports, "COMPONENTS_NAVIGATOR", ()=>COMPONENTS_NAVIGATOR);
-parcelHelpers.export(exports, "NETWORK_PAGES", ()=>NETWORK_PAGES);
-const HOME = {
-    span: "",
-    title: "Home",
-    imgLink: new URL(require("bf4f2cfeb2d89900")).href
-};
-const CONTACT = {
-    span: "",
-    title: "Contact",
-    imgLink: new URL(require("baed1fc4eaf85206")).href
-};
-const BLOG = {
-    span: "",
-    title: "Blog",
-    imgLink: new URL(require("5aec61c35f940506")).href
-};
-const NTFS = {
-    span: "",
-    title: "Ntfs",
-    imgLink: new URL(require("e5b038e9503e43ef")).href
-};
-const NETWORK = {
-    span: "",
-    title: "BlackFrot x Network",
-    imgLink: new URL(require("a882148a51d3f250")).href
-};
-const COMPONENTS = {
-    homeSection: generateDotElement(HOME, false),
-    contactSection: generateDotElement(CONTACT, false),
-    blogSection: generateDotElement(BLOG, false),
-    ntfsSection: generateDotElement(NTFS, false),
-    networkSection: generateDotElement(NETWORK, false)
-};
-const COMPONENTS_NAVIGATOR = {
-    home: generateIconElement(HOME),
-    contact: generateIconElement(CONTACT),
-    blog: generateIconElement(BLOG),
-    ntfs: generateIconElement(NTFS),
-    network: generateIconElement(NETWORK)
-};
-//paginas de network aqui
-const GLOBAL = {
-    span: "",
-    title: "Global scalability",
-    imgLink: new URL(require("133278ac65e6dfd0")).href
-};
-const OPTIMISED = {
-    span: "",
-    title: "Optimised fee mechanism",
-    imgLink: new URL(require("318185d113992d6d")).href
-};
-const BXN = {
-    span: "",
-    title: "BXN NFT Node Network",
-    imgLink: new URL(require("a39629b33df839f6")).href
-};
-const SMART = {
-    span: "",
-    title: "Smart contract operability",
-    imgLink: new URL(require("ab5b0166f915f29")).href
-};
-const FAST = {
-    span: "",
-    title: "Fast Transactions",
-    imgLink: new URL(require("aa34c6d00e19d8aa")).href
-};
-const TOKENISING = {
-    span: "",
-    title: "Tokenising to Blockchain",
-    imgLink: new URL(require("2f387be10c27563a")).href
-};
-const PROOF = {
-    span: "",
-    title: "Proof-of-Algorithm Staking",
-    imgLink: new URL(require("3168e4fbd5bc1927")).href
-};
-const ENVIROMENTALLY = {
-    span: "",
-    title: "Environmentally friendly",
-    imgLink: new URL(require("8de6999da1937197")).href
-};
-const NETWORK_PAGES = {
-    global: generateDotElement(GLOBAL, true),
-    optimised: generateDotElement(OPTIMISED, true),
-    bxn: generateDotElement(BXN, true),
-    smart: generateDotElement(SMART, true),
-    fast: generateDotElement(FAST, true),
-    tokenising: generateDotElement(TOKENISING, true),
-    proof: generateDotElement(PROOF, true),
-    enviromentaly: generateDotElement(ENVIROMENTALLY, true)
-};
-//fin de paginas de network
-function generateDotElement(dotData, isNetwork) {
-    // Crear el elemento principal <div> con la clase "dot"
-    const dotElement = document.createElement("div");
-    dotElement.classList.add("dot");
-    // Crear el elemento <div> para el contenido del span
-    const spanElement = document.createElement("div");
-    spanElement.classList.add("dot-item-span");
-    spanElement.textContent = dotData.span;
-    dotElement.appendChild(spanElement);
-    // Crear el elemento <div> para el contenido del título
-    const titleElement = document.createElement("div");
-    titleElement.classList.add("dot-item-title");
-    titleElement.textContent = dotData.title;
-    dotElement.appendChild(titleElement);
-    // Crear el elemento <div> para el ícono
-    const iconElement = document.createElement("div");
-    iconElement.classList.add("dot-item-icon");
-    // Crear un elemento <object> para cargar el SVG
-    if (isNetwork) {
-        const icon = document.createElement("img");
-        icon.src = dotData.imgLink;
-        iconElement.appendChild(icon);
-        // Agregar el elemento del ícono al elemento principal <div>
-        dotElement.appendChild(iconElement);
-    } else {
-        const objectElement = document.createElement("object");
-        objectElement.data = dotData.imgLink;
-        objectElement.type = "image/svg+xml";
-        iconElement.appendChild(objectElement);
-        // Agregar el elemento del ícono al elemento principal <div>
-        dotElement.appendChild(iconElement);
-    }
-    // Devolver el elemento <div> completo con la estructura generada
-    return dotElement;
-}
-function generateIconElement(dotData) {
-    // Crear el elemento principal <div> con la clase "dot"
-    const iconContainer = document.createElement("div");
-    iconContainer.classList.add("icon");
-    // Crear un elemento <object> para cargar el SVG
-    const objectElement = document.createElement("object");
-    objectElement.data = dotData.imgLink;
-    objectElement.type = "image/svg+xml";
-    // Agregar el elemento del ícono al elemento principal <div>
-    iconContainer.appendChild(objectElement);
-    // Devolver el elemento <div> completo con la estructura generada
-    return iconContainer;
-}
-
-},{"bf4f2cfeb2d89900":"8zI4v","baed1fc4eaf85206":"2VxXl","5aec61c35f940506":"4QvhB","e5b038e9503e43ef":"oktiP","a882148a51d3f250":"2DOKH","133278ac65e6dfd0":"ihsOw","318185d113992d6d":"aeDKz","a39629b33df839f6":"5cHfP","ab5b0166f915f29":"2IUlh","aa34c6d00e19d8aa":"fLPQF","2f387be10c27563a":"dL58E","3168e4fbd5bc1927":"cItyc","8de6999da1937197":"em3JY","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8zI4v":[function(require,module,exports) {
-module.exports = require("bb1a9c7055e56a05").getBundleURL("8Kyqb") + "home-icon.df8ecc8f.svg" + "?" + Date.now();
-
-},{"bb1a9c7055e56a05":"lgJ39"}],"2VxXl":[function(require,module,exports) {
-module.exports = require("3afece63c869dd1e").getBundleURL("8Kyqb") + "contact-icon.fa692c16.svg" + "?" + Date.now();
-
-},{"3afece63c869dd1e":"lgJ39"}],"4QvhB":[function(require,module,exports) {
-module.exports = require("4705e257bc87ba07").getBundleURL("8Kyqb") + "blog-icon.0b703f83.svg" + "?" + Date.now();
-
-},{"4705e257bc87ba07":"lgJ39"}],"oktiP":[function(require,module,exports) {
-module.exports = require("c4cd186e5b08e87a").getBundleURL("8Kyqb") + "ntfs-icon.92824bc2.svg" + "?" + Date.now();
-
-},{"c4cd186e5b08e87a":"lgJ39"}],"2DOKH":[function(require,module,exports) {
-module.exports = require("24d1003b67101089").getBundleURL("8Kyqb") + "network-icon.fe484848.svg" + "?" + Date.now();
-
-},{"24d1003b67101089":"lgJ39"}],"ihsOw":[function(require,module,exports) {
-module.exports = require("633b16b52438f3ee").getBundleURL("8Kyqb") + "global.b8c63fcf.png" + "?" + Date.now();
-
-},{"633b16b52438f3ee":"lgJ39"}],"aeDKz":[function(require,module,exports) {
-module.exports = require("4f2fd71f625be4c4").getBundleURL("8Kyqb") + "optimized.a3713540.png" + "?" + Date.now();
-
-},{"4f2fd71f625be4c4":"lgJ39"}],"5cHfP":[function(require,module,exports) {
-module.exports = require("4b09aa2aa9ea5e58").getBundleURL("8Kyqb") + "bxn.6df90084.png" + "?" + Date.now();
-
-},{"4b09aa2aa9ea5e58":"lgJ39"}],"2IUlh":[function(require,module,exports) {
-module.exports = require("a3ef79bede680c50").getBundleURL("8Kyqb") + "smart.7031a467.png" + "?" + Date.now();
-
-},{"a3ef79bede680c50":"lgJ39"}],"fLPQF":[function(require,module,exports) {
-module.exports = require("a81301fca0ca7d17").getBundleURL("8Kyqb") + "fast.e9c23b09.png" + "?" + Date.now();
-
-},{"a81301fca0ca7d17":"lgJ39"}],"dL58E":[function(require,module,exports) {
-module.exports = require("45413823fc54297").getBundleURL("8Kyqb") + "tokenising.6b0880aa.png" + "?" + Date.now();
-
-},{"45413823fc54297":"lgJ39"}],"cItyc":[function(require,module,exports) {
-module.exports = require("6ffe2ef9c6671850").getBundleURL("8Kyqb") + "proof.eceb2abb.png" + "?" + Date.now();
-
-},{"6ffe2ef9c6671850":"lgJ39"}],"em3JY":[function(require,module,exports) {
-module.exports = require("7574db3a3469b79").getBundleURL("8Kyqb") + "enviromentally.1c9030c1.png" + "?" + Date.now();
-
-},{"7574db3a3469b79":"lgJ39"}],"iM6UL":[function(require,module,exports) {
-/**
- * Swiper 10.0.4
- * Most modern mobile touch slider and framework with hardware accelerated transitions
- * https://swiperjs.com
- *
- * Copyright 2014-2023 Vladimir Kharlampidi
- *
- * Released under the MIT License
- *
- * Released on: July 8, 2023
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Swiper", ()=>(0, _swiperCoreMjs.S));
-parcelHelpers.export(exports, "default", ()=>(0, _swiperCoreMjs.S));
-var _swiperCoreMjs = require("./shared/swiper-core.mjs");
-
-},{"./shared/swiper-core.mjs":"c1Vcv","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"c1Vcv":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "S", ()=>Swiper);
-parcelHelpers.export(exports, "d", ()=>defaults);
-var _ssrWindowEsmMjs = require("./ssr-window.esm.mjs");
-var _utilsMjs = require("./utils.mjs");
-let support;
-function calcSupport() {
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    const document1 = (0, _ssrWindowEsmMjs.g)();
-    return {
-        smoothScroll: document1.documentElement && document1.documentElement.style && "scrollBehavior" in document1.documentElement.style,
-        touch: !!("ontouchstart" in window1 || window1.DocumentTouch && document1 instanceof window1.DocumentTouch)
-    };
-}
-function getSupport() {
-    if (!support) support = calcSupport();
-    return support;
-}
-let deviceCached;
-function calcDevice(_temp) {
-    let { userAgent } = _temp === void 0 ? {} : _temp;
-    const support = getSupport();
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    const platform = window1.navigator.platform;
-    const ua = userAgent || window1.navigator.userAgent;
-    const device = {
-        ios: false,
-        android: false
-    };
-    const screenWidth = window1.screen.width;
-    const screenHeight = window1.screen.height;
-    const android = ua.match(/(Android);?[\s\/]+([\d.]+)?/); // eslint-disable-line
-    let ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
-    const ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
-    const iphone = !ipad && ua.match(/(iPhone\sOS|iOS)\s([\d_]+)/);
-    const windows = platform === "Win32";
-    let macos = platform === "MacIntel";
-    // iPadOs 13 fix
-    const iPadScreens = [
-        "1024x1366",
-        "1366x1024",
-        "834x1194",
-        "1194x834",
-        "834x1112",
-        "1112x834",
-        "768x1024",
-        "1024x768",
-        "820x1180",
-        "1180x820",
-        "810x1080",
-        "1080x810"
-    ];
-    if (!ipad && macos && support.touch && iPadScreens.indexOf(`${screenWidth}x${screenHeight}`) >= 0) {
-        ipad = ua.match(/(Version)\/([\d.]+)/);
-        if (!ipad) ipad = [
-            0,
-            1,
-            "13_0_0"
-        ];
-        macos = false;
-    }
-    // Android
-    if (android && !windows) {
-        device.os = "android";
-        device.android = true;
-    }
-    if (ipad || iphone || ipod) {
-        device.os = "ios";
-        device.ios = true;
-    }
-    // Export object
-    return device;
-}
-function getDevice(overrides) {
-    if (overrides === void 0) overrides = {};
-    if (!deviceCached) deviceCached = calcDevice(overrides);
-    return deviceCached;
-}
-let browser;
-function calcBrowser() {
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    let needPerspectiveFix = false;
-    function isSafari() {
-        const ua = window1.navigator.userAgent.toLowerCase();
-        return ua.indexOf("safari") >= 0 && ua.indexOf("chrome") < 0 && ua.indexOf("android") < 0;
-    }
-    if (isSafari()) {
-        const ua = String(window1.navigator.userAgent);
-        if (ua.includes("Version/")) {
-            const [major, minor] = ua.split("Version/")[1].split(" ")[0].split(".").map((num)=>Number(num));
-            needPerspectiveFix = major < 16 || major === 16 && minor < 2;
-        }
-    }
-    return {
-        isSafari: needPerspectiveFix || isSafari(),
-        needPerspectiveFix,
-        isWebView: /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(window1.navigator.userAgent)
-    };
-}
-function getBrowser() {
-    if (!browser) browser = calcBrowser();
-    return browser;
-}
-function Resize(_ref) {
-    let { swiper, on, emit } = _ref;
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    let observer = null;
-    let animationFrame = null;
-    const resizeHandler = ()=>{
-        if (!swiper || swiper.destroyed || !swiper.initialized) return;
-        emit("beforeResize");
-        emit("resize");
-    };
-    const createObserver = ()=>{
-        if (!swiper || swiper.destroyed || !swiper.initialized) return;
-        observer = new ResizeObserver((entries)=>{
-            animationFrame = window1.requestAnimationFrame(()=>{
-                const { width, height } = swiper;
-                let newWidth = width;
-                let newHeight = height;
-                entries.forEach((_ref2)=>{
-                    let { contentBoxSize, contentRect, target } = _ref2;
-                    if (target && target !== swiper.el) return;
-                    newWidth = contentRect ? contentRect.width : (contentBoxSize[0] || contentBoxSize).inlineSize;
-                    newHeight = contentRect ? contentRect.height : (contentBoxSize[0] || contentBoxSize).blockSize;
-                });
-                if (newWidth !== width || newHeight !== height) resizeHandler();
-            });
-        });
-        observer.observe(swiper.el);
-    };
-    const removeObserver = ()=>{
-        if (animationFrame) window1.cancelAnimationFrame(animationFrame);
-        if (observer && observer.unobserve && swiper.el) {
-            observer.unobserve(swiper.el);
-            observer = null;
-        }
-    };
-    const orientationChangeHandler = ()=>{
-        if (!swiper || swiper.destroyed || !swiper.initialized) return;
-        emit("orientationchange");
-    };
-    on("init", ()=>{
-        if (swiper.params.resizeObserver && typeof window1.ResizeObserver !== "undefined") {
-            createObserver();
-            return;
-        }
-        window1.addEventListener("resize", resizeHandler);
-        window1.addEventListener("orientationchange", orientationChangeHandler);
-    });
-    on("destroy", ()=>{
-        removeObserver();
-        window1.removeEventListener("resize", resizeHandler);
-        window1.removeEventListener("orientationchange", orientationChangeHandler);
-    });
-}
-function Observer(_ref) {
-    let { swiper, extendParams, on, emit } = _ref;
-    const observers = [];
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    const attach = function(target, options) {
-        if (options === void 0) options = {};
-        const ObserverFunc = window1.MutationObserver || window1.WebkitMutationObserver;
-        const observer = new ObserverFunc((mutations)=>{
-            // The observerUpdate event should only be triggered
-            // once despite the number of mutations.  Additional
-            // triggers are redundant and are very costly
-            if (swiper.__preventObserver__) return;
-            if (mutations.length === 1) {
-                emit("observerUpdate", mutations[0]);
-                return;
-            }
-            const observerUpdate = function observerUpdate() {
-                emit("observerUpdate", mutations[0]);
-            };
-            if (window1.requestAnimationFrame) window1.requestAnimationFrame(observerUpdate);
-            else window1.setTimeout(observerUpdate, 0);
-        });
-        observer.observe(target, {
-            attributes: typeof options.attributes === "undefined" ? true : options.attributes,
-            childList: typeof options.childList === "undefined" ? true : options.childList,
-            characterData: typeof options.characterData === "undefined" ? true : options.characterData
-        });
-        observers.push(observer);
-    };
-    const init = ()=>{
-        if (!swiper.params.observer) return;
-        if (swiper.params.observeParents) {
-            const containerParents = (0, _utilsMjs.a)(swiper.el);
-            for(let i = 0; i < containerParents.length; i += 1)attach(containerParents[i]);
-        }
-        // Observe container
-        attach(swiper.el, {
-            childList: swiper.params.observeSlideChildren
-        });
-        // Observe wrapper
-        attach(swiper.wrapperEl, {
-            attributes: false
-        });
-    };
-    const destroy = ()=>{
-        observers.forEach((observer)=>{
-            observer.disconnect();
-        });
-        observers.splice(0, observers.length);
-    };
-    extendParams({
-        observer: false,
-        observeParents: false,
-        observeSlideChildren: false
-    });
-    on("init", init);
-    on("destroy", destroy);
-}
-/* eslint-disable no-underscore-dangle */ var eventsEmitter = {
-    on (events, handler, priority) {
-        const self = this;
-        if (!self.eventsListeners || self.destroyed) return self;
-        if (typeof handler !== "function") return self;
-        const method = priority ? "unshift" : "push";
-        events.split(" ").forEach((event)=>{
-            if (!self.eventsListeners[event]) self.eventsListeners[event] = [];
-            self.eventsListeners[event][method](handler);
-        });
-        return self;
-    },
-    once (events, handler, priority) {
-        const self = this;
-        if (!self.eventsListeners || self.destroyed) return self;
-        if (typeof handler !== "function") return self;
-        function onceHandler() {
-            self.off(events, onceHandler);
-            if (onceHandler.__emitterProxy) delete onceHandler.__emitterProxy;
-            for(var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++)args[_key] = arguments[_key];
-            handler.apply(self, args);
-        }
-        onceHandler.__emitterProxy = handler;
-        return self.on(events, onceHandler, priority);
-    },
-    onAny (handler, priority) {
-        const self = this;
-        if (!self.eventsListeners || self.destroyed) return self;
-        if (typeof handler !== "function") return self;
-        const method = priority ? "unshift" : "push";
-        if (self.eventsAnyListeners.indexOf(handler) < 0) self.eventsAnyListeners[method](handler);
-        return self;
-    },
-    offAny (handler) {
-        const self = this;
-        if (!self.eventsListeners || self.destroyed) return self;
-        if (!self.eventsAnyListeners) return self;
-        const index = self.eventsAnyListeners.indexOf(handler);
-        if (index >= 0) self.eventsAnyListeners.splice(index, 1);
-        return self;
-    },
-    off (events, handler) {
-        const self = this;
-        if (!self.eventsListeners || self.destroyed) return self;
-        if (!self.eventsListeners) return self;
-        events.split(" ").forEach((event)=>{
-            if (typeof handler === "undefined") self.eventsListeners[event] = [];
-            else if (self.eventsListeners[event]) self.eventsListeners[event].forEach((eventHandler, index)=>{
-                if (eventHandler === handler || eventHandler.__emitterProxy && eventHandler.__emitterProxy === handler) self.eventsListeners[event].splice(index, 1);
-            });
-        });
-        return self;
-    },
-    emit () {
-        const self = this;
-        if (!self.eventsListeners || self.destroyed) return self;
-        if (!self.eventsListeners) return self;
-        let events;
-        let data;
-        let context;
-        for(var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++)args[_key2] = arguments[_key2];
-        if (typeof args[0] === "string" || Array.isArray(args[0])) {
-            events = args[0];
-            data = args.slice(1, args.length);
-            context = self;
-        } else {
-            events = args[0].events;
-            data = args[0].data;
-            context = args[0].context || self;
-        }
-        data.unshift(context);
-        const eventsArray = Array.isArray(events) ? events : events.split(" ");
-        eventsArray.forEach((event)=>{
-            if (self.eventsAnyListeners && self.eventsAnyListeners.length) self.eventsAnyListeners.forEach((eventHandler)=>{
-                eventHandler.apply(context, [
-                    event,
-                    ...data
-                ]);
-            });
-            if (self.eventsListeners && self.eventsListeners[event]) self.eventsListeners[event].forEach((eventHandler)=>{
-                eventHandler.apply(context, data);
-            });
-        });
-        return self;
-    }
-};
-function updateSize() {
-    const swiper = this;
-    let width;
-    let height;
-    const el = swiper.el;
-    if (typeof swiper.params.width !== "undefined" && swiper.params.width !== null) width = swiper.params.width;
-    else width = el.clientWidth;
-    if (typeof swiper.params.height !== "undefined" && swiper.params.height !== null) height = swiper.params.height;
-    else height = el.clientHeight;
-    if (width === 0 && swiper.isHorizontal() || height === 0 && swiper.isVertical()) return;
-    // Subtract paddings
-    width = width - parseInt((0, _utilsMjs.l)(el, "padding-left") || 0, 10) - parseInt((0, _utilsMjs.l)(el, "padding-right") || 0, 10);
-    height = height - parseInt((0, _utilsMjs.l)(el, "padding-top") || 0, 10) - parseInt((0, _utilsMjs.l)(el, "padding-bottom") || 0, 10);
-    if (Number.isNaN(width)) width = 0;
-    if (Number.isNaN(height)) height = 0;
-    Object.assign(swiper, {
-        width,
-        height,
-        size: swiper.isHorizontal() ? width : height
-    });
-}
-function updateSlides() {
-    const swiper = this;
-    function getDirectionLabel(property) {
-        if (swiper.isHorizontal()) return property;
-        // prettier-ignore
-        return ({
-            "width": "height",
-            "margin-top": "margin-left",
-            "margin-bottom ": "margin-right",
-            "margin-left": "margin-top",
-            "margin-right": "margin-bottom",
-            "padding-left": "padding-top",
-            "padding-right": "padding-bottom",
-            "marginRight": "marginBottom"
-        })[property];
-    }
-    function getDirectionPropertyValue(node, label) {
-        return parseFloat(node.getPropertyValue(getDirectionLabel(label)) || 0);
-    }
-    const params = swiper.params;
-    const { wrapperEl, slidesEl, size: swiperSize, rtlTranslate: rtl, wrongRTL } = swiper;
-    const isVirtual = swiper.virtual && params.virtual.enabled;
-    const previousSlidesLength = isVirtual ? swiper.virtual.slides.length : swiper.slides.length;
-    const slides = (0, _utilsMjs.e)(slidesEl, `.${swiper.params.slideClass}, swiper-slide`);
-    const slidesLength = isVirtual ? swiper.virtual.slides.length : slides.length;
-    let snapGrid = [];
-    const slidesGrid = [];
-    const slidesSizesGrid = [];
-    let offsetBefore = params.slidesOffsetBefore;
-    if (typeof offsetBefore === "function") offsetBefore = params.slidesOffsetBefore.call(swiper);
-    let offsetAfter = params.slidesOffsetAfter;
-    if (typeof offsetAfter === "function") offsetAfter = params.slidesOffsetAfter.call(swiper);
-    const previousSnapGridLength = swiper.snapGrid.length;
-    const previousSlidesGridLength = swiper.slidesGrid.length;
-    let spaceBetween = params.spaceBetween;
-    let slidePosition = -offsetBefore;
-    let prevSlideSize = 0;
-    let index = 0;
-    if (typeof swiperSize === "undefined") return;
-    if (typeof spaceBetween === "string" && spaceBetween.indexOf("%") >= 0) spaceBetween = parseFloat(spaceBetween.replace("%", "")) / 100 * swiperSize;
-    else if (typeof spaceBetween === "string") spaceBetween = parseFloat(spaceBetween);
-    swiper.virtualSize = -spaceBetween;
-    // reset margins
-    slides.forEach((slideEl)=>{
-        if (rtl) slideEl.style.marginLeft = "";
-        else slideEl.style.marginRight = "";
-        slideEl.style.marginBottom = "";
-        slideEl.style.marginTop = "";
-    });
-    // reset cssMode offsets
-    if (params.centeredSlides && params.cssMode) {
-        (0, _utilsMjs.s)(wrapperEl, "--swiper-centered-offset-before", "");
-        (0, _utilsMjs.s)(wrapperEl, "--swiper-centered-offset-after", "");
-    }
-    const gridEnabled = params.grid && params.grid.rows > 1 && swiper.grid;
-    if (gridEnabled) swiper.grid.initSlides(slidesLength);
-    // Calc slides
-    let slideSize;
-    const shouldResetSlideSize = params.slidesPerView === "auto" && params.breakpoints && Object.keys(params.breakpoints).filter((key)=>{
-        return typeof params.breakpoints[key].slidesPerView !== "undefined";
-    }).length > 0;
-    for(let i = 0; i < slidesLength; i += 1){
-        slideSize = 0;
-        let slide;
-        if (slides[i]) slide = slides[i];
-        if (gridEnabled) swiper.grid.updateSlide(i, slide, slidesLength, getDirectionLabel);
-        if (slides[i] && (0, _utilsMjs.l)(slide, "display") === "none") continue; // eslint-disable-line
-        if (params.slidesPerView === "auto") {
-            if (shouldResetSlideSize) slides[i].style[getDirectionLabel("width")] = ``;
-            const slideStyles = getComputedStyle(slide);
-            const currentTransform = slide.style.transform;
-            const currentWebKitTransform = slide.style.webkitTransform;
-            if (currentTransform) slide.style.transform = "none";
-            if (currentWebKitTransform) slide.style.webkitTransform = "none";
-            if (params.roundLengths) slideSize = swiper.isHorizontal() ? (0, _utilsMjs.f)(slide, "width", true) : (0, _utilsMjs.f)(slide, "height", true);
-            else {
-                // eslint-disable-next-line
-                const width = getDirectionPropertyValue(slideStyles, "width");
-                const paddingLeft = getDirectionPropertyValue(slideStyles, "padding-left");
-                const paddingRight = getDirectionPropertyValue(slideStyles, "padding-right");
-                const marginLeft = getDirectionPropertyValue(slideStyles, "margin-left");
-                const marginRight = getDirectionPropertyValue(slideStyles, "margin-right");
-                const boxSizing = slideStyles.getPropertyValue("box-sizing");
-                if (boxSizing && boxSizing === "border-box") slideSize = width + marginLeft + marginRight;
-                else {
-                    const { clientWidth, offsetWidth } = slide;
-                    slideSize = width + paddingLeft + paddingRight + marginLeft + marginRight + (offsetWidth - clientWidth);
-                }
-            }
-            if (currentTransform) slide.style.transform = currentTransform;
-            if (currentWebKitTransform) slide.style.webkitTransform = currentWebKitTransform;
-            if (params.roundLengths) slideSize = Math.floor(slideSize);
-        } else {
-            slideSize = (swiperSize - (params.slidesPerView - 1) * spaceBetween) / params.slidesPerView;
-            if (params.roundLengths) slideSize = Math.floor(slideSize);
-            if (slides[i]) slides[i].style[getDirectionLabel("width")] = `${slideSize}px`;
-        }
-        if (slides[i]) slides[i].swiperSlideSize = slideSize;
-        slidesSizesGrid.push(slideSize);
-        if (params.centeredSlides) {
-            slidePosition = slidePosition + slideSize / 2 + prevSlideSize / 2 + spaceBetween;
-            if (prevSlideSize === 0 && i !== 0) slidePosition = slidePosition - swiperSize / 2 - spaceBetween;
-            if (i === 0) slidePosition = slidePosition - swiperSize / 2 - spaceBetween;
-            if (Math.abs(slidePosition) < 0.001) slidePosition = 0;
-            if (params.roundLengths) slidePosition = Math.floor(slidePosition);
-            if (index % params.slidesPerGroup === 0) snapGrid.push(slidePosition);
-            slidesGrid.push(slidePosition);
-        } else {
-            if (params.roundLengths) slidePosition = Math.floor(slidePosition);
-            if ((index - Math.min(swiper.params.slidesPerGroupSkip, index)) % swiper.params.slidesPerGroup === 0) snapGrid.push(slidePosition);
-            slidesGrid.push(slidePosition);
-            slidePosition = slidePosition + slideSize + spaceBetween;
-        }
-        swiper.virtualSize += slideSize + spaceBetween;
-        prevSlideSize = slideSize;
-        index += 1;
-    }
-    swiper.virtualSize = Math.max(swiper.virtualSize, swiperSize) + offsetAfter;
-    if (rtl && wrongRTL && (params.effect === "slide" || params.effect === "coverflow")) wrapperEl.style.width = `${swiper.virtualSize + spaceBetween}px`;
-    if (params.setWrapperSize) wrapperEl.style[getDirectionLabel("width")] = `${swiper.virtualSize + spaceBetween}px`;
-    if (gridEnabled) swiper.grid.updateWrapperSize(slideSize, snapGrid, getDirectionLabel);
-    // Remove last grid elements depending on width
-    if (!params.centeredSlides) {
-        const newSlidesGrid = [];
-        for(let i = 0; i < snapGrid.length; i += 1){
-            let slidesGridItem = snapGrid[i];
-            if (params.roundLengths) slidesGridItem = Math.floor(slidesGridItem);
-            if (snapGrid[i] <= swiper.virtualSize - swiperSize) newSlidesGrid.push(slidesGridItem);
-        }
-        snapGrid = newSlidesGrid;
-        if (Math.floor(swiper.virtualSize - swiperSize) - Math.floor(snapGrid[snapGrid.length - 1]) > 1) snapGrid.push(swiper.virtualSize - swiperSize);
-    }
-    if (isVirtual && params.loop) {
-        const size = slidesSizesGrid[0] + spaceBetween;
-        if (params.slidesPerGroup > 1) {
-            const groups = Math.ceil((swiper.virtual.slidesBefore + swiper.virtual.slidesAfter) / params.slidesPerGroup);
-            const groupSize = size * params.slidesPerGroup;
-            for(let i = 0; i < groups; i += 1)snapGrid.push(snapGrid[snapGrid.length - 1] + groupSize);
-        }
-        for(let i = 0; i < swiper.virtual.slidesBefore + swiper.virtual.slidesAfter; i += 1){
-            if (params.slidesPerGroup === 1) snapGrid.push(snapGrid[snapGrid.length - 1] + size);
-            slidesGrid.push(slidesGrid[slidesGrid.length - 1] + size);
-            swiper.virtualSize += size;
-        }
-    }
-    if (snapGrid.length === 0) snapGrid = [
-        0
-    ];
-    if (spaceBetween !== 0) {
-        const key = swiper.isHorizontal() && rtl ? "marginLeft" : getDirectionLabel("marginRight");
-        slides.filter((_, slideIndex)=>{
-            if (!params.cssMode || params.loop) return true;
-            if (slideIndex === slides.length - 1) return false;
-            return true;
-        }).forEach((slideEl)=>{
-            slideEl.style[key] = `${spaceBetween}px`;
-        });
-    }
-    if (params.centeredSlides && params.centeredSlidesBounds) {
-        let allSlidesSize = 0;
-        slidesSizesGrid.forEach((slideSizeValue)=>{
-            allSlidesSize += slideSizeValue + (spaceBetween || 0);
-        });
-        allSlidesSize -= spaceBetween;
-        const maxSnap = allSlidesSize - swiperSize;
-        snapGrid = snapGrid.map((snap)=>{
-            if (snap <= 0) return -offsetBefore;
-            if (snap > maxSnap) return maxSnap + offsetAfter;
-            return snap;
-        });
-    }
-    if (params.centerInsufficientSlides) {
-        let allSlidesSize = 0;
-        slidesSizesGrid.forEach((slideSizeValue)=>{
-            allSlidesSize += slideSizeValue + (spaceBetween || 0);
-        });
-        allSlidesSize -= spaceBetween;
-        if (allSlidesSize < swiperSize) {
-            const allSlidesOffset = (swiperSize - allSlidesSize) / 2;
-            snapGrid.forEach((snap, snapIndex)=>{
-                snapGrid[snapIndex] = snap - allSlidesOffset;
-            });
-            slidesGrid.forEach((snap, snapIndex)=>{
-                slidesGrid[snapIndex] = snap + allSlidesOffset;
-            });
-        }
-    }
-    Object.assign(swiper, {
-        slides,
-        snapGrid,
-        slidesGrid,
-        slidesSizesGrid
-    });
-    if (params.centeredSlides && params.cssMode && !params.centeredSlidesBounds) {
-        (0, _utilsMjs.s)(wrapperEl, "--swiper-centered-offset-before", `${-snapGrid[0]}px`);
-        (0, _utilsMjs.s)(wrapperEl, "--swiper-centered-offset-after", `${swiper.size / 2 - slidesSizesGrid[slidesSizesGrid.length - 1] / 2}px`);
-        const addToSnapGrid = -swiper.snapGrid[0];
-        const addToSlidesGrid = -swiper.slidesGrid[0];
-        swiper.snapGrid = swiper.snapGrid.map((v)=>v + addToSnapGrid);
-        swiper.slidesGrid = swiper.slidesGrid.map((v)=>v + addToSlidesGrid);
-    }
-    if (slidesLength !== previousSlidesLength) swiper.emit("slidesLengthChange");
-    if (snapGrid.length !== previousSnapGridLength) {
-        if (swiper.params.watchOverflow) swiper.checkOverflow();
-        swiper.emit("snapGridLengthChange");
-    }
-    if (slidesGrid.length !== previousSlidesGridLength) swiper.emit("slidesGridLengthChange");
-    if (params.watchSlidesProgress) swiper.updateSlidesOffset();
-    if (!isVirtual && !params.cssMode && (params.effect === "slide" || params.effect === "fade")) {
-        const backFaceHiddenClass = `${params.containerModifierClass}backface-hidden`;
-        const hasClassBackfaceClassAdded = swiper.el.classList.contains(backFaceHiddenClass);
-        if (slidesLength <= params.maxBackfaceHiddenSlides) {
-            if (!hasClassBackfaceClassAdded) swiper.el.classList.add(backFaceHiddenClass);
-        } else if (hasClassBackfaceClassAdded) swiper.el.classList.remove(backFaceHiddenClass);
-    }
-}
-function updateAutoHeight(speed) {
-    const swiper = this;
-    const activeSlides = [];
-    const isVirtual = swiper.virtual && swiper.params.virtual.enabled;
-    let newHeight = 0;
-    let i;
-    if (typeof speed === "number") swiper.setTransition(speed);
-    else if (speed === true) swiper.setTransition(swiper.params.speed);
-    const getSlideByIndex = (index)=>{
-        if (isVirtual) return swiper.slides[swiper.getSlideIndexByData(index)];
-        return swiper.slides[index];
-    };
-    // Find slides currently in view
-    if (swiper.params.slidesPerView !== "auto" && swiper.params.slidesPerView > 1) {
-        if (swiper.params.centeredSlides) (swiper.visibleSlides || []).forEach((slide)=>{
-            activeSlides.push(slide);
-        });
-        else for(i = 0; i < Math.ceil(swiper.params.slidesPerView); i += 1){
-            const index = swiper.activeIndex + i;
-            if (index > swiper.slides.length && !isVirtual) break;
-            activeSlides.push(getSlideByIndex(index));
-        }
-    } else activeSlides.push(getSlideByIndex(swiper.activeIndex));
-    // Find new height from highest slide in view
-    for(i = 0; i < activeSlides.length; i += 1)if (typeof activeSlides[i] !== "undefined") {
-        const height = activeSlides[i].offsetHeight;
-        newHeight = height > newHeight ? height : newHeight;
-    }
-    // Update Height
-    if (newHeight || newHeight === 0) swiper.wrapperEl.style.height = `${newHeight}px`;
-}
-function updateSlidesOffset() {
-    const swiper = this;
-    const slides = swiper.slides;
-    // eslint-disable-next-line
-    const minusOffset = swiper.isElement ? swiper.isHorizontal() ? swiper.wrapperEl.offsetLeft : swiper.wrapperEl.offsetTop : 0;
-    for(let i = 0; i < slides.length; i += 1)slides[i].swiperSlideOffset = (swiper.isHorizontal() ? slides[i].offsetLeft : slides[i].offsetTop) - minusOffset - swiper.cssOverflowAdjustment();
-}
-function updateSlidesProgress(translate) {
-    if (translate === void 0) translate = this && this.translate || 0;
-    const swiper = this;
-    const params = swiper.params;
-    const { slides, rtlTranslate: rtl, snapGrid } = swiper;
-    if (slides.length === 0) return;
-    if (typeof slides[0].swiperSlideOffset === "undefined") swiper.updateSlidesOffset();
-    let offsetCenter = -translate;
-    if (rtl) offsetCenter = translate;
-    // Visible Slides
-    slides.forEach((slideEl)=>{
-        slideEl.classList.remove(params.slideVisibleClass);
-    });
-    swiper.visibleSlidesIndexes = [];
-    swiper.visibleSlides = [];
-    let spaceBetween = params.spaceBetween;
-    if (typeof spaceBetween === "string" && spaceBetween.indexOf("%") >= 0) spaceBetween = parseFloat(spaceBetween.replace("%", "")) / 100 * swiper.size;
-    else if (typeof spaceBetween === "string") spaceBetween = parseFloat(spaceBetween);
-    for(let i = 0; i < slides.length; i += 1){
-        const slide = slides[i];
-        let slideOffset = slide.swiperSlideOffset;
-        if (params.cssMode && params.centeredSlides) slideOffset -= slides[0].swiperSlideOffset;
-        const slideProgress = (offsetCenter + (params.centeredSlides ? swiper.minTranslate() : 0) - slideOffset) / (slide.swiperSlideSize + spaceBetween);
-        const originalSlideProgress = (offsetCenter - snapGrid[0] + (params.centeredSlides ? swiper.minTranslate() : 0) - slideOffset) / (slide.swiperSlideSize + spaceBetween);
-        const slideBefore = -(offsetCenter - slideOffset);
-        const slideAfter = slideBefore + swiper.slidesSizesGrid[i];
-        const isVisible = slideBefore >= 0 && slideBefore < swiper.size - 1 || slideAfter > 1 && slideAfter <= swiper.size || slideBefore <= 0 && slideAfter >= swiper.size;
-        if (isVisible) {
-            swiper.visibleSlides.push(slide);
-            swiper.visibleSlidesIndexes.push(i);
-            slides[i].classList.add(params.slideVisibleClass);
-        }
-        slide.progress = rtl ? -slideProgress : slideProgress;
-        slide.originalProgress = rtl ? -originalSlideProgress : originalSlideProgress;
-    }
-}
-function updateProgress(translate) {
-    const swiper = this;
-    if (typeof translate === "undefined") {
-        const multiplier = swiper.rtlTranslate ? -1 : 1;
-        // eslint-disable-next-line
-        translate = swiper && swiper.translate && swiper.translate * multiplier || 0;
-    }
-    const params = swiper.params;
-    const translatesDiff = swiper.maxTranslate() - swiper.minTranslate();
-    let { progress, isBeginning, isEnd, progressLoop } = swiper;
-    const wasBeginning = isBeginning;
-    const wasEnd = isEnd;
-    if (translatesDiff === 0) {
-        progress = 0;
-        isBeginning = true;
-        isEnd = true;
-    } else {
-        progress = (translate - swiper.minTranslate()) / translatesDiff;
-        const isBeginningRounded = Math.abs(translate - swiper.minTranslate()) < 1;
-        const isEndRounded = Math.abs(translate - swiper.maxTranslate()) < 1;
-        isBeginning = isBeginningRounded || progress <= 0;
-        isEnd = isEndRounded || progress >= 1;
-        if (isBeginningRounded) progress = 0;
-        if (isEndRounded) progress = 1;
-    }
-    if (params.loop) {
-        const firstSlideIndex = swiper.getSlideIndexByData(0);
-        const lastSlideIndex = swiper.getSlideIndexByData(swiper.slides.length - 1);
-        const firstSlideTranslate = swiper.slidesGrid[firstSlideIndex];
-        const lastSlideTranslate = swiper.slidesGrid[lastSlideIndex];
-        const translateMax = swiper.slidesGrid[swiper.slidesGrid.length - 1];
-        const translateAbs = Math.abs(translate);
-        if (translateAbs >= firstSlideTranslate) progressLoop = (translateAbs - firstSlideTranslate) / translateMax;
-        else progressLoop = (translateAbs + translateMax - lastSlideTranslate) / translateMax;
-        if (progressLoop > 1) progressLoop -= 1;
-    }
-    Object.assign(swiper, {
-        progress,
-        progressLoop,
-        isBeginning,
-        isEnd
-    });
-    if (params.watchSlidesProgress || params.centeredSlides && params.autoHeight) swiper.updateSlidesProgress(translate);
-    if (isBeginning && !wasBeginning) swiper.emit("reachBeginning toEdge");
-    if (isEnd && !wasEnd) swiper.emit("reachEnd toEdge");
-    if (wasBeginning && !isBeginning || wasEnd && !isEnd) swiper.emit("fromEdge");
-    swiper.emit("progress", progress);
-}
-function updateSlidesClasses() {
-    const swiper = this;
-    const { slides, params, slidesEl, activeIndex } = swiper;
-    const isVirtual = swiper.virtual && params.virtual.enabled;
-    const getFilteredSlide = (selector)=>{
-        return (0, _utilsMjs.e)(slidesEl, `.${params.slideClass}${selector}, swiper-slide${selector}`)[0];
-    };
-    slides.forEach((slideEl)=>{
-        slideEl.classList.remove(params.slideActiveClass, params.slideNextClass, params.slidePrevClass);
-    });
-    let activeSlide;
-    if (isVirtual) {
-        if (params.loop) {
-            let slideIndex = activeIndex - swiper.virtual.slidesBefore;
-            if (slideIndex < 0) slideIndex = swiper.virtual.slides.length + slideIndex;
-            if (slideIndex >= swiper.virtual.slides.length) slideIndex -= swiper.virtual.slides.length;
-            activeSlide = getFilteredSlide(`[data-swiper-slide-index="${slideIndex}"]`);
-        } else activeSlide = getFilteredSlide(`[data-swiper-slide-index="${activeIndex}"]`);
-    } else activeSlide = slides[activeIndex];
-    if (activeSlide) {
-        // Active classes
-        activeSlide.classList.add(params.slideActiveClass);
-        // Next Slide
-        let nextSlide = (0, _utilsMjs.m)(activeSlide, `.${params.slideClass}, swiper-slide`)[0];
-        if (params.loop && !nextSlide) nextSlide = slides[0];
-        if (nextSlide) nextSlide.classList.add(params.slideNextClass);
-        // Prev Slide
-        let prevSlide = (0, _utilsMjs.o)(activeSlide, `.${params.slideClass}, swiper-slide`)[0];
-        params.loop;
-        if (prevSlide) prevSlide.classList.add(params.slidePrevClass);
-    }
-    swiper.emitSlidesClasses();
-}
-const processLazyPreloader = (swiper, imageEl)=>{
-    if (!swiper || swiper.destroyed || !swiper.params) return;
-    const slideSelector = ()=>swiper.isElement ? `swiper-slide` : `.${swiper.params.slideClass}`;
-    const slideEl = imageEl.closest(slideSelector());
-    if (slideEl) {
-        const lazyEl = slideEl.querySelector(`.${swiper.params.lazyPreloaderClass}`);
-        if (lazyEl) lazyEl.remove();
-    }
-};
-const unlazy = (swiper, index)=>{
-    if (!swiper.slides[index]) return;
-    const imageEl = swiper.slides[index].querySelector('[loading="lazy"]');
-    if (imageEl) imageEl.removeAttribute("loading");
-};
-const preload = (swiper)=>{
-    if (!swiper || swiper.destroyed || !swiper.params) return;
-    let amount = swiper.params.lazyPreloadPrevNext;
-    const len = swiper.slides.length;
-    if (!len || !amount || amount < 0) return;
-    amount = Math.min(amount, len);
-    const slidesPerView = swiper.params.slidesPerView === "auto" ? swiper.slidesPerViewDynamic() : Math.ceil(swiper.params.slidesPerView);
-    const activeIndex = swiper.activeIndex;
-    if (swiper.params.grid && swiper.params.grid.rows > 1) {
-        const activeColumn = activeIndex;
-        const preloadColumns = [
-            activeColumn - amount
-        ];
-        preloadColumns.push(...Array.from({
-            length: amount
-        }).map((_, i)=>{
-            return activeColumn + slidesPerView + i;
-        }));
-        swiper.slides.forEach((slideEl, i)=>{
-            if (preloadColumns.includes(slideEl.column)) unlazy(swiper, i);
-        });
-        return;
-    }
-    const slideIndexLastInView = activeIndex + slidesPerView - 1;
-    if (swiper.params.rewind || swiper.params.loop) for(let i = activeIndex - amount; i <= slideIndexLastInView + amount; i += 1){
-        const realIndex = (i % len + len) % len;
-        if (realIndex < activeIndex || realIndex > slideIndexLastInView) unlazy(swiper, realIndex);
-    }
-    else {
-        for(let i = Math.max(activeIndex - amount, 0); i <= Math.min(slideIndexLastInView + amount, len - 1); i += 1)if (i !== activeIndex && (i > slideIndexLastInView || i < activeIndex)) unlazy(swiper, i);
-    }
-};
-function getActiveIndexByTranslate(swiper) {
-    const { slidesGrid, params } = swiper;
-    const translate = swiper.rtlTranslate ? swiper.translate : -swiper.translate;
-    let activeIndex;
-    for(let i = 0; i < slidesGrid.length; i += 1){
-        if (typeof slidesGrid[i + 1] !== "undefined") {
-            if (translate >= slidesGrid[i] && translate < slidesGrid[i + 1] - (slidesGrid[i + 1] - slidesGrid[i]) / 2) activeIndex = i;
-            else if (translate >= slidesGrid[i] && translate < slidesGrid[i + 1]) activeIndex = i + 1;
-        } else if (translate >= slidesGrid[i]) activeIndex = i;
-    }
-    // Normalize slideIndex
-    if (params.normalizeSlideIndex) {
-        if (activeIndex < 0 || typeof activeIndex === "undefined") activeIndex = 0;
-    }
-    return activeIndex;
-}
-function updateActiveIndex(newActiveIndex) {
-    const swiper = this;
-    const translate = swiper.rtlTranslate ? swiper.translate : -swiper.translate;
-    const { snapGrid, params, activeIndex: previousIndex, realIndex: previousRealIndex, snapIndex: previousSnapIndex } = swiper;
-    let activeIndex = newActiveIndex;
-    let snapIndex;
-    const getVirtualRealIndex = (aIndex)=>{
-        let realIndex = aIndex - swiper.virtual.slidesBefore;
-        if (realIndex < 0) realIndex = swiper.virtual.slides.length + realIndex;
-        if (realIndex >= swiper.virtual.slides.length) realIndex -= swiper.virtual.slides.length;
-        return realIndex;
-    };
-    if (typeof activeIndex === "undefined") activeIndex = getActiveIndexByTranslate(swiper);
-    if (snapGrid.indexOf(translate) >= 0) snapIndex = snapGrid.indexOf(translate);
-    else {
-        const skip = Math.min(params.slidesPerGroupSkip, activeIndex);
-        snapIndex = skip + Math.floor((activeIndex - skip) / params.slidesPerGroup);
-    }
-    if (snapIndex >= snapGrid.length) snapIndex = snapGrid.length - 1;
-    if (activeIndex === previousIndex) {
-        if (snapIndex !== previousSnapIndex) {
-            swiper.snapIndex = snapIndex;
-            swiper.emit("snapIndexChange");
-        }
-        if (swiper.params.loop && swiper.virtual && swiper.params.virtual.enabled) swiper.realIndex = getVirtualRealIndex(activeIndex);
-        return;
-    }
-    // Get real index
-    let realIndex;
-    if (swiper.virtual && params.virtual.enabled && params.loop) realIndex = getVirtualRealIndex(activeIndex);
-    else if (swiper.slides[activeIndex]) realIndex = parseInt(swiper.slides[activeIndex].getAttribute("data-swiper-slide-index") || activeIndex, 10);
-    else realIndex = activeIndex;
-    Object.assign(swiper, {
-        previousSnapIndex,
-        snapIndex,
-        previousRealIndex,
-        realIndex,
-        previousIndex,
-        activeIndex
-    });
-    if (swiper.initialized) preload(swiper);
-    swiper.emit("activeIndexChange");
-    swiper.emit("snapIndexChange");
-    if (previousRealIndex !== realIndex) swiper.emit("realIndexChange");
-    if (swiper.initialized || swiper.params.runCallbacksOnInit) swiper.emit("slideChange");
-}
-function updateClickedSlide(e) {
-    const swiper = this;
-    const params = swiper.params;
-    const slide = e.closest(`.${params.slideClass}, swiper-slide`);
-    let slideFound = false;
-    let slideIndex;
-    if (slide) {
-        for(let i = 0; i < swiper.slides.length; i += 1)if (swiper.slides[i] === slide) {
-            slideFound = true;
-            slideIndex = i;
-            break;
-        }
-    }
-    if (slide && slideFound) {
-        swiper.clickedSlide = slide;
-        if (swiper.virtual && swiper.params.virtual.enabled) swiper.clickedIndex = parseInt(slide.getAttribute("data-swiper-slide-index"), 10);
-        else swiper.clickedIndex = slideIndex;
-    } else {
-        swiper.clickedSlide = undefined;
-        swiper.clickedIndex = undefined;
-        return;
-    }
-    if (params.slideToClickedSlide && swiper.clickedIndex !== undefined && swiper.clickedIndex !== swiper.activeIndex) swiper.slideToClickedSlide();
-}
-var update = {
-    updateSize,
-    updateSlides,
-    updateAutoHeight,
-    updateSlidesOffset,
-    updateSlidesProgress,
-    updateProgress,
-    updateSlidesClasses,
-    updateActiveIndex,
-    updateClickedSlide
-};
-function getSwiperTranslate(axis) {
-    if (axis === void 0) axis = this.isHorizontal() ? "x" : "y";
-    const swiper = this;
-    const { params, rtlTranslate: rtl, translate, wrapperEl } = swiper;
-    if (params.virtualTranslate) return rtl ? -translate : translate;
-    if (params.cssMode) return translate;
-    let currentTranslate = (0, _utilsMjs.h)(wrapperEl, axis);
-    currentTranslate += swiper.cssOverflowAdjustment();
-    if (rtl) currentTranslate = -currentTranslate;
-    return currentTranslate || 0;
-}
-function setTranslate(translate, byController) {
-    const swiper = this;
-    const { rtlTranslate: rtl, params, wrapperEl, progress } = swiper;
-    let x = 0;
-    let y = 0;
-    const z = 0;
-    if (swiper.isHorizontal()) x = rtl ? -translate : translate;
-    else y = translate;
-    if (params.roundLengths) {
-        x = Math.floor(x);
-        y = Math.floor(y);
-    }
-    swiper.previousTranslate = swiper.translate;
-    swiper.translate = swiper.isHorizontal() ? x : y;
-    if (params.cssMode) wrapperEl[swiper.isHorizontal() ? "scrollLeft" : "scrollTop"] = swiper.isHorizontal() ? -x : -y;
-    else if (!params.virtualTranslate) {
-        if (swiper.isHorizontal()) x -= swiper.cssOverflowAdjustment();
-        else y -= swiper.cssOverflowAdjustment();
-        wrapperEl.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
-    }
-    // Check if we need to update progress
-    let newProgress;
-    const translatesDiff = swiper.maxTranslate() - swiper.minTranslate();
-    if (translatesDiff === 0) newProgress = 0;
-    else newProgress = (translate - swiper.minTranslate()) / translatesDiff;
-    if (newProgress !== progress) swiper.updateProgress(translate);
-    swiper.emit("setTranslate", swiper.translate, byController);
-}
-function minTranslate() {
-    return -this.snapGrid[0];
-}
-function maxTranslate() {
-    return -this.snapGrid[this.snapGrid.length - 1];
-}
-function translateTo(translate, speed, runCallbacks, translateBounds, internal) {
-    if (translate === void 0) translate = 0;
-    if (speed === void 0) speed = this.params.speed;
-    if (runCallbacks === void 0) runCallbacks = true;
-    if (translateBounds === void 0) translateBounds = true;
-    const swiper = this;
-    const { params, wrapperEl } = swiper;
-    if (swiper.animating && params.preventInteractionOnTransition) return false;
-    const minTranslate = swiper.minTranslate();
-    const maxTranslate = swiper.maxTranslate();
-    let newTranslate;
-    if (translateBounds && translate > minTranslate) newTranslate = minTranslate;
-    else if (translateBounds && translate < maxTranslate) newTranslate = maxTranslate;
-    else newTranslate = translate;
-    // Update progress
-    swiper.updateProgress(newTranslate);
-    if (params.cssMode) {
-        const isH = swiper.isHorizontal();
-        if (speed === 0) wrapperEl[isH ? "scrollLeft" : "scrollTop"] = -newTranslate;
-        else {
-            if (!swiper.support.smoothScroll) {
-                (0, _utilsMjs.p)({
-                    swiper,
-                    targetPosition: -newTranslate,
-                    side: isH ? "left" : "top"
-                });
-                return true;
-            }
-            wrapperEl.scrollTo({
-                [isH ? "left" : "top"]: -newTranslate,
-                behavior: "smooth"
-            });
-        }
-        return true;
-    }
-    if (speed === 0) {
-        swiper.setTransition(0);
-        swiper.setTranslate(newTranslate);
-        if (runCallbacks) {
-            swiper.emit("beforeTransitionStart", speed, internal);
-            swiper.emit("transitionEnd");
-        }
-    } else {
-        swiper.setTransition(speed);
-        swiper.setTranslate(newTranslate);
-        if (runCallbacks) {
-            swiper.emit("beforeTransitionStart", speed, internal);
-            swiper.emit("transitionStart");
-        }
-        if (!swiper.animating) {
-            swiper.animating = true;
-            if (!swiper.onTranslateToWrapperTransitionEnd) swiper.onTranslateToWrapperTransitionEnd = function transitionEnd(e) {
-                if (!swiper || swiper.destroyed) return;
-                if (e.target !== this) return;
-                swiper.wrapperEl.removeEventListener("transitionend", swiper.onTranslateToWrapperTransitionEnd);
-                swiper.onTranslateToWrapperTransitionEnd = null;
-                delete swiper.onTranslateToWrapperTransitionEnd;
-                if (runCallbacks) swiper.emit("transitionEnd");
-            };
-            swiper.wrapperEl.addEventListener("transitionend", swiper.onTranslateToWrapperTransitionEnd);
-        }
-    }
-    return true;
-}
-var translate = {
-    getTranslate: getSwiperTranslate,
-    setTranslate,
-    minTranslate,
-    maxTranslate,
-    translateTo
-};
-function setTransition(duration, byController) {
-    const swiper = this;
-    if (!swiper.params.cssMode) swiper.wrapperEl.style.transitionDuration = `${duration}ms`;
-    swiper.emit("setTransition", duration, byController);
-}
-function transitionEmit(_ref) {
-    let { swiper, runCallbacks, direction, step } = _ref;
-    const { activeIndex, previousIndex } = swiper;
-    let dir = direction;
-    if (!dir) {
-        if (activeIndex > previousIndex) dir = "next";
-        else if (activeIndex < previousIndex) dir = "prev";
-        else dir = "reset";
-    }
-    swiper.emit(`transition${step}`);
-    if (runCallbacks && activeIndex !== previousIndex) {
-        if (dir === "reset") {
-            swiper.emit(`slideResetTransition${step}`);
-            return;
-        }
-        swiper.emit(`slideChangeTransition${step}`);
-        if (dir === "next") swiper.emit(`slideNextTransition${step}`);
-        else swiper.emit(`slidePrevTransition${step}`);
-    }
-}
-function transitionStart(runCallbacks, direction) {
-    if (runCallbacks === void 0) runCallbacks = true;
-    const swiper = this;
-    const { params } = swiper;
-    if (params.cssMode) return;
-    if (params.autoHeight) swiper.updateAutoHeight();
-    transitionEmit({
-        swiper,
-        runCallbacks,
-        direction,
-        step: "Start"
-    });
-}
-function transitionEnd(runCallbacks, direction) {
-    if (runCallbacks === void 0) runCallbacks = true;
-    const swiper = this;
-    const { params } = swiper;
-    swiper.animating = false;
-    if (params.cssMode) return;
-    swiper.setTransition(0);
-    transitionEmit({
-        swiper,
-        runCallbacks,
-        direction,
-        step: "End"
-    });
-}
-var transition = {
-    setTransition,
-    transitionStart,
-    transitionEnd
-};
-function slideTo(index, speed, runCallbacks, internal, initial) {
-    if (index === void 0) index = 0;
-    if (speed === void 0) speed = this.params.speed;
-    if (runCallbacks === void 0) runCallbacks = true;
-    if (typeof index === "string") index = parseInt(index, 10);
-    const swiper = this;
-    let slideIndex = index;
-    if (slideIndex < 0) slideIndex = 0;
-    const { params, snapGrid, slidesGrid, previousIndex, activeIndex, rtlTranslate: rtl, wrapperEl, enabled } = swiper;
-    if (swiper.animating && params.preventInteractionOnTransition || !enabled && !internal && !initial) return false;
-    const skip = Math.min(swiper.params.slidesPerGroupSkip, slideIndex);
-    let snapIndex = skip + Math.floor((slideIndex - skip) / swiper.params.slidesPerGroup);
-    if (snapIndex >= snapGrid.length) snapIndex = snapGrid.length - 1;
-    const translate = -snapGrid[snapIndex];
-    // Normalize slideIndex
-    if (params.normalizeSlideIndex) for(let i = 0; i < slidesGrid.length; i += 1){
-        const normalizedTranslate = -Math.floor(translate * 100);
-        const normalizedGrid = Math.floor(slidesGrid[i] * 100);
-        const normalizedGridNext = Math.floor(slidesGrid[i + 1] * 100);
-        if (typeof slidesGrid[i + 1] !== "undefined") {
-            if (normalizedTranslate >= normalizedGrid && normalizedTranslate < normalizedGridNext - (normalizedGridNext - normalizedGrid) / 2) slideIndex = i;
-            else if (normalizedTranslate >= normalizedGrid && normalizedTranslate < normalizedGridNext) slideIndex = i + 1;
-        } else if (normalizedTranslate >= normalizedGrid) slideIndex = i;
-    }
-    // Directions locks
-    if (swiper.initialized && slideIndex !== activeIndex) {
-        if (!swiper.allowSlideNext && (rtl ? translate > swiper.translate && translate > swiper.minTranslate() : translate < swiper.translate && translate < swiper.minTranslate())) return false;
-        if (!swiper.allowSlidePrev && translate > swiper.translate && translate > swiper.maxTranslate()) {
-            if ((activeIndex || 0) !== slideIndex) return false;
-        }
-    }
-    if (slideIndex !== (previousIndex || 0) && runCallbacks) swiper.emit("beforeSlideChangeStart");
-    // Update progress
-    swiper.updateProgress(translate);
-    let direction;
-    if (slideIndex > activeIndex) direction = "next";
-    else if (slideIndex < activeIndex) direction = "prev";
-    else direction = "reset";
-    // Update Index
-    if (rtl && -translate === swiper.translate || !rtl && translate === swiper.translate) {
-        swiper.updateActiveIndex(slideIndex);
-        // Update Height
-        if (params.autoHeight) swiper.updateAutoHeight();
-        swiper.updateSlidesClasses();
-        if (params.effect !== "slide") swiper.setTranslate(translate);
-        if (direction !== "reset") {
-            swiper.transitionStart(runCallbacks, direction);
-            swiper.transitionEnd(runCallbacks, direction);
-        }
-        return false;
-    }
-    if (params.cssMode) {
-        const isH = swiper.isHorizontal();
-        const t = rtl ? translate : -translate;
-        if (speed === 0) {
-            const isVirtual = swiper.virtual && swiper.params.virtual.enabled;
-            if (isVirtual) {
-                swiper.wrapperEl.style.scrollSnapType = "none";
-                swiper._immediateVirtual = true;
-            }
-            if (isVirtual && !swiper._cssModeVirtualInitialSet && swiper.params.initialSlide > 0) {
-                swiper._cssModeVirtualInitialSet = true;
-                requestAnimationFrame(()=>{
-                    wrapperEl[isH ? "scrollLeft" : "scrollTop"] = t;
-                });
-            } else wrapperEl[isH ? "scrollLeft" : "scrollTop"] = t;
-            if (isVirtual) requestAnimationFrame(()=>{
-                swiper.wrapperEl.style.scrollSnapType = "";
-                swiper._immediateVirtual = false;
-            });
-        } else {
-            if (!swiper.support.smoothScroll) {
-                (0, _utilsMjs.p)({
-                    swiper,
-                    targetPosition: t,
-                    side: isH ? "left" : "top"
-                });
-                return true;
-            }
-            wrapperEl.scrollTo({
-                [isH ? "left" : "top"]: t,
-                behavior: "smooth"
-            });
-        }
-        return true;
-    }
-    swiper.setTransition(speed);
-    swiper.setTranslate(translate);
-    swiper.updateActiveIndex(slideIndex);
-    swiper.updateSlidesClasses();
-    swiper.emit("beforeTransitionStart", speed, internal);
-    swiper.transitionStart(runCallbacks, direction);
-    if (speed === 0) swiper.transitionEnd(runCallbacks, direction);
-    else if (!swiper.animating) {
-        swiper.animating = true;
-        if (!swiper.onSlideToWrapperTransitionEnd) swiper.onSlideToWrapperTransitionEnd = function transitionEnd(e) {
-            if (!swiper || swiper.destroyed) return;
-            if (e.target !== this) return;
-            swiper.wrapperEl.removeEventListener("transitionend", swiper.onSlideToWrapperTransitionEnd);
-            swiper.onSlideToWrapperTransitionEnd = null;
-            delete swiper.onSlideToWrapperTransitionEnd;
-            swiper.transitionEnd(runCallbacks, direction);
-        };
-        swiper.wrapperEl.addEventListener("transitionend", swiper.onSlideToWrapperTransitionEnd);
-    }
-    return true;
-}
-function slideToLoop(index, speed, runCallbacks, internal) {
-    if (index === void 0) index = 0;
-    if (speed === void 0) speed = this.params.speed;
-    if (runCallbacks === void 0) runCallbacks = true;
-    if (typeof index === "string") {
-        const indexAsNumber = parseInt(index, 10);
-        index = indexAsNumber;
-    }
-    const swiper = this;
-    let newIndex = index;
-    if (swiper.params.loop) {
-        if (swiper.virtual && swiper.params.virtual.enabled) // eslint-disable-next-line
-        newIndex = newIndex + swiper.virtual.slidesBefore;
-        else newIndex = swiper.getSlideIndexByData(newIndex);
-    }
-    return swiper.slideTo(newIndex, speed, runCallbacks, internal);
-}
-/* eslint no-unused-vars: "off" */ function slideNext(speed, runCallbacks, internal) {
-    if (speed === void 0) speed = this.params.speed;
-    if (runCallbacks === void 0) runCallbacks = true;
-    const swiper = this;
-    const { enabled, params, animating } = swiper;
-    if (!enabled) return swiper;
-    let perGroup = params.slidesPerGroup;
-    if (params.slidesPerView === "auto" && params.slidesPerGroup === 1 && params.slidesPerGroupAuto) perGroup = Math.max(swiper.slidesPerViewDynamic("current", true), 1);
-    const increment = swiper.activeIndex < params.slidesPerGroupSkip ? 1 : perGroup;
-    const isVirtual = swiper.virtual && params.virtual.enabled;
-    if (params.loop) {
-        if (animating && !isVirtual && params.loopPreventsSliding) return false;
-        swiper.loopFix({
-            direction: "next"
-        });
-        // eslint-disable-next-line
-        swiper._clientLeft = swiper.wrapperEl.clientLeft;
-    }
-    if (params.rewind && swiper.isEnd) return swiper.slideTo(0, speed, runCallbacks, internal);
-    return swiper.slideTo(swiper.activeIndex + increment, speed, runCallbacks, internal);
-}
-/* eslint no-unused-vars: "off" */ function slidePrev(speed, runCallbacks, internal) {
-    if (speed === void 0) speed = this.params.speed;
-    if (runCallbacks === void 0) runCallbacks = true;
-    const swiper = this;
-    const { params, snapGrid, slidesGrid, rtlTranslate, enabled, animating } = swiper;
-    if (!enabled) return swiper;
-    const isVirtual = swiper.virtual && params.virtual.enabled;
-    if (params.loop) {
-        if (animating && !isVirtual && params.loopPreventsSliding) return false;
-        swiper.loopFix({
-            direction: "prev"
-        });
-        // eslint-disable-next-line
-        swiper._clientLeft = swiper.wrapperEl.clientLeft;
-    }
-    const translate = rtlTranslate ? swiper.translate : -swiper.translate;
-    function normalize(val) {
-        if (val < 0) return -Math.floor(Math.abs(val));
-        return Math.floor(val);
-    }
-    const normalizedTranslate = normalize(translate);
-    const normalizedSnapGrid = snapGrid.map((val)=>normalize(val));
-    let prevSnap = snapGrid[normalizedSnapGrid.indexOf(normalizedTranslate) - 1];
-    if (typeof prevSnap === "undefined" && params.cssMode) {
-        let prevSnapIndex;
-        snapGrid.forEach((snap, snapIndex)=>{
-            if (normalizedTranslate >= snap) // prevSnap = snap;
-            prevSnapIndex = snapIndex;
-        });
-        if (typeof prevSnapIndex !== "undefined") prevSnap = snapGrid[prevSnapIndex > 0 ? prevSnapIndex - 1 : prevSnapIndex];
-    }
-    let prevIndex = 0;
-    if (typeof prevSnap !== "undefined") {
-        prevIndex = slidesGrid.indexOf(prevSnap);
-        if (prevIndex < 0) prevIndex = swiper.activeIndex - 1;
-        if (params.slidesPerView === "auto" && params.slidesPerGroup === 1 && params.slidesPerGroupAuto) {
-            prevIndex = prevIndex - swiper.slidesPerViewDynamic("previous", true) + 1;
-            prevIndex = Math.max(prevIndex, 0);
-        }
-    }
-    if (params.rewind && swiper.isBeginning) {
-        const lastIndex = swiper.params.virtual && swiper.params.virtual.enabled && swiper.virtual ? swiper.virtual.slides.length - 1 : swiper.slides.length - 1;
-        return swiper.slideTo(lastIndex, speed, runCallbacks, internal);
-    }
-    return swiper.slideTo(prevIndex, speed, runCallbacks, internal);
-}
-/* eslint no-unused-vars: "off" */ function slideReset(speed, runCallbacks, internal) {
-    if (speed === void 0) speed = this.params.speed;
-    if (runCallbacks === void 0) runCallbacks = true;
-    const swiper = this;
-    return swiper.slideTo(swiper.activeIndex, speed, runCallbacks, internal);
-}
-/* eslint no-unused-vars: "off" */ function slideToClosest(speed, runCallbacks, internal, threshold) {
-    if (speed === void 0) speed = this.params.speed;
-    if (runCallbacks === void 0) runCallbacks = true;
-    if (threshold === void 0) threshold = 0.5;
-    const swiper = this;
-    let index = swiper.activeIndex;
-    const skip = Math.min(swiper.params.slidesPerGroupSkip, index);
-    const snapIndex = skip + Math.floor((index - skip) / swiper.params.slidesPerGroup);
-    const translate = swiper.rtlTranslate ? swiper.translate : -swiper.translate;
-    if (translate >= swiper.snapGrid[snapIndex]) {
-        // The current translate is on or after the current snap index, so the choice
-        // is between the current index and the one after it.
-        const currentSnap = swiper.snapGrid[snapIndex];
-        const nextSnap = swiper.snapGrid[snapIndex + 1];
-        if (translate - currentSnap > (nextSnap - currentSnap) * threshold) index += swiper.params.slidesPerGroup;
-    } else {
-        // The current translate is before the current snap index, so the choice
-        // is between the current index and the one before it.
-        const prevSnap = swiper.snapGrid[snapIndex - 1];
-        const currentSnap = swiper.snapGrid[snapIndex];
-        if (translate - prevSnap <= (currentSnap - prevSnap) * threshold) index -= swiper.params.slidesPerGroup;
-    }
-    index = Math.max(index, 0);
-    index = Math.min(index, swiper.slidesGrid.length - 1);
-    return swiper.slideTo(index, speed, runCallbacks, internal);
-}
-function slideToClickedSlide() {
-    const swiper = this;
-    const { params, slidesEl } = swiper;
-    const slidesPerView = params.slidesPerView === "auto" ? swiper.slidesPerViewDynamic() : params.slidesPerView;
-    let slideToIndex = swiper.clickedIndex;
-    let realIndex;
-    const slideSelector = swiper.isElement ? `swiper-slide` : `.${params.slideClass}`;
-    if (params.loop) {
-        if (swiper.animating) return;
-        realIndex = parseInt(swiper.clickedSlide.getAttribute("data-swiper-slide-index"), 10);
-        if (params.centeredSlides) {
-            if (slideToIndex < swiper.loopedSlides - slidesPerView / 2 || slideToIndex > swiper.slides.length - swiper.loopedSlides + slidesPerView / 2) {
-                swiper.loopFix();
-                slideToIndex = swiper.getSlideIndex((0, _utilsMjs.e)(slidesEl, `${slideSelector}[data-swiper-slide-index="${realIndex}"]`)[0]);
-                (0, _utilsMjs.n)(()=>{
-                    swiper.slideTo(slideToIndex);
-                });
-            } else swiper.slideTo(slideToIndex);
-        } else if (slideToIndex > swiper.slides.length - slidesPerView) {
-            swiper.loopFix();
-            slideToIndex = swiper.getSlideIndex((0, _utilsMjs.e)(slidesEl, `${slideSelector}[data-swiper-slide-index="${realIndex}"]`)[0]);
-            (0, _utilsMjs.n)(()=>{
-                swiper.slideTo(slideToIndex);
-            });
-        } else swiper.slideTo(slideToIndex);
-    } else swiper.slideTo(slideToIndex);
-}
-var slide = {
-    slideTo,
-    slideToLoop,
-    slideNext,
-    slidePrev,
-    slideReset,
-    slideToClosest,
-    slideToClickedSlide
-};
-function loopCreate(slideRealIndex) {
-    const swiper = this;
-    const { params, slidesEl } = swiper;
-    if (!params.loop || swiper.virtual && swiper.params.virtual.enabled) return;
-    const slides = (0, _utilsMjs.e)(slidesEl, `.${params.slideClass}, swiper-slide`);
-    slides.forEach((el, index)=>{
-        el.setAttribute("data-swiper-slide-index", index);
-    });
-    swiper.loopFix({
-        slideRealIndex,
-        direction: params.centeredSlides ? undefined : "next"
-    });
-}
-function loopFix(_temp) {
-    let { slideRealIndex, slideTo = true, direction, setTranslate, activeSlideIndex, byController, byMousewheel } = _temp === void 0 ? {} : _temp;
-    const swiper = this;
-    if (!swiper.params.loop) return;
-    swiper.emit("beforeLoopFix");
-    const { slides, allowSlidePrev, allowSlideNext, slidesEl, params } = swiper;
-    swiper.allowSlidePrev = true;
-    swiper.allowSlideNext = true;
-    if (swiper.virtual && params.virtual.enabled) {
-        if (slideTo) {
-            if (!params.centeredSlides && swiper.snapIndex === 0) swiper.slideTo(swiper.virtual.slides.length, 0, false, true);
-            else if (params.centeredSlides && swiper.snapIndex < params.slidesPerView) swiper.slideTo(swiper.virtual.slides.length + swiper.snapIndex, 0, false, true);
-            else if (swiper.snapIndex === swiper.snapGrid.length - 1) swiper.slideTo(swiper.virtual.slidesBefore, 0, false, true);
-        }
-        swiper.allowSlidePrev = allowSlidePrev;
-        swiper.allowSlideNext = allowSlideNext;
-        swiper.emit("loopFix");
-        return;
-    }
-    const slidesPerView = params.slidesPerView === "auto" ? swiper.slidesPerViewDynamic() : Math.ceil(parseFloat(params.slidesPerView, 10));
-    let loopedSlides = params.loopedSlides || slidesPerView;
-    if (loopedSlides % params.slidesPerGroup !== 0) loopedSlides += params.slidesPerGroup - loopedSlides % params.slidesPerGroup;
-    swiper.loopedSlides = loopedSlides;
-    const prependSlidesIndexes = [];
-    const appendSlidesIndexes = [];
-    let activeIndex = swiper.activeIndex;
-    if (typeof activeSlideIndex === "undefined") activeSlideIndex = swiper.getSlideIndex(swiper.slides.filter((el)=>el.classList.contains(params.slideActiveClass))[0]);
-    else activeIndex = activeSlideIndex;
-    const isNext = direction === "next" || !direction;
-    const isPrev = direction === "prev" || !direction;
-    let slidesPrepended = 0;
-    let slidesAppended = 0;
-    // prepend last slides before start
-    if (activeSlideIndex < loopedSlides) {
-        slidesPrepended = Math.max(loopedSlides - activeSlideIndex, params.slidesPerGroup);
-        for(let i = 0; i < loopedSlides - activeSlideIndex; i += 1){
-            const index = i - Math.floor(i / slides.length) * slides.length;
-            prependSlidesIndexes.push(slides.length - index - 1);
-        }
-    } else if (activeSlideIndex /* + slidesPerView */  > swiper.slides.length - loopedSlides * 2) {
-        slidesAppended = Math.max(activeSlideIndex - (swiper.slides.length - loopedSlides * 2), params.slidesPerGroup);
-        for(let i = 0; i < slidesAppended; i += 1){
-            const index = i - Math.floor(i / slides.length) * slides.length;
-            appendSlidesIndexes.push(index);
-        }
-    }
-    if (isPrev) prependSlidesIndexes.forEach((index)=>{
-        swiper.slides[index].swiperLoopMoveDOM = true;
-        slidesEl.prepend(swiper.slides[index]);
-        swiper.slides[index].swiperLoopMoveDOM = false;
-    });
-    if (isNext) appendSlidesIndexes.forEach((index)=>{
-        swiper.slides[index].swiperLoopMoveDOM = true;
-        slidesEl.append(swiper.slides[index]);
-        swiper.slides[index].swiperLoopMoveDOM = false;
-    });
-    swiper.recalcSlides();
-    if (params.slidesPerView === "auto") swiper.updateSlides();
-    if (params.watchSlidesProgress) swiper.updateSlidesOffset();
-    if (slideTo) {
-        if (prependSlidesIndexes.length > 0 && isPrev) {
-            if (typeof slideRealIndex === "undefined") {
-                const currentSlideTranslate = swiper.slidesGrid[activeIndex];
-                const newSlideTranslate = swiper.slidesGrid[activeIndex + slidesPrepended];
-                const diff = newSlideTranslate - currentSlideTranslate;
-                if (byMousewheel) swiper.setTranslate(swiper.translate - diff);
-                else {
-                    swiper.slideTo(activeIndex + slidesPrepended, 0, false, true);
-                    if (setTranslate) swiper.touches[swiper.isHorizontal() ? "startX" : "startY"] += diff;
-                }
-            } else if (setTranslate) swiper.slideToLoop(slideRealIndex, 0, false, true);
-        } else if (appendSlidesIndexes.length > 0 && isNext) {
-            if (typeof slideRealIndex === "undefined") {
-                const currentSlideTranslate = swiper.slidesGrid[activeIndex];
-                const newSlideTranslate = swiper.slidesGrid[activeIndex - slidesAppended];
-                const diff = newSlideTranslate - currentSlideTranslate;
-                if (byMousewheel) swiper.setTranslate(swiper.translate - diff);
-                else {
-                    swiper.slideTo(activeIndex - slidesAppended, 0, false, true);
-                    if (setTranslate) swiper.touches[swiper.isHorizontal() ? "startX" : "startY"] += diff;
-                }
-            } else swiper.slideToLoop(slideRealIndex, 0, false, true);
-        }
-    }
-    swiper.allowSlidePrev = allowSlidePrev;
-    swiper.allowSlideNext = allowSlideNext;
-    if (swiper.controller && swiper.controller.control && !byController) {
-        const loopParams = {
-            slideRealIndex,
-            slideTo: false,
-            direction,
-            setTranslate,
-            activeSlideIndex,
-            byController: true
-        };
-        if (Array.isArray(swiper.controller.control)) swiper.controller.control.forEach((c)=>{
-            if (!c.destroyed && c.params.loop) c.loopFix(loopParams);
-        });
-        else if (swiper.controller.control instanceof swiper.constructor && swiper.controller.control.params.loop) swiper.controller.control.loopFix(loopParams);
-    }
-    swiper.emit("loopFix");
-}
-function loopDestroy() {
-    const swiper = this;
-    const { params, slidesEl } = swiper;
-    if (!params.loop || swiper.virtual && swiper.params.virtual.enabled) return;
-    swiper.recalcSlides();
-    const newSlidesOrder = [];
-    swiper.slides.forEach((slideEl)=>{
-        const index = typeof slideEl.swiperSlideIndex === "undefined" ? slideEl.getAttribute("data-swiper-slide-index") * 1 : slideEl.swiperSlideIndex;
-        newSlidesOrder[index] = slideEl;
-    });
-    swiper.slides.forEach((slideEl)=>{
-        slideEl.removeAttribute("data-swiper-slide-index");
-    });
-    newSlidesOrder.forEach((slideEl)=>{
-        slidesEl.append(slideEl);
-    });
-    swiper.recalcSlides();
-    swiper.slideTo(swiper.realIndex, 0);
-}
-var loop = {
-    loopCreate,
-    loopFix,
-    loopDestroy
-};
-function setGrabCursor(moving) {
-    const swiper = this;
-    if (!swiper.params.simulateTouch || swiper.params.watchOverflow && swiper.isLocked || swiper.params.cssMode) return;
-    const el = swiper.params.touchEventsTarget === "container" ? swiper.el : swiper.wrapperEl;
-    if (swiper.isElement) swiper.__preventObserver__ = true;
-    el.style.cursor = "move";
-    el.style.cursor = moving ? "grabbing" : "grab";
-    if (swiper.isElement) requestAnimationFrame(()=>{
-        swiper.__preventObserver__ = false;
-    });
-}
-function unsetGrabCursor() {
-    const swiper = this;
-    if (swiper.params.watchOverflow && swiper.isLocked || swiper.params.cssMode) return;
-    if (swiper.isElement) swiper.__preventObserver__ = true;
-    swiper[swiper.params.touchEventsTarget === "container" ? "el" : "wrapperEl"].style.cursor = "";
-    if (swiper.isElement) requestAnimationFrame(()=>{
-        swiper.__preventObserver__ = false;
-    });
-}
-var grabCursor = {
-    setGrabCursor,
-    unsetGrabCursor
-};
-// Modified from https://stackoverflow.com/questions/54520554/custom-element-getrootnode-closest-function-crossing-multiple-parent-shadowd
-function closestElement(selector, base) {
-    if (base === void 0) base = this;
-    function __closestFrom(el) {
-        if (!el || el === (0, _ssrWindowEsmMjs.g)() || el === (0, _ssrWindowEsmMjs.a)()) return null;
-        if (el.assignedSlot) el = el.assignedSlot;
-        const found = el.closest(selector);
-        if (!found && !el.getRootNode) return null;
-        return found || __closestFrom(el.getRootNode().host);
-    }
-    return __closestFrom(base);
-}
-function onTouchStart(event) {
-    const swiper = this;
-    const document1 = (0, _ssrWindowEsmMjs.g)();
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    const data = swiper.touchEventsData;
-    data.evCache.push(event);
-    const { params, touches, enabled } = swiper;
-    if (!enabled) return;
-    if (!params.simulateTouch && event.pointerType === "mouse") return;
-    if (swiper.animating && params.preventInteractionOnTransition) return;
-    if (!swiper.animating && params.cssMode && params.loop) swiper.loopFix();
-    let e = event;
-    if (e.originalEvent) e = e.originalEvent;
-    let targetEl = e.target;
-    if (params.touchEventsTarget === "wrapper") {
-        if (!swiper.wrapperEl.contains(targetEl)) return;
-    }
-    if ("which" in e && e.which === 3) return;
-    if ("button" in e && e.button > 0) return;
-    if (data.isTouched && data.isMoved) return;
-    // change target el for shadow root component
-    const swipingClassHasValue = !!params.noSwipingClass && params.noSwipingClass !== "";
-    // eslint-disable-next-line
-    const eventPath = event.composedPath ? event.composedPath() : event.path;
-    if (swipingClassHasValue && e.target && e.target.shadowRoot && eventPath) targetEl = eventPath[0];
-    const noSwipingSelector = params.noSwipingSelector ? params.noSwipingSelector : `.${params.noSwipingClass}`;
-    const isTargetShadow = !!(e.target && e.target.shadowRoot);
-    // use closestElement for shadow root element to get the actual closest for nested shadow root element
-    if (params.noSwiping && (isTargetShadow ? closestElement(noSwipingSelector, targetEl) : targetEl.closest(noSwipingSelector))) {
-        swiper.allowClick = true;
-        return;
-    }
-    if (params.swipeHandler) {
-        if (!targetEl.closest(params.swipeHandler)) return;
-    }
-    touches.currentX = e.pageX;
-    touches.currentY = e.pageY;
-    const startX = touches.currentX;
-    const startY = touches.currentY;
-    // Do NOT start if iOS edge swipe is detected. Otherwise iOS app cannot swipe-to-go-back anymore
-    const edgeSwipeDetection = params.edgeSwipeDetection || params.iOSEdgeSwipeDetection;
-    const edgeSwipeThreshold = params.edgeSwipeThreshold || params.iOSEdgeSwipeThreshold;
-    if (edgeSwipeDetection && (startX <= edgeSwipeThreshold || startX >= window1.innerWidth - edgeSwipeThreshold)) {
-        if (edgeSwipeDetection === "prevent") event.preventDefault();
-        else return;
-    }
-    Object.assign(data, {
-        isTouched: true,
-        isMoved: false,
-        allowTouchCallbacks: true,
-        isScrolling: undefined,
-        startMoving: undefined
-    });
-    touches.startX = startX;
-    touches.startY = startY;
-    data.touchStartTime = (0, _utilsMjs.d)();
-    swiper.allowClick = true;
-    swiper.updateSize();
-    swiper.swipeDirection = undefined;
-    if (params.threshold > 0) data.allowThresholdMove = false;
-    let preventDefault = true;
-    if (targetEl.matches(data.focusableElements)) {
-        preventDefault = false;
-        if (targetEl.nodeName === "SELECT") data.isTouched = false;
-    }
-    if (document1.activeElement && document1.activeElement.matches(data.focusableElements) && document1.activeElement !== targetEl) document1.activeElement.blur();
-    const shouldPreventDefault = preventDefault && swiper.allowTouchMove && params.touchStartPreventDefault;
-    if ((params.touchStartForcePreventDefault || shouldPreventDefault) && !targetEl.isContentEditable) e.preventDefault();
-    if (params.freeMode && params.freeMode.enabled && swiper.freeMode && swiper.animating && !params.cssMode) swiper.freeMode.onTouchStart();
-    swiper.emit("touchStart", e);
-}
-function onTouchMove(event) {
-    const document1 = (0, _ssrWindowEsmMjs.g)();
-    const swiper = this;
-    const data = swiper.touchEventsData;
-    const { params, touches, rtlTranslate: rtl, enabled } = swiper;
-    if (!enabled) return;
-    if (!params.simulateTouch && event.pointerType === "mouse") return;
-    let e = event;
-    if (e.originalEvent) e = e.originalEvent;
-    if (!data.isTouched) {
-        if (data.startMoving && data.isScrolling) swiper.emit("touchMoveOpposite", e);
-        return;
-    }
-    const pointerIndex = data.evCache.findIndex((cachedEv)=>cachedEv.pointerId === e.pointerId);
-    if (pointerIndex >= 0) data.evCache[pointerIndex] = e;
-    const targetTouch = data.evCache.length > 1 ? data.evCache[0] : e;
-    const pageX = targetTouch.pageX;
-    const pageY = targetTouch.pageY;
-    if (e.preventedByNestedSwiper) {
-        touches.startX = pageX;
-        touches.startY = pageY;
-        return;
-    }
-    if (!swiper.allowTouchMove) {
-        if (!e.target.matches(data.focusableElements)) swiper.allowClick = false;
-        if (data.isTouched) {
-            Object.assign(touches, {
-                startX: pageX,
-                startY: pageY,
-                prevX: swiper.touches.currentX,
-                prevY: swiper.touches.currentY,
-                currentX: pageX,
-                currentY: pageY
-            });
-            data.touchStartTime = (0, _utilsMjs.d)();
-        }
-        return;
-    }
-    if (params.touchReleaseOnEdges && !params.loop) {
-        if (swiper.isVertical()) // Vertical
-        {
-            if (pageY < touches.startY && swiper.translate <= swiper.maxTranslate() || pageY > touches.startY && swiper.translate >= swiper.minTranslate()) {
-                data.isTouched = false;
-                data.isMoved = false;
-                return;
-            }
-        } else if (pageX < touches.startX && swiper.translate <= swiper.maxTranslate() || pageX > touches.startX && swiper.translate >= swiper.minTranslate()) return;
-    }
-    if (document1.activeElement) {
-        if (e.target === document1.activeElement && e.target.matches(data.focusableElements)) {
-            data.isMoved = true;
-            swiper.allowClick = false;
-            return;
-        }
-    }
-    if (data.allowTouchCallbacks) swiper.emit("touchMove", e);
-    if (e.targetTouches && e.targetTouches.length > 1) return;
-    touches.currentX = pageX;
-    touches.currentY = pageY;
-    const diffX = touches.currentX - touches.startX;
-    const diffY = touches.currentY - touches.startY;
-    if (swiper.params.threshold && Math.sqrt(diffX ** 2 + diffY ** 2) < swiper.params.threshold) return;
-    if (typeof data.isScrolling === "undefined") {
-        let touchAngle;
-        if (swiper.isHorizontal() && touches.currentY === touches.startY || swiper.isVertical() && touches.currentX === touches.startX) data.isScrolling = false;
-        else // eslint-disable-next-line
-        if (diffX * diffX + diffY * diffY >= 25) {
-            touchAngle = Math.atan2(Math.abs(diffY), Math.abs(diffX)) * 180 / Math.PI;
-            data.isScrolling = swiper.isHorizontal() ? touchAngle > params.touchAngle : 90 - touchAngle > params.touchAngle;
-        }
-    }
-    if (data.isScrolling) swiper.emit("touchMoveOpposite", e);
-    if (typeof data.startMoving === "undefined") {
-        if (touches.currentX !== touches.startX || touches.currentY !== touches.startY) data.startMoving = true;
-    }
-    if (data.isScrolling || swiper.zoom && swiper.params.zoom && swiper.params.zoom.enabled && data.evCache.length > 1) {
-        data.isTouched = false;
-        return;
-    }
-    if (!data.startMoving) return;
-    swiper.allowClick = false;
-    if (!params.cssMode && e.cancelable) e.preventDefault();
-    if (params.touchMoveStopPropagation && !params.nested) e.stopPropagation();
-    let diff = swiper.isHorizontal() ? diffX : diffY;
-    let touchesDiff = swiper.isHorizontal() ? touches.currentX - touches.previousX : touches.currentY - touches.previousY;
-    if (params.oneWayMovement) {
-        diff = Math.abs(diff) * (rtl ? 1 : -1);
-        touchesDiff = Math.abs(touchesDiff) * (rtl ? 1 : -1);
-    }
-    touches.diff = diff;
-    diff *= params.touchRatio;
-    if (rtl) {
-        diff = -diff;
-        touchesDiff = -touchesDiff;
-    }
-    const prevTouchesDirection = swiper.touchesDirection;
-    swiper.swipeDirection = diff > 0 ? "prev" : "next";
-    swiper.touchesDirection = touchesDiff > 0 ? "prev" : "next";
-    const isLoop = swiper.params.loop && !params.cssMode;
-    if (!data.isMoved) {
-        if (isLoop) swiper.loopFix({
-            direction: swiper.swipeDirection
-        });
-        data.startTranslate = swiper.getTranslate();
-        swiper.setTransition(0);
-        if (swiper.animating) {
-            const evt = new window.CustomEvent("transitionend", {
-                bubbles: true,
-                cancelable: true
-            });
-            swiper.wrapperEl.dispatchEvent(evt);
-        }
-        data.allowMomentumBounce = false;
-        // Grab Cursor
-        if (params.grabCursor && (swiper.allowSlideNext === true || swiper.allowSlidePrev === true)) swiper.setGrabCursor(true);
-        swiper.emit("sliderFirstMove", e);
-    }
-    let loopFixed;
-    if (data.isMoved && prevTouchesDirection !== swiper.touchesDirection && isLoop && Math.abs(diff) >= 1) {
-        // need another loop fix
-        swiper.loopFix({
-            direction: swiper.swipeDirection,
-            setTranslate: true
-        });
-        loopFixed = true;
-    }
-    swiper.emit("sliderMove", e);
-    data.isMoved = true;
-    data.currentTranslate = diff + data.startTranslate;
-    let disableParentSwiper = true;
-    let resistanceRatio = params.resistanceRatio;
-    if (params.touchReleaseOnEdges) resistanceRatio = 0;
-    if (diff > 0) {
-        if (isLoop && !loopFixed && data.currentTranslate > (params.centeredSlides ? swiper.minTranslate() - swiper.size / 2 : swiper.minTranslate())) swiper.loopFix({
-            direction: "prev",
-            setTranslate: true,
-            activeSlideIndex: 0
-        });
-        if (data.currentTranslate > swiper.minTranslate()) {
-            disableParentSwiper = false;
-            if (params.resistance) data.currentTranslate = swiper.minTranslate() - 1 + (-swiper.minTranslate() + data.startTranslate + diff) ** resistanceRatio;
-        }
-    } else if (diff < 0) {
-        if (isLoop && !loopFixed && data.currentTranslate < (params.centeredSlides ? swiper.maxTranslate() + swiper.size / 2 : swiper.maxTranslate())) swiper.loopFix({
-            direction: "next",
-            setTranslate: true,
-            activeSlideIndex: swiper.slides.length - (params.slidesPerView === "auto" ? swiper.slidesPerViewDynamic() : Math.ceil(parseFloat(params.slidesPerView, 10)))
-        });
-        if (data.currentTranslate < swiper.maxTranslate()) {
-            disableParentSwiper = false;
-            if (params.resistance) data.currentTranslate = swiper.maxTranslate() + 1 - (swiper.maxTranslate() - data.startTranslate - diff) ** resistanceRatio;
-        }
-    }
-    if (disableParentSwiper) e.preventedByNestedSwiper = true;
-    // Directions locks
-    if (!swiper.allowSlideNext && swiper.swipeDirection === "next" && data.currentTranslate < data.startTranslate) data.currentTranslate = data.startTranslate;
-    if (!swiper.allowSlidePrev && swiper.swipeDirection === "prev" && data.currentTranslate > data.startTranslate) data.currentTranslate = data.startTranslate;
-    if (!swiper.allowSlidePrev && !swiper.allowSlideNext) data.currentTranslate = data.startTranslate;
-    // Threshold
-    if (params.threshold > 0) {
-        if (Math.abs(diff) > params.threshold || data.allowThresholdMove) {
-            if (!data.allowThresholdMove) {
-                data.allowThresholdMove = true;
-                touches.startX = touches.currentX;
-                touches.startY = touches.currentY;
-                data.currentTranslate = data.startTranslate;
-                touches.diff = swiper.isHorizontal() ? touches.currentX - touches.startX : touches.currentY - touches.startY;
-                return;
-            }
-        } else {
-            data.currentTranslate = data.startTranslate;
-            return;
-        }
-    }
-    if (!params.followFinger || params.cssMode) return;
-    // Update active index in free mode
-    if (params.freeMode && params.freeMode.enabled && swiper.freeMode || params.watchSlidesProgress) {
-        swiper.updateActiveIndex();
-        swiper.updateSlidesClasses();
-    }
-    if (params.freeMode && params.freeMode.enabled && swiper.freeMode) swiper.freeMode.onTouchMove();
-    // Update progress
-    swiper.updateProgress(data.currentTranslate);
-    // Update translate
-    swiper.setTranslate(data.currentTranslate);
-}
-function onTouchEnd(event) {
-    const swiper = this;
-    const data = swiper.touchEventsData;
-    const pointerIndex = data.evCache.findIndex((cachedEv)=>cachedEv.pointerId === event.pointerId);
-    if (pointerIndex >= 0) data.evCache.splice(pointerIndex, 1);
-    if ([
-        "pointercancel",
-        "pointerout",
-        "pointerleave"
-    ].includes(event.type)) {
-        const proceed = event.type === "pointercancel" && (swiper.browser.isSafari || swiper.browser.isWebView);
-        if (!proceed) return;
-    }
-    const { params, touches, rtlTranslate: rtl, slidesGrid, enabled } = swiper;
-    if (!enabled) return;
-    if (!params.simulateTouch && event.pointerType === "mouse") return;
-    let e = event;
-    if (e.originalEvent) e = e.originalEvent;
-    if (data.allowTouchCallbacks) swiper.emit("touchEnd", e);
-    data.allowTouchCallbacks = false;
-    if (!data.isTouched) {
-        if (data.isMoved && params.grabCursor) swiper.setGrabCursor(false);
-        data.isMoved = false;
-        data.startMoving = false;
-        return;
-    }
-    // Return Grab Cursor
-    if (params.grabCursor && data.isMoved && data.isTouched && (swiper.allowSlideNext === true || swiper.allowSlidePrev === true)) swiper.setGrabCursor(false);
-    // Time diff
-    const touchEndTime = (0, _utilsMjs.d)();
-    const timeDiff = touchEndTime - data.touchStartTime;
-    // Tap, doubleTap, Click
-    if (swiper.allowClick) {
-        const pathTree = e.path || e.composedPath && e.composedPath();
-        swiper.updateClickedSlide(pathTree && pathTree[0] || e.target);
-        swiper.emit("tap click", e);
-        if (timeDiff < 300 && touchEndTime - data.lastClickTime < 300) swiper.emit("doubleTap doubleClick", e);
-    }
-    data.lastClickTime = (0, _utilsMjs.d)();
-    (0, _utilsMjs.n)(()=>{
-        if (!swiper.destroyed) swiper.allowClick = true;
-    });
-    if (!data.isTouched || !data.isMoved || !swiper.swipeDirection || touches.diff === 0 || data.currentTranslate === data.startTranslate) {
-        data.isTouched = false;
-        data.isMoved = false;
-        data.startMoving = false;
-        return;
-    }
-    data.isTouched = false;
-    data.isMoved = false;
-    data.startMoving = false;
-    let currentPos;
-    if (params.followFinger) currentPos = rtl ? swiper.translate : -swiper.translate;
-    else currentPos = -data.currentTranslate;
-    if (params.cssMode) return;
-    if (params.freeMode && params.freeMode.enabled) {
-        swiper.freeMode.onTouchEnd({
-            currentPos
-        });
-        return;
-    }
-    // Find current slide
-    let stopIndex = 0;
-    let groupSize = swiper.slidesSizesGrid[0];
-    for(let i = 0; i < slidesGrid.length; i += i < params.slidesPerGroupSkip ? 1 : params.slidesPerGroup){
-        const increment = i < params.slidesPerGroupSkip - 1 ? 1 : params.slidesPerGroup;
-        if (typeof slidesGrid[i + increment] !== "undefined") {
-            if (currentPos >= slidesGrid[i] && currentPos < slidesGrid[i + increment]) {
-                stopIndex = i;
-                groupSize = slidesGrid[i + increment] - slidesGrid[i];
-            }
-        } else if (currentPos >= slidesGrid[i]) {
-            stopIndex = i;
-            groupSize = slidesGrid[slidesGrid.length - 1] - slidesGrid[slidesGrid.length - 2];
-        }
-    }
-    let rewindFirstIndex = null;
-    let rewindLastIndex = null;
-    if (params.rewind) {
-        if (swiper.isBeginning) rewindLastIndex = params.virtual && params.virtual.enabled && swiper.virtual ? swiper.virtual.slides.length - 1 : swiper.slides.length - 1;
-        else if (swiper.isEnd) rewindFirstIndex = 0;
-    }
-    // Find current slide size
-    const ratio = (currentPos - slidesGrid[stopIndex]) / groupSize;
-    const increment = stopIndex < params.slidesPerGroupSkip - 1 ? 1 : params.slidesPerGroup;
-    if (timeDiff > params.longSwipesMs) {
-        // Long touches
-        if (!params.longSwipes) {
-            swiper.slideTo(swiper.activeIndex);
-            return;
-        }
-        if (swiper.swipeDirection === "next") {
-            if (ratio >= params.longSwipesRatio) swiper.slideTo(params.rewind && swiper.isEnd ? rewindFirstIndex : stopIndex + increment);
-            else swiper.slideTo(stopIndex);
-        }
-        if (swiper.swipeDirection === "prev") {
-            if (ratio > 1 - params.longSwipesRatio) swiper.slideTo(stopIndex + increment);
-            else if (rewindLastIndex !== null && ratio < 0 && Math.abs(ratio) > params.longSwipesRatio) swiper.slideTo(rewindLastIndex);
-            else swiper.slideTo(stopIndex);
-        }
-    } else {
-        // Short swipes
-        if (!params.shortSwipes) {
-            swiper.slideTo(swiper.activeIndex);
-            return;
-        }
-        const isNavButtonTarget = swiper.navigation && (e.target === swiper.navigation.nextEl || e.target === swiper.navigation.prevEl);
-        if (!isNavButtonTarget) {
-            if (swiper.swipeDirection === "next") swiper.slideTo(rewindFirstIndex !== null ? rewindFirstIndex : stopIndex + increment);
-            if (swiper.swipeDirection === "prev") swiper.slideTo(rewindLastIndex !== null ? rewindLastIndex : stopIndex);
-        } else if (e.target === swiper.navigation.nextEl) swiper.slideTo(stopIndex + increment);
-        else swiper.slideTo(stopIndex);
-    }
-}
-function onResize() {
-    const swiper = this;
-    const { params, el } = swiper;
-    if (el && el.offsetWidth === 0) return;
-    // Breakpoints
-    if (params.breakpoints) swiper.setBreakpoint();
-    // Save locks
-    const { allowSlideNext, allowSlidePrev, snapGrid } = swiper;
-    const isVirtual = swiper.virtual && swiper.params.virtual.enabled;
-    // Disable locks on resize
-    swiper.allowSlideNext = true;
-    swiper.allowSlidePrev = true;
-    swiper.updateSize();
-    swiper.updateSlides();
-    swiper.updateSlidesClasses();
-    const isVirtualLoop = isVirtual && params.loop;
-    if ((params.slidesPerView === "auto" || params.slidesPerView > 1) && swiper.isEnd && !swiper.isBeginning && !swiper.params.centeredSlides && !isVirtualLoop) swiper.slideTo(swiper.slides.length - 1, 0, false, true);
-    else if (swiper.params.loop && !isVirtual) swiper.slideToLoop(swiper.realIndex, 0, false, true);
-    else swiper.slideTo(swiper.activeIndex, 0, false, true);
-    if (swiper.autoplay && swiper.autoplay.running && swiper.autoplay.paused) {
-        clearTimeout(swiper.autoplay.resizeTimeout);
-        swiper.autoplay.resizeTimeout = setTimeout(()=>{
-            if (swiper.autoplay && swiper.autoplay.running && swiper.autoplay.paused) swiper.autoplay.resume();
-        }, 500);
-    }
-    // Return locks after resize
-    swiper.allowSlidePrev = allowSlidePrev;
-    swiper.allowSlideNext = allowSlideNext;
-    if (swiper.params.watchOverflow && snapGrid !== swiper.snapGrid) swiper.checkOverflow();
-}
-function onClick(e) {
-    const swiper = this;
-    if (!swiper.enabled) return;
-    if (!swiper.allowClick) {
-        if (swiper.params.preventClicks) e.preventDefault();
-        if (swiper.params.preventClicksPropagation && swiper.animating) {
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-        }
-    }
-}
-function onScroll() {
-    const swiper = this;
-    const { wrapperEl, rtlTranslate, enabled } = swiper;
-    if (!enabled) return;
-    swiper.previousTranslate = swiper.translate;
-    if (swiper.isHorizontal()) swiper.translate = -wrapperEl.scrollLeft;
-    else swiper.translate = -wrapperEl.scrollTop;
-    // eslint-disable-next-line
-    if (swiper.translate === 0) swiper.translate = 0;
-    swiper.updateActiveIndex();
-    swiper.updateSlidesClasses();
-    let newProgress;
-    const translatesDiff = swiper.maxTranslate() - swiper.minTranslate();
-    if (translatesDiff === 0) newProgress = 0;
-    else newProgress = (swiper.translate - swiper.minTranslate()) / translatesDiff;
-    if (newProgress !== swiper.progress) swiper.updateProgress(rtlTranslate ? -swiper.translate : swiper.translate);
-    swiper.emit("setTranslate", swiper.translate, false);
-}
-function onLoad(e) {
-    const swiper = this;
-    processLazyPreloader(swiper, e.target);
-    if (swiper.params.cssMode || swiper.params.slidesPerView !== "auto" && !swiper.params.autoHeight) return;
-    swiper.update();
-}
-let dummyEventAttached = false;
-function dummyEventListener() {}
-const events = (swiper, method)=>{
-    const document1 = (0, _ssrWindowEsmMjs.g)();
-    const { params, el, wrapperEl, device } = swiper;
-    const capture = !!params.nested;
-    const domMethod = method === "on" ? "addEventListener" : "removeEventListener";
-    const swiperMethod = method;
-    // Touch Events
-    el[domMethod]("pointerdown", swiper.onTouchStart, {
-        passive: false
-    });
-    document1[domMethod]("pointermove", swiper.onTouchMove, {
-        passive: false,
-        capture
-    });
-    document1[domMethod]("pointerup", swiper.onTouchEnd, {
-        passive: true
-    });
-    document1[domMethod]("pointercancel", swiper.onTouchEnd, {
-        passive: true
-    });
-    document1[domMethod]("pointerout", swiper.onTouchEnd, {
-        passive: true
-    });
-    document1[domMethod]("pointerleave", swiper.onTouchEnd, {
-        passive: true
-    });
-    // Prevent Links Clicks
-    if (params.preventClicks || params.preventClicksPropagation) el[domMethod]("click", swiper.onClick, true);
-    if (params.cssMode) wrapperEl[domMethod]("scroll", swiper.onScroll);
-    // Resize handler
-    if (params.updateOnWindowResize) swiper[swiperMethod](device.ios || device.android ? "resize orientationchange observerUpdate" : "resize observerUpdate", onResize, true);
-    else swiper[swiperMethod]("observerUpdate", onResize, true);
-    // Images loader
-    el[domMethod]("load", swiper.onLoad, {
-        capture: true
-    });
-};
-function attachEvents() {
-    const swiper = this;
-    const document1 = (0, _ssrWindowEsmMjs.g)();
-    const { params } = swiper;
-    swiper.onTouchStart = onTouchStart.bind(swiper);
-    swiper.onTouchMove = onTouchMove.bind(swiper);
-    swiper.onTouchEnd = onTouchEnd.bind(swiper);
-    if (params.cssMode) swiper.onScroll = onScroll.bind(swiper);
-    swiper.onClick = onClick.bind(swiper);
-    swiper.onLoad = onLoad.bind(swiper);
-    if (!dummyEventAttached) {
-        document1.addEventListener("touchstart", dummyEventListener);
-        dummyEventAttached = true;
-    }
-    events(swiper, "on");
-}
-function detachEvents() {
-    const swiper = this;
-    events(swiper, "off");
-}
-var events$1 = {
-    attachEvents,
-    detachEvents
-};
-const isGridEnabled = (swiper, params)=>{
-    return swiper.grid && params.grid && params.grid.rows > 1;
-};
-function setBreakpoint() {
-    const swiper = this;
-    const { realIndex, initialized, params, el } = swiper;
-    const breakpoints = params.breakpoints;
-    if (!breakpoints || breakpoints && Object.keys(breakpoints).length === 0) return;
-    // Get breakpoint for window width and update parameters
-    const breakpoint = swiper.getBreakpoint(breakpoints, swiper.params.breakpointsBase, swiper.el);
-    if (!breakpoint || swiper.currentBreakpoint === breakpoint) return;
-    const breakpointOnlyParams = breakpoint in breakpoints ? breakpoints[breakpoint] : undefined;
-    const breakpointParams = breakpointOnlyParams || swiper.originalParams;
-    const wasMultiRow = isGridEnabled(swiper, params);
-    const isMultiRow = isGridEnabled(swiper, breakpointParams);
-    const wasEnabled = params.enabled;
-    if (wasMultiRow && !isMultiRow) {
-        el.classList.remove(`${params.containerModifierClass}grid`, `${params.containerModifierClass}grid-column`);
-        swiper.emitContainerClasses();
-    } else if (!wasMultiRow && isMultiRow) {
-        el.classList.add(`${params.containerModifierClass}grid`);
-        if (breakpointParams.grid.fill && breakpointParams.grid.fill === "column" || !breakpointParams.grid.fill && params.grid.fill === "column") el.classList.add(`${params.containerModifierClass}grid-column`);
-        swiper.emitContainerClasses();
-    }
-    // Toggle navigation, pagination, scrollbar
-    [
-        "navigation",
-        "pagination",
-        "scrollbar"
-    ].forEach((prop)=>{
-        if (typeof breakpointParams[prop] === "undefined") return;
-        const wasModuleEnabled = params[prop] && params[prop].enabled;
-        const isModuleEnabled = breakpointParams[prop] && breakpointParams[prop].enabled;
-        if (wasModuleEnabled && !isModuleEnabled) swiper[prop].disable();
-        if (!wasModuleEnabled && isModuleEnabled) swiper[prop].enable();
-    });
-    const directionChanged = breakpointParams.direction && breakpointParams.direction !== params.direction;
-    const needsReLoop = params.loop && (breakpointParams.slidesPerView !== params.slidesPerView || directionChanged);
-    if (directionChanged && initialized) swiper.changeDirection();
-    (0, _utilsMjs.q)(swiper.params, breakpointParams);
-    const isEnabled = swiper.params.enabled;
-    Object.assign(swiper, {
-        allowTouchMove: swiper.params.allowTouchMove,
-        allowSlideNext: swiper.params.allowSlideNext,
-        allowSlidePrev: swiper.params.allowSlidePrev
-    });
-    if (wasEnabled && !isEnabled) swiper.disable();
-    else if (!wasEnabled && isEnabled) swiper.enable();
-    swiper.currentBreakpoint = breakpoint;
-    swiper.emit("_beforeBreakpoint", breakpointParams);
-    if (needsReLoop && initialized) {
-        swiper.loopDestroy();
-        swiper.loopCreate(realIndex);
-        swiper.updateSlides();
-    }
-    swiper.emit("breakpoint", breakpointParams);
-}
-function getBreakpoint(breakpoints, base, containerEl) {
-    if (base === void 0) base = "window";
-    if (!breakpoints || base === "container" && !containerEl) return undefined;
-    let breakpoint = false;
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    const currentHeight = base === "window" ? window1.innerHeight : containerEl.clientHeight;
-    const points = Object.keys(breakpoints).map((point)=>{
-        if (typeof point === "string" && point.indexOf("@") === 0) {
-            const minRatio = parseFloat(point.substr(1));
-            const value = currentHeight * minRatio;
-            return {
-                value,
-                point
-            };
-        }
-        return {
-            value: point,
-            point
-        };
-    });
-    points.sort((a, b)=>parseInt(a.value, 10) - parseInt(b.value, 10));
-    for(let i = 0; i < points.length; i += 1){
-        const { point, value } = points[i];
-        if (base === "window") {
-            if (window1.matchMedia(`(min-width: ${value}px)`).matches) breakpoint = point;
-        } else if (value <= containerEl.clientWidth) breakpoint = point;
-    }
-    return breakpoint || "max";
-}
-var breakpoints = {
-    setBreakpoint,
-    getBreakpoint
-};
-function prepareClasses(entries, prefix) {
-    const resultClasses = [];
-    entries.forEach((item)=>{
-        if (typeof item === "object") Object.keys(item).forEach((classNames)=>{
-            if (item[classNames]) resultClasses.push(prefix + classNames);
-        });
-        else if (typeof item === "string") resultClasses.push(prefix + item);
-    });
-    return resultClasses;
-}
-function addClasses() {
-    const swiper = this;
-    const { classNames, params, rtl, el, device } = swiper;
-    // prettier-ignore
-    const suffixes = prepareClasses([
-        "initialized",
-        params.direction,
-        {
-            "free-mode": swiper.params.freeMode && params.freeMode.enabled
-        },
-        {
-            "autoheight": params.autoHeight
-        },
-        {
-            "rtl": rtl
-        },
-        {
-            "grid": params.grid && params.grid.rows > 1
-        },
-        {
-            "grid-column": params.grid && params.grid.rows > 1 && params.grid.fill === "column"
-        },
-        {
-            "android": device.android
-        },
-        {
-            "ios": device.ios
-        },
-        {
-            "css-mode": params.cssMode
-        },
-        {
-            "centered": params.cssMode && params.centeredSlides
-        },
-        {
-            "watch-progress": params.watchSlidesProgress
-        }
-    ], params.containerModifierClass);
-    classNames.push(...suffixes);
-    el.classList.add(...classNames);
-    swiper.emitContainerClasses();
-}
-function removeClasses() {
-    const swiper = this;
-    const { el, classNames } = swiper;
-    el.classList.remove(...classNames);
-    swiper.emitContainerClasses();
-}
-var classes = {
-    addClasses,
-    removeClasses
-};
-function checkOverflow() {
-    const swiper = this;
-    const { isLocked: wasLocked, params } = swiper;
-    const { slidesOffsetBefore } = params;
-    if (slidesOffsetBefore) {
-        const lastSlideIndex = swiper.slides.length - 1;
-        const lastSlideRightEdge = swiper.slidesGrid[lastSlideIndex] + swiper.slidesSizesGrid[lastSlideIndex] + slidesOffsetBefore * 2;
-        swiper.isLocked = swiper.size > lastSlideRightEdge;
-    } else swiper.isLocked = swiper.snapGrid.length === 1;
-    if (params.allowSlideNext === true) swiper.allowSlideNext = !swiper.isLocked;
-    if (params.allowSlidePrev === true) swiper.allowSlidePrev = !swiper.isLocked;
-    if (wasLocked && wasLocked !== swiper.isLocked) swiper.isEnd = false;
-    if (wasLocked !== swiper.isLocked) swiper.emit(swiper.isLocked ? "lock" : "unlock");
-}
-var checkOverflow$1 = {
-    checkOverflow
-};
-var defaults = {
-    init: true,
-    direction: "horizontal",
-    oneWayMovement: false,
-    touchEventsTarget: "wrapper",
-    initialSlide: 0,
-    speed: 300,
-    cssMode: false,
-    updateOnWindowResize: true,
-    resizeObserver: true,
-    nested: false,
-    createElements: false,
-    enabled: true,
-    focusableElements: "input, select, option, textarea, button, video, label",
-    // Overrides
-    width: null,
-    height: null,
-    //
-    preventInteractionOnTransition: false,
-    // ssr
-    userAgent: null,
-    url: null,
-    // To support iOS's swipe-to-go-back gesture (when being used in-app).
-    edgeSwipeDetection: false,
-    edgeSwipeThreshold: 20,
-    // Autoheight
-    autoHeight: false,
-    // Set wrapper width
-    setWrapperSize: false,
-    // Virtual Translate
-    virtualTranslate: false,
-    // Effects
-    effect: "slide",
-    // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
-    // Breakpoints
-    breakpoints: undefined,
-    breakpointsBase: "window",
-    // Slides grid
-    spaceBetween: 0,
-    slidesPerView: 1,
-    slidesPerGroup: 1,
-    slidesPerGroupSkip: 0,
-    slidesPerGroupAuto: false,
-    centeredSlides: false,
-    centeredSlidesBounds: false,
-    slidesOffsetBefore: 0,
-    // in px
-    slidesOffsetAfter: 0,
-    // in px
-    normalizeSlideIndex: true,
-    centerInsufficientSlides: false,
-    // Disable swiper and hide navigation when container not overflow
-    watchOverflow: true,
-    // Round length
-    roundLengths: false,
-    // Touches
-    touchRatio: 1,
-    touchAngle: 45,
-    simulateTouch: true,
-    shortSwipes: true,
-    longSwipes: true,
-    longSwipesRatio: 0.5,
-    longSwipesMs: 300,
-    followFinger: true,
-    allowTouchMove: true,
-    threshold: 5,
-    touchMoveStopPropagation: false,
-    touchStartPreventDefault: true,
-    touchStartForcePreventDefault: false,
-    touchReleaseOnEdges: false,
-    // Unique Navigation Elements
-    uniqueNavElements: true,
-    // Resistance
-    resistance: true,
-    resistanceRatio: 0.85,
-    // Progress
-    watchSlidesProgress: false,
-    // Cursor
-    grabCursor: false,
-    // Clicks
-    preventClicks: true,
-    preventClicksPropagation: true,
-    slideToClickedSlide: false,
-    // loop
-    loop: false,
-    loopedSlides: null,
-    loopPreventsSliding: true,
-    // rewind
-    rewind: false,
-    // Swiping/no swiping
-    allowSlidePrev: true,
-    allowSlideNext: true,
-    swipeHandler: null,
-    // '.swipe-handler',
-    noSwiping: true,
-    noSwipingClass: "swiper-no-swiping",
-    noSwipingSelector: null,
-    // Passive Listeners
-    passiveListeners: true,
-    maxBackfaceHiddenSlides: 10,
-    // NS
-    containerModifierClass: "swiper-",
-    // NEW
-    slideClass: "swiper-slide",
-    slideActiveClass: "swiper-slide-active",
-    slideVisibleClass: "swiper-slide-visible",
-    slideNextClass: "swiper-slide-next",
-    slidePrevClass: "swiper-slide-prev",
-    wrapperClass: "swiper-wrapper",
-    lazyPreloaderClass: "swiper-lazy-preloader",
-    lazyPreloadPrevNext: 0,
-    // Callbacks
-    runCallbacksOnInit: true,
-    // Internals
-    _emitClasses: false
-};
-function moduleExtendParams(params, allModulesParams) {
-    return function extendParams(obj) {
-        if (obj === void 0) obj = {};
-        const moduleParamName = Object.keys(obj)[0];
-        const moduleParams = obj[moduleParamName];
-        if (typeof moduleParams !== "object" || moduleParams === null) {
-            (0, _utilsMjs.q)(allModulesParams, obj);
-            return;
-        }
-        if ([
-            "navigation",
-            "pagination",
-            "scrollbar"
-        ].indexOf(moduleParamName) >= 0 && params[moduleParamName] === true) params[moduleParamName] = {
-            auto: true
-        };
-        if (!(moduleParamName in params && "enabled" in moduleParams)) {
-            (0, _utilsMjs.q)(allModulesParams, obj);
-            return;
-        }
-        if (params[moduleParamName] === true) params[moduleParamName] = {
-            enabled: true
-        };
-        if (typeof params[moduleParamName] === "object" && !("enabled" in params[moduleParamName])) params[moduleParamName].enabled = true;
-        if (!params[moduleParamName]) params[moduleParamName] = {
-            enabled: false
-        };
-        (0, _utilsMjs.q)(allModulesParams, obj);
-    };
-}
-/* eslint no-param-reassign: "off" */ const prototypes = {
-    eventsEmitter,
-    update,
-    translate,
-    transition,
-    slide,
-    loop,
-    grabCursor,
-    events: events$1,
-    breakpoints,
-    checkOverflow: checkOverflow$1,
-    classes
-};
-const extendedDefaults = {};
-class Swiper {
-    constructor(){
-        let el;
-        let params;
-        for(var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++)args[_key] = arguments[_key];
-        if (args.length === 1 && args[0].constructor && Object.prototype.toString.call(args[0]).slice(8, -1) === "Object") params = args[0];
-        else [el, params] = args;
-        if (!params) params = {};
-        params = (0, _utilsMjs.q)({}, params);
-        if (el && !params.el) params.el = el;
-        const document1 = (0, _ssrWindowEsmMjs.g)();
-        if (params.el && typeof params.el === "string" && document1.querySelectorAll(params.el).length > 1) {
-            const swipers = [];
-            document1.querySelectorAll(params.el).forEach((containerEl)=>{
-                const newParams = (0, _utilsMjs.q)({}, params, {
-                    el: containerEl
-                });
-                swipers.push(new Swiper(newParams));
-            });
-            // eslint-disable-next-line no-constructor-return
-            return swipers;
-        }
-        // Swiper Instance
-        const swiper = this;
-        swiper.__swiper__ = true;
-        swiper.support = getSupport();
-        swiper.device = getDevice({
-            userAgent: params.userAgent
-        });
-        swiper.browser = getBrowser();
-        swiper.eventsListeners = {};
-        swiper.eventsAnyListeners = [];
-        swiper.modules = [
-            ...swiper.__modules__
-        ];
-        if (params.modules && Array.isArray(params.modules)) swiper.modules.push(...params.modules);
-        const allModulesParams = {};
-        swiper.modules.forEach((mod)=>{
-            mod({
-                params,
-                swiper,
-                extendParams: moduleExtendParams(params, allModulesParams),
-                on: swiper.on.bind(swiper),
-                once: swiper.once.bind(swiper),
-                off: swiper.off.bind(swiper),
-                emit: swiper.emit.bind(swiper)
-            });
-        });
-        // Extend defaults with modules params
-        const swiperParams = (0, _utilsMjs.q)({}, defaults, allModulesParams);
-        // Extend defaults with passed params
-        swiper.params = (0, _utilsMjs.q)({}, swiperParams, extendedDefaults, params);
-        swiper.originalParams = (0, _utilsMjs.q)({}, swiper.params);
-        swiper.passedParams = (0, _utilsMjs.q)({}, params);
-        // add event listeners
-        if (swiper.params && swiper.params.on) Object.keys(swiper.params.on).forEach((eventName)=>{
-            swiper.on(eventName, swiper.params.on[eventName]);
-        });
-        if (swiper.params && swiper.params.onAny) swiper.onAny(swiper.params.onAny);
-        // Extend Swiper
-        Object.assign(swiper, {
-            enabled: swiper.params.enabled,
-            el,
-            // Classes
-            classNames: [],
-            // Slides
-            slides: [],
-            slidesGrid: [],
-            snapGrid: [],
-            slidesSizesGrid: [],
-            // isDirection
-            isHorizontal () {
-                return swiper.params.direction === "horizontal";
-            },
-            isVertical () {
-                return swiper.params.direction === "vertical";
-            },
-            // Indexes
-            activeIndex: 0,
-            realIndex: 0,
-            //
-            isBeginning: true,
-            isEnd: false,
-            // Props
-            translate: 0,
-            previousTranslate: 0,
-            progress: 0,
-            velocity: 0,
-            animating: false,
-            cssOverflowAdjustment () {
-                // Returns 0 unless `translate` is > 2**23
-                // Should be subtracted from css values to prevent overflow
-                return Math.trunc(this.translate / 2 ** 23) * 2 ** 23;
-            },
-            // Locks
-            allowSlideNext: swiper.params.allowSlideNext,
-            allowSlidePrev: swiper.params.allowSlidePrev,
-            // Touch Events
-            touchEventsData: {
-                isTouched: undefined,
-                isMoved: undefined,
-                allowTouchCallbacks: undefined,
-                touchStartTime: undefined,
-                isScrolling: undefined,
-                currentTranslate: undefined,
-                startTranslate: undefined,
-                allowThresholdMove: undefined,
-                // Form elements to match
-                focusableElements: swiper.params.focusableElements,
-                // Last click time
-                lastClickTime: 0,
-                clickTimeout: undefined,
-                // Velocities
-                velocities: [],
-                allowMomentumBounce: undefined,
-                startMoving: undefined,
-                evCache: []
-            },
-            // Clicks
-            allowClick: true,
-            // Touches
-            allowTouchMove: swiper.params.allowTouchMove,
-            touches: {
-                startX: 0,
-                startY: 0,
-                currentX: 0,
-                currentY: 0,
-                diff: 0
-            },
-            // Images
-            imagesToLoad: [],
-            imagesLoaded: 0
-        });
-        swiper.emit("_swiper");
-        // Init
-        if (swiper.params.init) swiper.init();
-        // Return app instance
-        // eslint-disable-next-line no-constructor-return
-        return swiper;
-    }
-    getSlideIndex(slideEl) {
-        const { slidesEl, params } = this;
-        const slides = (0, _utilsMjs.e)(slidesEl, `.${params.slideClass}, swiper-slide`);
-        const firstSlideIndex = (0, _utilsMjs.g)(slides[0]);
-        return (0, _utilsMjs.g)(slideEl) - firstSlideIndex;
-    }
-    getSlideIndexByData(index) {
-        return this.getSlideIndex(this.slides.filter((slideEl)=>slideEl.getAttribute("data-swiper-slide-index") * 1 === index)[0]);
-    }
-    recalcSlides() {
-        const swiper = this;
-        const { slidesEl, params } = swiper;
-        swiper.slides = (0, _utilsMjs.e)(slidesEl, `.${params.slideClass}, swiper-slide`);
-    }
-    enable() {
-        const swiper = this;
-        if (swiper.enabled) return;
-        swiper.enabled = true;
-        if (swiper.params.grabCursor) swiper.setGrabCursor();
-        swiper.emit("enable");
-    }
-    disable() {
-        const swiper = this;
-        if (!swiper.enabled) return;
-        swiper.enabled = false;
-        if (swiper.params.grabCursor) swiper.unsetGrabCursor();
-        swiper.emit("disable");
-    }
-    setProgress(progress, speed) {
-        const swiper = this;
-        progress = Math.min(Math.max(progress, 0), 1);
-        const min = swiper.minTranslate();
-        const max = swiper.maxTranslate();
-        const current = (max - min) * progress + min;
-        swiper.translateTo(current, typeof speed === "undefined" ? 0 : speed);
-        swiper.updateActiveIndex();
-        swiper.updateSlidesClasses();
-    }
-    emitContainerClasses() {
-        const swiper = this;
-        if (!swiper.params._emitClasses || !swiper.el) return;
-        const cls = swiper.el.className.split(" ").filter((className)=>{
-            return className.indexOf("swiper") === 0 || className.indexOf(swiper.params.containerModifierClass) === 0;
-        });
-        swiper.emit("_containerClasses", cls.join(" "));
-    }
-    getSlideClasses(slideEl) {
-        const swiper = this;
-        if (swiper.destroyed) return "";
-        return slideEl.className.split(" ").filter((className)=>{
-            return className.indexOf("swiper-slide") === 0 || className.indexOf(swiper.params.slideClass) === 0;
-        }).join(" ");
-    }
-    emitSlidesClasses() {
-        const swiper = this;
-        if (!swiper.params._emitClasses || !swiper.el) return;
-        const updates = [];
-        swiper.slides.forEach((slideEl)=>{
-            const classNames = swiper.getSlideClasses(slideEl);
-            updates.push({
-                slideEl,
-                classNames
-            });
-            swiper.emit("_slideClass", slideEl, classNames);
-        });
-        swiper.emit("_slideClasses", updates);
-    }
-    slidesPerViewDynamic(view, exact) {
-        if (view === void 0) view = "current";
-        if (exact === void 0) exact = false;
-        const swiper = this;
-        const { params, slides, slidesGrid, slidesSizesGrid, size: swiperSize, activeIndex } = swiper;
-        let spv = 1;
-        if (params.centeredSlides) {
-            let slideSize = slides[activeIndex] ? slides[activeIndex].swiperSlideSize : 0;
-            let breakLoop;
-            for(let i = activeIndex + 1; i < slides.length; i += 1)if (slides[i] && !breakLoop) {
-                slideSize += slides[i].swiperSlideSize;
-                spv += 1;
-                if (slideSize > swiperSize) breakLoop = true;
-            }
-            for(let i = activeIndex - 1; i >= 0; i -= 1)if (slides[i] && !breakLoop) {
-                slideSize += slides[i].swiperSlideSize;
-                spv += 1;
-                if (slideSize > swiperSize) breakLoop = true;
-            }
-        } else {
-            // eslint-disable-next-line
-            if (view === "current") for(let i = activeIndex + 1; i < slides.length; i += 1){
-                const slideInView = exact ? slidesGrid[i] + slidesSizesGrid[i] - slidesGrid[activeIndex] < swiperSize : slidesGrid[i] - slidesGrid[activeIndex] < swiperSize;
-                if (slideInView) spv += 1;
-            }
-            else // previous
-            for(let i = activeIndex - 1; i >= 0; i -= 1){
-                const slideInView = slidesGrid[activeIndex] - slidesGrid[i] < swiperSize;
-                if (slideInView) spv += 1;
-            }
-        }
-        return spv;
-    }
-    update() {
-        const swiper = this;
-        if (!swiper || swiper.destroyed) return;
-        const { snapGrid, params } = swiper;
-        // Breakpoints
-        if (params.breakpoints) swiper.setBreakpoint();
-        [
-            ...swiper.el.querySelectorAll('[loading="lazy"]')
-        ].forEach((imageEl)=>{
-            if (imageEl.complete) processLazyPreloader(swiper, imageEl);
-        });
-        swiper.updateSize();
-        swiper.updateSlides();
-        swiper.updateProgress();
-        swiper.updateSlidesClasses();
-        function setTranslate() {
-            const translateValue = swiper.rtlTranslate ? swiper.translate * -1 : swiper.translate;
-            const newTranslate = Math.min(Math.max(translateValue, swiper.maxTranslate()), swiper.minTranslate());
-            swiper.setTranslate(newTranslate);
-            swiper.updateActiveIndex();
-            swiper.updateSlidesClasses();
-        }
-        let translated;
-        if (params.freeMode && params.freeMode.enabled && !params.cssMode) {
-            setTranslate();
-            if (params.autoHeight) swiper.updateAutoHeight();
-        } else {
-            if ((params.slidesPerView === "auto" || params.slidesPerView > 1) && swiper.isEnd && !params.centeredSlides) {
-                const slides = swiper.virtual && params.virtual.enabled ? swiper.virtual.slides : swiper.slides;
-                translated = swiper.slideTo(slides.length - 1, 0, false, true);
-            } else translated = swiper.slideTo(swiper.activeIndex, 0, false, true);
-            if (!translated) setTranslate();
-        }
-        if (params.watchOverflow && snapGrid !== swiper.snapGrid) swiper.checkOverflow();
-        swiper.emit("update");
-    }
-    changeDirection(newDirection, needUpdate) {
-        if (needUpdate === void 0) needUpdate = true;
-        const swiper = this;
-        const currentDirection = swiper.params.direction;
-        if (!newDirection) // eslint-disable-next-line
-        newDirection = currentDirection === "horizontal" ? "vertical" : "horizontal";
-        if (newDirection === currentDirection || newDirection !== "horizontal" && newDirection !== "vertical") return swiper;
-        swiper.el.classList.remove(`${swiper.params.containerModifierClass}${currentDirection}`);
-        swiper.el.classList.add(`${swiper.params.containerModifierClass}${newDirection}`);
-        swiper.emitContainerClasses();
-        swiper.params.direction = newDirection;
-        swiper.slides.forEach((slideEl)=>{
-            if (newDirection === "vertical") slideEl.style.width = "";
-            else slideEl.style.height = "";
-        });
-        swiper.emit("changeDirection");
-        if (needUpdate) swiper.update();
-        return swiper;
-    }
-    changeLanguageDirection(direction) {
-        const swiper = this;
-        if (swiper.rtl && direction === "rtl" || !swiper.rtl && direction === "ltr") return;
-        swiper.rtl = direction === "rtl";
-        swiper.rtlTranslate = swiper.params.direction === "horizontal" && swiper.rtl;
-        if (swiper.rtl) {
-            swiper.el.classList.add(`${swiper.params.containerModifierClass}rtl`);
-            swiper.el.dir = "rtl";
-        } else {
-            swiper.el.classList.remove(`${swiper.params.containerModifierClass}rtl`);
-            swiper.el.dir = "ltr";
-        }
-        swiper.update();
-    }
-    mount(element) {
-        const swiper = this;
-        if (swiper.mounted) return true;
-        // Find el
-        let el = element || swiper.params.el;
-        if (typeof el === "string") el = document.querySelector(el);
-        if (!el) return false;
-        el.swiper = swiper;
-        if (el.parentNode && el.parentNode.host) swiper.isElement = true;
-        const getWrapperSelector = ()=>{
-            return `.${(swiper.params.wrapperClass || "").trim().split(" ").join(".")}`;
-        };
-        const getWrapper = ()=>{
-            if (el && el.shadowRoot && el.shadowRoot.querySelector) {
-                const res = el.shadowRoot.querySelector(getWrapperSelector());
-                // Children needs to return slot items
-                return res;
-            }
-            return (0, _utilsMjs.e)(el, getWrapperSelector())[0];
-        };
-        // Find Wrapper
-        let wrapperEl = getWrapper();
-        if (!wrapperEl && swiper.params.createElements) {
-            wrapperEl = (0, _utilsMjs.c)("div", swiper.params.wrapperClass);
-            el.append(wrapperEl);
-            (0, _utilsMjs.e)(el, `.${swiper.params.slideClass}`).forEach((slideEl)=>{
-                wrapperEl.append(slideEl);
-            });
-        }
-        Object.assign(swiper, {
-            el,
-            wrapperEl,
-            slidesEl: swiper.isElement ? el.parentNode.host : wrapperEl,
-            hostEl: swiper.isElement ? el.parentNode.host : el,
-            mounted: true,
-            // RTL
-            rtl: el.dir.toLowerCase() === "rtl" || (0, _utilsMjs.l)(el, "direction") === "rtl",
-            rtlTranslate: swiper.params.direction === "horizontal" && (el.dir.toLowerCase() === "rtl" || (0, _utilsMjs.l)(el, "direction") === "rtl"),
-            wrongRTL: (0, _utilsMjs.l)(wrapperEl, "display") === "-webkit-box"
-        });
-        return true;
-    }
-    init(el) {
-        const swiper = this;
-        if (swiper.initialized) return swiper;
-        const mounted = swiper.mount(el);
-        if (mounted === false) return swiper;
-        swiper.emit("beforeInit");
-        // Set breakpoint
-        if (swiper.params.breakpoints) swiper.setBreakpoint();
-        // Add Classes
-        swiper.addClasses();
-        // Update size
-        swiper.updateSize();
-        // Update slides
-        swiper.updateSlides();
-        if (swiper.params.watchOverflow) swiper.checkOverflow();
-        // Set Grab Cursor
-        if (swiper.params.grabCursor && swiper.enabled) swiper.setGrabCursor();
-        // Slide To Initial Slide
-        if (swiper.params.loop && swiper.virtual && swiper.params.virtual.enabled) swiper.slideTo(swiper.params.initialSlide + swiper.virtual.slidesBefore, 0, swiper.params.runCallbacksOnInit, false, true);
-        else swiper.slideTo(swiper.params.initialSlide, 0, swiper.params.runCallbacksOnInit, false, true);
-        // Create loop
-        if (swiper.params.loop) swiper.loopCreate();
-        // Attach events
-        swiper.attachEvents();
-        [
-            ...swiper.el.querySelectorAll('[loading="lazy"]')
-        ].forEach((imageEl)=>{
-            if (imageEl.complete) processLazyPreloader(swiper, imageEl);
-            else imageEl.addEventListener("load", (e)=>{
-                processLazyPreloader(swiper, e.target);
-            });
-        });
-        preload(swiper);
-        // Init Flag
-        swiper.initialized = true;
-        preload(swiper);
-        // Emit
-        swiper.emit("init");
-        swiper.emit("afterInit");
-        return swiper;
-    }
-    destroy(deleteInstance, cleanStyles) {
-        if (deleteInstance === void 0) deleteInstance = true;
-        if (cleanStyles === void 0) cleanStyles = true;
-        const swiper = this;
-        const { params, el, wrapperEl, slides } = swiper;
-        if (typeof swiper.params === "undefined" || swiper.destroyed) return null;
-        swiper.emit("beforeDestroy");
-        // Init Flag
-        swiper.initialized = false;
-        // Detach events
-        swiper.detachEvents();
-        // Destroy loop
-        if (params.loop) swiper.loopDestroy();
-        // Cleanup styles
-        if (cleanStyles) {
-            swiper.removeClasses();
-            el.removeAttribute("style");
-            wrapperEl.removeAttribute("style");
-            if (slides && slides.length) slides.forEach((slideEl)=>{
-                slideEl.classList.remove(params.slideVisibleClass, params.slideActiveClass, params.slideNextClass, params.slidePrevClass);
-                slideEl.removeAttribute("style");
-                slideEl.removeAttribute("data-swiper-slide-index");
-            });
-        }
-        swiper.emit("destroy");
-        // Detach emitter events
-        Object.keys(swiper.eventsListeners).forEach((eventName)=>{
-            swiper.off(eventName);
-        });
-        if (deleteInstance !== false) {
-            swiper.el.swiper = null;
-            (0, _utilsMjs.r)(swiper);
-        }
-        swiper.destroyed = true;
-        return null;
-    }
-    static extendDefaults(newDefaults) {
-        (0, _utilsMjs.q)(extendedDefaults, newDefaults);
-    }
-    static get extendedDefaults() {
-        return extendedDefaults;
-    }
-    static get defaults() {
-        return defaults;
-    }
-    static installModule(mod) {
-        if (!Swiper.prototype.__modules__) Swiper.prototype.__modules__ = [];
-        const modules = Swiper.prototype.__modules__;
-        if (typeof mod === "function" && modules.indexOf(mod) < 0) modules.push(mod);
-    }
-    static use(module) {
-        if (Array.isArray(module)) {
-            module.forEach((m)=>Swiper.installModule(m));
-            return Swiper;
-        }
-        Swiper.installModule(module);
-        return Swiper;
-    }
-}
-Object.keys(prototypes).forEach((prototypeGroup)=>{
-    Object.keys(prototypes[prototypeGroup]).forEach((protoMethod)=>{
-        Swiper.prototype[protoMethod] = prototypes[prototypeGroup][protoMethod];
-    });
-});
-Swiper.use([
-    Resize,
-    Observer
-]);
-
-},{"./ssr-window.esm.mjs":"th8PY","./utils.mjs":"9mU7V","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"th8PY":[function(require,module,exports) {
-/**
- * SSR Window 4.0.2
- * Better handling for window object in SSR environment
- * https://github.com/nolimits4web/ssr-window
- *
- * Copyright 2021, Vladimir Kharlampidi
- *
- * Licensed under MIT
- *
- * Released on: December 13, 2021
- */ /* eslint-disable no-param-reassign */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "a", ()=>getWindow);
-parcelHelpers.export(exports, "g", ()=>getDocument);
-function isObject(obj) {
-    return obj !== null && typeof obj === "object" && "constructor" in obj && obj.constructor === Object;
-}
-function extend(target, src) {
-    if (target === void 0) target = {};
-    if (src === void 0) src = {};
-    Object.keys(src).forEach((key)=>{
-        if (typeof target[key] === "undefined") target[key] = src[key];
-        else if (isObject(src[key]) && isObject(target[key]) && Object.keys(src[key]).length > 0) extend(target[key], src[key]);
-    });
-}
-const ssrDocument = {
-    body: {},
-    addEventListener () {},
-    removeEventListener () {},
-    activeElement: {
-        blur () {},
-        nodeName: ""
-    },
-    querySelector () {
-        return null;
-    },
-    querySelectorAll () {
-        return [];
-    },
-    getElementById () {
-        return null;
-    },
-    createEvent () {
-        return {
-            initEvent () {}
-        };
-    },
-    createElement () {
-        return {
-            children: [],
-            childNodes: [],
-            style: {},
-            setAttribute () {},
-            getElementsByTagName () {
-                return [];
-            }
-        };
-    },
-    createElementNS () {
-        return {};
-    },
-    importNode () {
-        return null;
-    },
-    location: {
-        hash: "",
-        host: "",
-        hostname: "",
-        href: "",
-        origin: "",
-        pathname: "",
-        protocol: "",
-        search: ""
-    }
-};
-function getDocument() {
-    const doc = typeof document !== "undefined" ? document : {};
-    extend(doc, ssrDocument);
-    return doc;
-}
-const ssrWindow = {
-    document: ssrDocument,
-    navigator: {
-        userAgent: ""
-    },
-    location: {
-        hash: "",
-        host: "",
-        hostname: "",
-        href: "",
-        origin: "",
-        pathname: "",
-        protocol: "",
-        search: ""
-    },
-    history: {
-        replaceState () {},
-        pushState () {},
-        go () {},
-        back () {}
-    },
-    CustomEvent: function CustomEvent() {
-        return this;
-    },
-    addEventListener () {},
-    removeEventListener () {},
-    getComputedStyle () {
-        return {
-            getPropertyValue () {
-                return "";
-            }
-        };
-    },
-    Image () {},
-    Date () {},
-    screen: {},
-    setTimeout () {},
-    clearTimeout () {},
-    matchMedia () {
-        return {};
-    },
-    requestAnimationFrame (callback) {
-        if (typeof setTimeout === "undefined") {
-            callback();
-            return null;
-        }
-        return setTimeout(callback, 0);
-    },
-    cancelAnimationFrame (id) {
-        if (typeof setTimeout === "undefined") return;
-        clearTimeout(id);
-    }
-};
-function getWindow() {
-    const win = typeof window !== "undefined" ? window : {};
-    extend(win, ssrWindow);
-    return win;
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9mU7V":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "a", ()=>elementParents);
-parcelHelpers.export(exports, "b", ()=>elementOffset);
-parcelHelpers.export(exports, "c", ()=>createElement);
-parcelHelpers.export(exports, "d", ()=>now);
-parcelHelpers.export(exports, "e", ()=>elementChildren);
-parcelHelpers.export(exports, "f", ()=>elementOuterSize);
-parcelHelpers.export(exports, "g", ()=>elementIndex);
-parcelHelpers.export(exports, "h", ()=>getTranslate);
-parcelHelpers.export(exports, "i", ()=>elementTransitionEnd);
-parcelHelpers.export(exports, "j", ()=>isObject);
-parcelHelpers.export(exports, "k", ()=>getSlideTransformEl);
-parcelHelpers.export(exports, "l", ()=>elementStyle);
-parcelHelpers.export(exports, "m", ()=>elementNextAll);
-parcelHelpers.export(exports, "n", ()=>nextTick);
-parcelHelpers.export(exports, "o", ()=>elementPrevAll);
-parcelHelpers.export(exports, "p", ()=>animateCSSModeScroll);
-parcelHelpers.export(exports, "q", ()=>extend);
-parcelHelpers.export(exports, "r", ()=>deleteProps);
-parcelHelpers.export(exports, "s", ()=>setCSSProperty);
-var _ssrWindowEsmMjs = require("./ssr-window.esm.mjs");
-function deleteProps(obj) {
-    const object = obj;
-    Object.keys(object).forEach((key)=>{
-        try {
-            object[key] = null;
-        } catch (e) {
-        // no getter for object
-        }
-        try {
-            delete object[key];
-        } catch (e) {
-        // something got wrong
-        }
-    });
-}
-function nextTick(callback, delay) {
-    if (delay === void 0) delay = 0;
-    return setTimeout(callback, delay);
-}
-function now() {
-    return Date.now();
-}
-function getComputedStyle(el) {
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    let style;
-    if (window1.getComputedStyle) style = window1.getComputedStyle(el, null);
-    if (!style && el.currentStyle) style = el.currentStyle;
-    if (!style) style = el.style;
-    return style;
-}
-function getTranslate(el, axis) {
-    if (axis === void 0) axis = "x";
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    let matrix;
-    let curTransform;
-    let transformMatrix;
-    const curStyle = getComputedStyle(el);
-    if (window1.WebKitCSSMatrix) {
-        curTransform = curStyle.transform || curStyle.webkitTransform;
-        if (curTransform.split(",").length > 6) curTransform = curTransform.split(", ").map((a)=>a.replace(",", ".")).join(", ");
-        // Some old versions of Webkit choke when 'none' is passed; pass
-        // empty string instead in this case
-        transformMatrix = new window1.WebKitCSSMatrix(curTransform === "none" ? "" : curTransform);
-    } else {
-        transformMatrix = curStyle.MozTransform || curStyle.OTransform || curStyle.MsTransform || curStyle.msTransform || curStyle.transform || curStyle.getPropertyValue("transform").replace("translate(", "matrix(1, 0, 0, 1,");
-        matrix = transformMatrix.toString().split(",");
-    }
-    if (axis === "x") {
-        // Latest Chrome and webkits Fix
-        if (window1.WebKitCSSMatrix) curTransform = transformMatrix.m41;
-        else if (matrix.length === 16) curTransform = parseFloat(matrix[12]);
-        else curTransform = parseFloat(matrix[4]);
-    }
-    if (axis === "y") {
-        // Latest Chrome and webkits Fix
-        if (window1.WebKitCSSMatrix) curTransform = transformMatrix.m42;
-        else if (matrix.length === 16) curTransform = parseFloat(matrix[13]);
-        else curTransform = parseFloat(matrix[5]);
-    }
-    return curTransform || 0;
-}
-function isObject(o) {
-    return typeof o === "object" && o !== null && o.constructor && Object.prototype.toString.call(o).slice(8, -1) === "Object";
-}
-function isNode(node) {
-    // eslint-disable-next-line
-    if (typeof window !== "undefined" && typeof window.HTMLElement !== "undefined") return node instanceof HTMLElement;
-    return node && (node.nodeType === 1 || node.nodeType === 11);
-}
-function extend() {
-    const to = Object(arguments.length <= 0 ? undefined : arguments[0]);
-    const noExtend = [
-        "__proto__",
-        "constructor",
-        "prototype"
-    ];
-    for(let i = 1; i < arguments.length; i += 1){
-        const nextSource = i < 0 || arguments.length <= i ? undefined : arguments[i];
-        if (nextSource !== undefined && nextSource !== null && !isNode(nextSource)) {
-            const keysArray = Object.keys(Object(nextSource)).filter((key)=>noExtend.indexOf(key) < 0);
-            for(let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex += 1){
-                const nextKey = keysArray[nextIndex];
-                const desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-                if (desc !== undefined && desc.enumerable) {
-                    if (isObject(to[nextKey]) && isObject(nextSource[nextKey])) {
-                        if (nextSource[nextKey].__swiper__) to[nextKey] = nextSource[nextKey];
-                        else extend(to[nextKey], nextSource[nextKey]);
-                    } else if (!isObject(to[nextKey]) && isObject(nextSource[nextKey])) {
-                        to[nextKey] = {};
-                        if (nextSource[nextKey].__swiper__) to[nextKey] = nextSource[nextKey];
-                        else extend(to[nextKey], nextSource[nextKey]);
-                    } else to[nextKey] = nextSource[nextKey];
-                }
-            }
-        }
-    }
-    return to;
-}
-function setCSSProperty(el, varName, varValue) {
-    el.style.setProperty(varName, varValue);
-}
-function animateCSSModeScroll(_ref) {
-    let { swiper, targetPosition, side } = _ref;
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    const startPosition = -swiper.translate;
-    let startTime = null;
-    let time;
-    const duration = swiper.params.speed;
-    swiper.wrapperEl.style.scrollSnapType = "none";
-    window1.cancelAnimationFrame(swiper.cssModeFrameID);
-    const dir = targetPosition > startPosition ? "next" : "prev";
-    const isOutOfBound = (current, target)=>{
-        return dir === "next" && current >= target || dir === "prev" && current <= target;
-    };
-    const animate = ()=>{
-        time = new Date().getTime();
-        if (startTime === null) startTime = time;
-        const progress = Math.max(Math.min((time - startTime) / duration, 1), 0);
-        const easeProgress = 0.5 - Math.cos(progress * Math.PI) / 2;
-        let currentPosition = startPosition + easeProgress * (targetPosition - startPosition);
-        if (isOutOfBound(currentPosition, targetPosition)) currentPosition = targetPosition;
-        swiper.wrapperEl.scrollTo({
-            [side]: currentPosition
-        });
-        if (isOutOfBound(currentPosition, targetPosition)) {
-            swiper.wrapperEl.style.overflow = "hidden";
-            swiper.wrapperEl.style.scrollSnapType = "";
-            setTimeout(()=>{
-                swiper.wrapperEl.style.overflow = "";
-                swiper.wrapperEl.scrollTo({
-                    [side]: currentPosition
-                });
-            });
-            window1.cancelAnimationFrame(swiper.cssModeFrameID);
-            return;
-        }
-        swiper.cssModeFrameID = window1.requestAnimationFrame(animate);
-    };
-    animate();
-}
-function getSlideTransformEl(slideEl) {
-    return slideEl.querySelector(".swiper-slide-transform") || slideEl.shadowRoot && slideEl.shadowRoot.querySelector(".swiper-slide-transform") || slideEl;
-}
-function elementChildren(element, selector) {
-    if (selector === void 0) selector = "";
-    return [
-        ...element.children
-    ].filter((el)=>el.matches(selector));
-}
-function createElement(tag, classes) {
-    if (classes === void 0) classes = [];
-    const el = document.createElement(tag);
-    el.classList.add(...Array.isArray(classes) ? classes : [
-        classes
-    ]);
-    return el;
-}
-function elementOffset(el) {
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    const document1 = (0, _ssrWindowEsmMjs.g)();
-    const box = el.getBoundingClientRect();
-    const body = document1.body;
-    const clientTop = el.clientTop || body.clientTop || 0;
-    const clientLeft = el.clientLeft || body.clientLeft || 0;
-    const scrollTop = el === window1 ? window1.scrollY : el.scrollTop;
-    const scrollLeft = el === window1 ? window1.scrollX : el.scrollLeft;
-    return {
-        top: box.top + scrollTop - clientTop,
-        left: box.left + scrollLeft - clientLeft
-    };
-}
-function elementPrevAll(el, selector) {
-    const prevEls = [];
-    while(el.previousElementSibling){
-        const prev = el.previousElementSibling; // eslint-disable-line
-        if (selector) {
-            if (prev.matches(selector)) prevEls.push(prev);
-        } else prevEls.push(prev);
-        el = prev;
-    }
-    return prevEls;
-}
-function elementNextAll(el, selector) {
-    const nextEls = [];
-    while(el.nextElementSibling){
-        const next = el.nextElementSibling; // eslint-disable-line
-        if (selector) {
-            if (next.matches(selector)) nextEls.push(next);
-        } else nextEls.push(next);
-        el = next;
-    }
-    return nextEls;
-}
-function elementStyle(el, prop) {
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    return window1.getComputedStyle(el, null).getPropertyValue(prop);
-}
-function elementIndex(el) {
-    let child = el;
-    let i;
-    if (child) {
-        i = 0;
-        // eslint-disable-next-line
-        while((child = child.previousSibling) !== null)if (child.nodeType === 1) i += 1;
-        return i;
-    }
-    return undefined;
-}
-function elementParents(el, selector) {
-    const parents = []; // eslint-disable-line
-    let parent = el.parentElement; // eslint-disable-line
-    while(parent){
-        if (selector) {
-            if (parent.matches(selector)) parents.push(parent);
-        } else parents.push(parent);
-        parent = parent.parentElement;
-    }
-    return parents;
-}
-function elementTransitionEnd(el, callback) {
-    function fireCallBack(e) {
-        if (e.target !== el) return;
-        callback.call(el, e);
-        el.removeEventListener("transitionend", fireCallBack);
-    }
-    if (callback) el.addEventListener("transitionend", fireCallBack);
-}
-function elementOuterSize(el, size, includeMargins) {
-    const window1 = (0, _ssrWindowEsmMjs.a)();
-    if (includeMargins) return el[size === "width" ? "offsetWidth" : "offsetHeight"] + parseFloat(window1.getComputedStyle(el, null).getPropertyValue(size === "width" ? "margin-right" : "margin-top")) + parseFloat(window1.getComputedStyle(el, null).getPropertyValue(size === "width" ? "margin-left" : "margin-bottom"));
-    return el.offsetWidth;
-}
-
-},{"./ssr-window.esm.mjs":"th8PY","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ESAf":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _three = require("three");
-const mouseData = {
-    lastMouseX: null,
-    lastMouseY: null,
-    screenWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
-    screenHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-    fixedValue: 0.5
-};
-class MouseHandler {
-    constructor(){
-        this.intensity = 2; // Factor de intensidad del mouse
-        this.normalized = new (0, _three.Vector3)(); // Posición normalizada del mouse
-        this.ToCamera = new (0, _three.Vector3)();
-        this.isMouseMoving = false; // El mouse se está moviendo
-        this.timer = null; // Temporizador para determinar si el mouse se ha detenido
-        this.timeOut = 150; // Tiempo del temporizador (por defecto: 150 ms)
-    }
-    // Actualiza los valores del mouse
-    // ...
-    update(event) {
-        const mouseX = event.clientX; // Posición X actual del mouse
-        const mouseY = event.clientY; // Posición Y actual del mouse
-        const normalizedX = (mouseX / mouseData.screenWidth - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición X
-        const normalizedY = (mouseY / mouseData.screenHeight - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición Y
-        this.normalized.set(normalizedX, normalizedY * 2, 0);
-        if (!this.isMouseMoving) // El mouse estaba detenido y ahora se está moviendo
-        //console.log("El mouse se ha movido");
-        this.isMouseMoving = true; // Actualizar isMouseMoving a true cuando el mouse se mueve
-        clearTimeout(this.timer);
-        this.timer = setTimeout(()=>{
-            //console.log("El mouse se ha detenido");
-            // Aquí puedes llamar a la función o realizar las acciones que deseas cuando el mouse se detiene
-            this.isMouseMoving = false; // El mouse se ha detenido
-        }, this.timeOut);
-        mouseData.lastMouseX = mouseX; // Guarda la última posición X del mouse
-        mouseData.lastMouseY = mouseY; // Guarda la última posición Y del mouse
-        mouseData.lastNormalizedX = this.normalized.x; // Guarda el último valor normalizado de X
-        mouseData.lastNormalizedY = this.normalized.y; // Guarda el último valor normalizado de Y
-    }
-}
-// Crear una instancia del MouseHandler con un temporizador personalizado de 2000 ms
-const MOUSE_HANDLER = new MouseHandler();
-// Exportar la instancia del MouseHandler
-exports.default = MOUSE_HANDLER;
-
 },{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k3xQk":[function(require,module,exports) {
 /**
  * dat-gui JavaScript Controller Library
@@ -43748,20 +36838,17 @@ var _mouseHandlerDefault = parcelHelpers.interopDefault(_mouseHandler);
 var _textAnimJs = require("../../js/text-anim.js");
 var _three = require("three");
 var _main = require("../Main");
-var _domLoadContent = require("./dom/DomLoadContent");
-var _domLoadContentDefault = parcelHelpers.interopDefault(_domLoadContent);
 var _cameraHandler = require("../Handlers/CameraHandler");
 var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
-var _swiper = require("swiper");
-var _swiperDefault = parcelHelpers.interopDefault(_swiper);
-var _state = require("./dom/state");
 var _soundEffects = require("../effects/SoundEffects");
+var _dotState = require("./dom/DotState");
 let swiper;
 let isPlaying = false;
 //botones
 const BEGIN_BTN_REF = document.getElementById("start-scene");
 const NAVIGATOR_REF = document.getElementById("navigator");
 const BACK_BTN = document.getElementById("back-btn");
+const NTW_BTN_REF = document.getElementById("bxn-network");
 console.log(NAVIGATOR_REF);
 //escenas
 const INTRO_REF = document.getElementById("intro");
@@ -43771,11 +36858,30 @@ const DOTS_MENU_REF = document.getElementById("dots-menu");
 function setupListeners() {
     // Detectar cuando el mouse se mueve y llamar a la función de actualización
     BEGIN_BTN_REF.addEventListener("click", startScene);
-    NAVIGATOR_REF.addEventListener("click", navigation);
-    NAVIGATOR_REF.addEventListener("mouseenter", navigationHover);
+    //NAVIGATOR_REF.addEventListener("click", navigation);
+    //NAVIGATOR_REF.addEventListener("mouseenter", navigationHover);
     BACK_BTN.addEventListener("click", backButton);
+    BACK_BTN.addEventListener("mouseenter", backButtonHover);
     document.addEventListener("mousemove", mouseMove);
     document.addEventListener("DOMContentLoaded", pageLoaded);
+    //activar los dost de network
+    NTW_BTN_REF.addEventListener("click", ntwHandleClick);
+}
+//cuando el boton de btn es activado
+function ntwHandleClick(event) {
+    if (event.target.tagName === "BUTTON") {
+        console.log("ACTIVAR NETWOR SECTION");
+        //sonido de primer click
+        (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).start, true);
+        //sonido de ambiente
+        (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).background, true);
+        //esconder la intro
+        (0, _textAnimJs.HideTextAnimation)(".animated-item", "easeInExpo", 1200, function(completed) {
+            INTRO_REF.style.display = "none";
+            //mostrar los dots
+            (0, _main.NTW_MAIN_DOT).setDotVisibility(true);
+        });
+    }
 }
 // Función llamada al mover el mouse
 function mouseMove(event) {
@@ -43820,7 +36926,7 @@ function navigation(event) {
                 console.log("MISMO ELEMENTO");
                 return;
             }
-            (0, _domLoadContentDefault.default)(element, 0);
+            loadPage(element, 0);
             //mostrar una vez terminada la animacion
             activeSection.classList.remove("active");
             //esperar unso segundos
@@ -43831,8 +36937,8 @@ function navigation(event) {
                     activeSection.classList.remove("no-active");
                     //reactivar animacion
                     activeSection.classList.add("no-active");
-                    (0, _state.LAST_ITEM).childCount = 0;
-                    console.log((0, _state.LAST_ITEM).childCount, "HiJO NUMERO");
+                    LAST_ITEM.childCount = 0;
+                    console.log(LAST_ITEM.childCount, "HiJO NUMERO");
                     wasAnimated = true;
                 });
             }, 300);
@@ -43849,92 +36955,2323 @@ function startScene(event) {
     //sonido de ambiente
     (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).background, true);
     //esconder la intro
-    (0, _textAnimJs.HideTextAnimation)(".animated-item", 1200, function(completed) {
+    (0, _textAnimJs.HideTextAnimation)(".animated-item", "easeInExpo", 1200, function(completed) {
         INTRO_REF.style.display = "none";
-        //mostrar el nuevo objeto
-        (0, _textAnimJs.ShowTextAnimation)(".dot");
+        //mostrar los dots
+        (0, _main.MAIN_DOTS).setDotVisibility(true);
     });
 }
 function backButton(event) {
-    console.log(event.target);
-    (0, _state.SECTION).isSectionActive = false;
-    const activeSection = document.querySelector(".section.active");
-    const elementId = activeSection.dataset.id;
-    console.log(elementId, activeSection);
-    if ((0, _state.LAST_ITEM).childCount <= 0) {
-        //reiniicar fuerza del mouse 
-        //hacer otras cosas
-        const divElement = document.createElement("div");
-        divElement.setAttribute("data-far", "[0, 160, 110]");
-        divElement.setAttribute("data-target", "[0, 0, -1]");
-        // Mostrar una vez terminada la animación
-        NAVIGATOR_REF.style.zIndex = "0";
-        NAVIGATOR_REF.classList.remove("active");
-        (0, _cameraHandlerDefault.default).moveCameraTo(divElement, ()=>{
-            //recuperar intensidad del mouse
-            (0, _mouseHandlerDefault.default).intensity = 50;
-            // Mostrar una vez terminada la animación
-            activeSection.classList.remove("active");
-            console.log("ACTUALIZAR A DOT");
-            //console.log(LAST_ITEM.activeElement);
-            console.log((0, _state.LAST_ITEM).activeElement, "ELEMENTO QUE SERA CARGADO");
-            activeSection.innerHTML = (0, _state.LAST_ITEM).activeElement;
-        // Desactivar los eventos para el objeto actual
-        });
-        return;
-    } else {
-        (0, _state.LAST_ITEM).childCount--;
-        console.log((0, _state.LAST_ITEM).childCount, "HiJO NUMERO");
-        if (activeSection.classList.contains("sub-page-active")) {
-            console.log("ELIMINAR SUBPAGINA");
-            activeSection.classList.remove("sub-page-active");
-        }
-    }
-    if (elementId === "home") {
-        console.log("HOOOOMEE");
-        const container = document.createElement("div");
-        container.classList.add("home-swiper");
-        //sub-container
-        const innerContainer = document.createElement("div");
-        innerContainer.classList.add("swiper-wrapper");
-        //agreagar slides a el objeto
-        let slide = (0, _domLoadContentDefault.default)(activeSection, 0, true);
-        slide.classList.add("swiper-slide");
-        innerContainer.appendChild(slide);
-        slide = (0, _domLoadContentDefault.default)(activeSection, 1, true);
-        slide.classList.add("swiper-slide");
-        innerContainer.appendChild(slide);
-        console.log((0, _state.LAST_ITEM));
-        //organizar los elementos
-        container.appendChild(innerContainer);
-        slide = document.createElement("div");
-        slide.classList.add("swiper-button-next");
-        container.appendChild(slide);
-        slide = document.createElement("div");
-        slide.classList.add("swiper-button-prev");
-        container.appendChild(slide);
-        //agregar el ultimo item a la lista de estados
-        (0, _state.LAST_ITEM).lastContainer = activeSection;
-        (0, _state.LAST_ITEM).pageIndex = 0;
-        (0, _state.LAST_ITEM).isHome = true;
-        console.log((0, _state.LAST_ITEM), "ELEMTTO STATE ACTUALIZOADO CON HOME");
-        //agregar el slide al dot
-        activeSection.appendChild(container);
-        swiper = new (0, _swiperDefault.default)(".home-swiper", {
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev"
-            }
-        });
-    } else {
-        //agregar el ultimo item a la lista de estados
-        (0, _state.LAST_ITEM).lastContainer = (0, _domLoadContentDefault.default)(activeSection, 0, false);
-        (0, _state.LAST_ITEM).pageIndex = 0;
-        (0, _state.LAST_ITEM).isHome = false;
-    }
+    (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
+    console.log("toque en el boton de [BACK]\n", event.target);
+    //regresar al nodo anterior
+    const actualPage = (0, _dotState.STATE).actualActive;
+    console.log(actualPage);
+    //activa la pagina anterior
+    actualPage.toggleSubPage(false); //desactivar el hijo[SUBPAGE]
+}
+function backButtonHover(event) {
+    (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
 }
 
-},{"../Handlers/MouseHandler":"7ESAf","../../js/text-anim.js":"jjSxz","three":"ktPTu","../Main":"jYf5p","./dom/DomLoadContent":"eRo78","../Handlers/CameraHandler":"bJrvG","swiper":"iM6UL","./dom/state":"9LNsG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../effects/SoundEffects":"7K3aZ"}],"kST2h":[function(require,module,exports) {
+},{"../Handlers/MouseHandler":"7ESAf","../../js/text-anim.js":"jjSxz","three":"ktPTu","../Main":"jYf5p","../Handlers/CameraHandler":"bJrvG","../effects/SoundEffects":"7K3aZ","./dom/DotState":"4rB7c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ESAf":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _three = require("three");
+const mouseData = {
+    lastMouseX: null,
+    lastMouseY: null,
+    screenWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+    screenHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
+    fixedValue: 0.5
+};
+class MouseHandler {
+    constructor(){
+        this.intensity = 2; // Factor de intensidad del mouse
+        this.normalized = new (0, _three.Vector3)(); // Posición normalizada del mouse
+        this.ToCamera = new (0, _three.Vector3)();
+        this.isMouseMoving = false; // El mouse se está moviendo
+        this.timer = null; // Temporizador para determinar si el mouse se ha detenido
+        this.timeOut = 150; // Tiempo del temporizador (por defecto: 150 ms)
+        this.isSectionInCamera = false;
+    }
+    // Actualiza los valores del mouse
+    // ...
+    update(event) {
+        const mouseX = event.clientX; // Posición X actual del mouse
+        const mouseY = event.clientY; // Posición Y actual del mouse
+        const normalizedX = (mouseX / mouseData.screenWidth - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición X
+        const normalizedY = (mouseY / mouseData.screenHeight - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición Y
+        if (!this.isSectionInCamera) this.normalized.set(normalizedX, normalizedY * 2, 0);
+        else this.normalized.set(normalizedX, 0, normalizedY);
+        if (!this.isMouseMoving) // El mouse estaba detenido y ahora se está moviendo
+        //console.log("El mouse se ha movido");
+        this.isMouseMoving = true; // Actualizar isMouseMoving a true cuando el mouse se mueve
+        clearTimeout(this.timer);
+        this.timer = setTimeout(()=>{
+            //console.log("El mouse se ha detenido");
+            // Aquí puedes llamar a la función o realizar las acciones que deseas cuando el mouse se detiene
+            this.isMouseMoving = false; // El mouse se ha detenido
+        }, this.timeOut);
+        mouseData.lastMouseX = mouseX; // Guarda la última posición X del mouse
+        mouseData.lastMouseY = mouseY; // Guarda la última posición Y del mouse
+        mouseData.lastNormalizedX = this.normalized.x; // Guarda el último valor normalizado de X
+        mouseData.lastNormalizedY = this.normalized.y; // Guarda el último valor normalizado de Y
+    }
+}
+// Crear una instancia del MouseHandler con un temporizador personalizado de 2000 ms
+const MOUSE_HANDLER = new MouseHandler();
+// Exportar la instancia del MouseHandler
+exports.default = MOUSE_HANDLER;
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jjSxz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "HideTextAnimation", ()=>HideTextAnimation);
+parcelHelpers.export(exports, "ShowTextAnimation", ()=>ShowTextAnimation);
+var _animejs = require("animejs");
+var _animejsDefault = parcelHelpers.interopDefault(_animejs);
+// Elementos del DOM
+const INTRO_REF = document.getElementById("intro");
+const TITLE_REF = document.getElementById("title");
+const TITLE_SPAN_REF = document.getElementById("title-span");
+const SUBTITLE_REF = document.getElementById("sub-title");
+const DESCRIPTION_REF = document.getElementById("description");
+const FOOTER_REF = document.getElementById("start-ui");
+// Iconos
+const arrowUpIcon = new URL(require("3b531f2ebd263c17"));
+const soundIcon = new URL(require("bd1902df3feafb99"));
+// Objeto con el texto de cada una de las presentaciones
+const TEXT_INTRO = {
+    title: "BXN BLACKFORT",
+    title_span: "EXCHANGE NETWORK",
+    description: "At BlackFort, we specialize in creating innovative blockchain–based products and services. Our offerings include client–side wallet applications, Layer 1 blockchain technology, efficient payment solutions, and secure smart contracts. We are committed to providing the best possible solutions for our customers.",
+    subtitle: "BLOCKCHAIN • STORAGE • EXCHANGE • ECOSYSTEM",
+    footer: "BXN Blockchain"
+};
+// Estilizar texto en span para el título
+TITLE_REF.innerHTML = TEXT_INTRO.title.replace(/\S/g, "<span class='animated-item'>$&</span>");
+// Estilizar texto en span para el título span
+TITLE_SPAN_REF.innerHTML = TEXT_INTRO.title_span.replace(/\S/g, "<span class='animated-item'>$&</span>");
+// Establecer otros textos
+DESCRIPTION_REF.innerHTML = `<div class="animated-item">${TEXT_INTRO.description}</div>`;
+SUBTITLE_REF.innerHTML = `<div class="animated-item">${TEXT_INTRO.subtitle}</div>`;
+FOOTER_REF.innerHTML = `
+  <button id="bxn-network" class="ui-title animated-item">${TEXT_INTRO.footer}</button>
+  <div class="ui-controls">
+    <button id="start-scene" class="control animated-item">
+      <img src="${arrowUpIcon.href}" alt="" srcset="">
+    </button>
+    <button id="toggle-sound" class="control animated-item">
+    <object
+    class="icon"
+    data="${soundIcon.href}"
+    type="image/svg+xml"
+  ></object>
+    </button>
+  </div>
+`;
+// Animar la primera escena
+function ShowTextAnimation(target) {
+    (0, _animejsDefault.default).timeline({
+        loop: false
+    }).add({
+        targets: target,
+        bottom: [
+            -220,
+            0
+        ],
+        opacity: 1,
+        easing: "easeOutExpo",
+        duration: 1500,
+        delay: (0, _animejsDefault.default).stagger(30)
+    });
+}
+function HideTextAnimation(target, animation, animationDuration, callback) {
+    const opacityAnimationDuration = animationDuration - 600; // Duración de la animación de opacidad
+    (0, _animejsDefault.default).timeline({
+        loop: false
+    }).add({
+        targets: target,
+        top: [
+            0,
+            -500
+        ],
+        delay: 1000,
+        direction: "reverse",
+        easing: animation,
+        duration: animationDuration,
+        delay: (0, _animejsDefault.default).stagger(30),
+        complete: callback
+    }).add({
+        targets: target,
+        opacity: 0,
+        duration: opacityAnimationDuration,
+        easing: "linear"
+    });
+}
+
+},{"animejs":"jokr5","3b531f2ebd263c17":"lSDFi","bd1902df3feafb99":"68K6w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jokr5":[function(require,module,exports) {
+/*
+ * anime.js v3.2.1
+ * (c) 2020 Julian Garnier
+ * Released under the MIT license
+ * animejs.com
+ */ // Defaults
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var defaultInstanceSettings = {
+    update: null,
+    begin: null,
+    loopBegin: null,
+    changeBegin: null,
+    change: null,
+    changeComplete: null,
+    loopComplete: null,
+    complete: null,
+    loop: 1,
+    direction: "normal",
+    autoplay: true,
+    timelineOffset: 0
+};
+var defaultTweenSettings = {
+    duration: 1000,
+    delay: 0,
+    endDelay: 0,
+    easing: "easeOutElastic(1, .5)",
+    round: 0
+};
+var validTransforms = [
+    "translateX",
+    "translateY",
+    "translateZ",
+    "rotate",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "scale",
+    "scaleX",
+    "scaleY",
+    "scaleZ",
+    "skew",
+    "skewX",
+    "skewY",
+    "perspective",
+    "matrix",
+    "matrix3d"
+];
+// Caching
+var cache = {
+    CSS: {},
+    springs: {}
+};
+// Utils
+function minMax(val, min, max) {
+    return Math.min(Math.max(val, min), max);
+}
+function stringContains(str, text) {
+    return str.indexOf(text) > -1;
+}
+function applyArguments(func, args) {
+    return func.apply(null, args);
+}
+var is = {
+    arr: function(a) {
+        return Array.isArray(a);
+    },
+    obj: function(a) {
+        return stringContains(Object.prototype.toString.call(a), "Object");
+    },
+    pth: function(a) {
+        return is.obj(a) && a.hasOwnProperty("totalLength");
+    },
+    svg: function(a) {
+        return a instanceof SVGElement;
+    },
+    inp: function(a) {
+        return a instanceof HTMLInputElement;
+    },
+    dom: function(a) {
+        return a.nodeType || is.svg(a);
+    },
+    str: function(a) {
+        return typeof a === "string";
+    },
+    fnc: function(a) {
+        return typeof a === "function";
+    },
+    und: function(a) {
+        return typeof a === "undefined";
+    },
+    nil: function(a) {
+        return is.und(a) || a === null;
+    },
+    hex: function(a) {
+        return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(a);
+    },
+    rgb: function(a) {
+        return /^rgb/.test(a);
+    },
+    hsl: function(a) {
+        return /^hsl/.test(a);
+    },
+    col: function(a) {
+        return is.hex(a) || is.rgb(a) || is.hsl(a);
+    },
+    key: function(a) {
+        return !defaultInstanceSettings.hasOwnProperty(a) && !defaultTweenSettings.hasOwnProperty(a) && a !== "targets" && a !== "keyframes";
+    }
+};
+// Easings
+function parseEasingParameters(string) {
+    var match = /\(([^)]+)\)/.exec(string);
+    return match ? match[1].split(",").map(function(p) {
+        return parseFloat(p);
+    }) : [];
+}
+// Spring solver inspired by Webkit Copyright © 2016 Apple Inc. All rights reserved. https://webkit.org/demos/spring/spring.js
+function spring(string, duration) {
+    var params = parseEasingParameters(string);
+    var mass = minMax(is.und(params[0]) ? 1 : params[0], .1, 100);
+    var stiffness = minMax(is.und(params[1]) ? 100 : params[1], .1, 100);
+    var damping = minMax(is.und(params[2]) ? 10 : params[2], .1, 100);
+    var velocity = minMax(is.und(params[3]) ? 0 : params[3], .1, 100);
+    var w0 = Math.sqrt(stiffness / mass);
+    var zeta = damping / (2 * Math.sqrt(stiffness * mass));
+    var wd = zeta < 1 ? w0 * Math.sqrt(1 - zeta * zeta) : 0;
+    var a = 1;
+    var b = zeta < 1 ? (zeta * w0 + -velocity) / wd : -velocity + w0;
+    function solver(t) {
+        var progress = duration ? duration * t / 1000 : t;
+        if (zeta < 1) progress = Math.exp(-progress * zeta * w0) * (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
+        else progress = (a + b * progress) * Math.exp(-progress * w0);
+        if (t === 0 || t === 1) return t;
+        return 1 - progress;
+    }
+    function getDuration() {
+        var cached = cache.springs[string];
+        if (cached) return cached;
+        var frame = 1 / 6;
+        var elapsed = 0;
+        var rest = 0;
+        while(true){
+            elapsed += frame;
+            if (solver(elapsed) === 1) {
+                rest++;
+                if (rest >= 16) break;
+            } else rest = 0;
+        }
+        var duration = elapsed * frame * 1000;
+        cache.springs[string] = duration;
+        return duration;
+    }
+    return duration ? solver : getDuration;
+}
+// Basic steps easing implementation https://developer.mozilla.org/fr/docs/Web/CSS/transition-timing-function
+function steps(steps) {
+    if (steps === void 0) steps = 10;
+    return function(t) {
+        return Math.ceil(minMax(t, 0.000001, 1) * steps) * (1 / steps);
+    };
+}
+// BezierEasing https://github.com/gre/bezier-easing
+var bezier = function() {
+    var kSplineTableSize = 11;
+    var kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
+    function A(aA1, aA2) {
+        return 1.0 - 3.0 * aA2 + 3.0 * aA1;
+    }
+    function B(aA1, aA2) {
+        return 3.0 * aA2 - 6.0 * aA1;
+    }
+    function C(aA1) {
+        return 3.0 * aA1;
+    }
+    function calcBezier(aT, aA1, aA2) {
+        return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
+    }
+    function getSlope(aT, aA1, aA2) {
+        return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
+    }
+    function binarySubdivide(aX, aA, aB, mX1, mX2) {
+        var currentX, currentT, i = 0;
+        do {
+            currentT = aA + (aB - aA) / 2.0;
+            currentX = calcBezier(currentT, mX1, mX2) - aX;
+            if (currentX > 0.0) aB = currentT;
+            else aA = currentT;
+        }while (Math.abs(currentX) > 0.0000001 && ++i < 10);
+        return currentT;
+    }
+    function newtonRaphsonIterate(aX, aGuessT, mX1, mX2) {
+        for(var i = 0; i < 4; ++i){
+            var currentSlope = getSlope(aGuessT, mX1, mX2);
+            if (currentSlope === 0.0) return aGuessT;
+            var currentX = calcBezier(aGuessT, mX1, mX2) - aX;
+            aGuessT -= currentX / currentSlope;
+        }
+        return aGuessT;
+    }
+    function bezier(mX1, mY1, mX2, mY2) {
+        if (!(0 <= mX1 && mX1 <= 1 && 0 <= mX2 && mX2 <= 1)) return;
+        var sampleValues = new Float32Array(kSplineTableSize);
+        if (mX1 !== mY1 || mX2 !== mY2) for(var i = 0; i < kSplineTableSize; ++i)sampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
+        function getTForX(aX) {
+            var intervalStart = 0;
+            var currentSample = 1;
+            var lastSample = kSplineTableSize - 1;
+            for(; currentSample !== lastSample && sampleValues[currentSample] <= aX; ++currentSample)intervalStart += kSampleStepSize;
+            --currentSample;
+            var dist = (aX - sampleValues[currentSample]) / (sampleValues[currentSample + 1] - sampleValues[currentSample]);
+            var guessForT = intervalStart + dist * kSampleStepSize;
+            var initialSlope = getSlope(guessForT, mX1, mX2);
+            if (initialSlope >= 0.001) return newtonRaphsonIterate(aX, guessForT, mX1, mX2);
+            else if (initialSlope === 0.0) return guessForT;
+            else return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize, mX1, mX2);
+        }
+        return function(x) {
+            if (mX1 === mY1 && mX2 === mY2) return x;
+            if (x === 0 || x === 1) return x;
+            return calcBezier(getTForX(x), mY1, mY2);
+        };
+    }
+    return bezier;
+}();
+var penner = function() {
+    // Based on jQuery UI's implemenation of easing equations from Robert Penner (http://www.robertpenner.com/easing)
+    var eases = {
+        linear: function() {
+            return function(t) {
+                return t;
+            };
+        }
+    };
+    var functionEasings = {
+        Sine: function() {
+            return function(t) {
+                return 1 - Math.cos(t * Math.PI / 2);
+            };
+        },
+        Circ: function() {
+            return function(t) {
+                return 1 - Math.sqrt(1 - t * t);
+            };
+        },
+        Back: function() {
+            return function(t) {
+                return t * t * (3 * t - 2);
+            };
+        },
+        Bounce: function() {
+            return function(t) {
+                var pow2, b = 4;
+                while(t < ((pow2 = Math.pow(2, --b)) - 1) / 11);
+                return 1 / Math.pow(4, 3 - b) - 7.5625 * Math.pow((pow2 * 3 - 2) / 22 - t, 2);
+            };
+        },
+        Elastic: function(amplitude, period) {
+            if (amplitude === void 0) amplitude = 1;
+            if (period === void 0) period = .5;
+            var a = minMax(amplitude, 1, 10);
+            var p = minMax(period, .1, 2);
+            return function(t) {
+                return t === 0 || t === 1 ? t : -a * Math.pow(2, 10 * (t - 1)) * Math.sin((t - 1 - p / (Math.PI * 2) * Math.asin(1 / a)) * (Math.PI * 2) / p);
+            };
+        }
+    };
+    var baseEasings = [
+        "Quad",
+        "Cubic",
+        "Quart",
+        "Quint",
+        "Expo"
+    ];
+    baseEasings.forEach(function(name, i) {
+        functionEasings[name] = function() {
+            return function(t) {
+                return Math.pow(t, i + 2);
+            };
+        };
+    });
+    Object.keys(functionEasings).forEach(function(name) {
+        var easeIn = functionEasings[name];
+        eases["easeIn" + name] = easeIn;
+        eases["easeOut" + name] = function(a, b) {
+            return function(t) {
+                return 1 - easeIn(a, b)(1 - t);
+            };
+        };
+        eases["easeInOut" + name] = function(a, b) {
+            return function(t) {
+                return t < 0.5 ? easeIn(a, b)(t * 2) / 2 : 1 - easeIn(a, b)(t * -2 + 2) / 2;
+            };
+        };
+        eases["easeOutIn" + name] = function(a, b) {
+            return function(t) {
+                return t < 0.5 ? (1 - easeIn(a, b)(1 - t * 2)) / 2 : (easeIn(a, b)(t * 2 - 1) + 1) / 2;
+            };
+        };
+    });
+    return eases;
+}();
+function parseEasings(easing, duration) {
+    if (is.fnc(easing)) return easing;
+    var name = easing.split("(")[0];
+    var ease = penner[name];
+    var args = parseEasingParameters(easing);
+    switch(name){
+        case "spring":
+            return spring(easing, duration);
+        case "cubicBezier":
+            return applyArguments(bezier, args);
+        case "steps":
+            return applyArguments(steps, args);
+        default:
+            return applyArguments(ease, args);
+    }
+}
+// Strings
+function selectString(str) {
+    try {
+        var nodes = document.querySelectorAll(str);
+        return nodes;
+    } catch (e) {
+        return;
+    }
+}
+// Arrays
+function filterArray(arr, callback) {
+    var len = arr.length;
+    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+    var result = [];
+    for(var i = 0; i < len; i++)if (i in arr) {
+        var val = arr[i];
+        if (callback.call(thisArg, val, i, arr)) result.push(val);
+    }
+    return result;
+}
+function flattenArray(arr) {
+    return arr.reduce(function(a, b) {
+        return a.concat(is.arr(b) ? flattenArray(b) : b);
+    }, []);
+}
+function toArray(o) {
+    if (is.arr(o)) return o;
+    if (is.str(o)) o = selectString(o) || o;
+    if (o instanceof NodeList || o instanceof HTMLCollection) return [].slice.call(o);
+    return [
+        o
+    ];
+}
+function arrayContains(arr, val) {
+    return arr.some(function(a) {
+        return a === val;
+    });
+}
+// Objects
+function cloneObject(o) {
+    var clone = {};
+    for(var p in o)clone[p] = o[p];
+    return clone;
+}
+function replaceObjectProps(o1, o2) {
+    var o = cloneObject(o1);
+    for(var p in o1)o[p] = o2.hasOwnProperty(p) ? o2[p] : o1[p];
+    return o;
+}
+function mergeObjects(o1, o2) {
+    var o = cloneObject(o1);
+    for(var p in o2)o[p] = is.und(o1[p]) ? o2[p] : o1[p];
+    return o;
+}
+// Colors
+function rgbToRgba(rgbValue) {
+    var rgb = /rgb\((\d+,\s*[\d]+,\s*[\d]+)\)/g.exec(rgbValue);
+    return rgb ? "rgba(" + rgb[1] + ",1)" : rgbValue;
+}
+function hexToRgba(hexValue) {
+    var rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    var hex = hexValue.replace(rgx, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+    var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    var r = parseInt(rgb[1], 16);
+    var g = parseInt(rgb[2], 16);
+    var b = parseInt(rgb[3], 16);
+    return "rgba(" + r + "," + g + "," + b + ",1)";
+}
+function hslToRgba(hslValue) {
+    var hsl = /hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/g.exec(hslValue) || /hsla\((\d+),\s*([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)\)/g.exec(hslValue);
+    var h = parseInt(hsl[1], 10) / 360;
+    var s = parseInt(hsl[2], 10) / 100;
+    var l = parseInt(hsl[3], 10) / 100;
+    var a = hsl[4] || 1;
+    function hue2rgb(p, q, t) {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 0.5) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+    }
+    var r, g, b;
+    if (s == 0) r = g = b = l;
+    else {
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+    }
+    return "rgba(" + r * 255 + "," + g * 255 + "," + b * 255 + "," + a + ")";
+}
+function colorToRgb(val) {
+    if (is.rgb(val)) return rgbToRgba(val);
+    if (is.hex(val)) return hexToRgba(val);
+    if (is.hsl(val)) return hslToRgba(val);
+}
+// Units
+function getUnit(val) {
+    var split = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(val);
+    if (split) return split[1];
+}
+function getTransformUnit(propName) {
+    if (stringContains(propName, "translate") || propName === "perspective") return "px";
+    if (stringContains(propName, "rotate") || stringContains(propName, "skew")) return "deg";
+}
+// Values
+function getFunctionValue(val, animatable) {
+    if (!is.fnc(val)) return val;
+    return val(animatable.target, animatable.id, animatable.total);
+}
+function getAttribute(el, prop) {
+    return el.getAttribute(prop);
+}
+function convertPxToUnit(el, value, unit) {
+    var valueUnit = getUnit(value);
+    if (arrayContains([
+        unit,
+        "deg",
+        "rad",
+        "turn"
+    ], valueUnit)) return value;
+    var cached = cache.CSS[value + unit];
+    if (!is.und(cached)) return cached;
+    var baseline = 100;
+    var tempEl = document.createElement(el.tagName);
+    var parentEl = el.parentNode && el.parentNode !== document ? el.parentNode : document.body;
+    parentEl.appendChild(tempEl);
+    tempEl.style.position = "absolute";
+    tempEl.style.width = baseline + unit;
+    var factor = baseline / tempEl.offsetWidth;
+    parentEl.removeChild(tempEl);
+    var convertedUnit = factor * parseFloat(value);
+    cache.CSS[value + unit] = convertedUnit;
+    return convertedUnit;
+}
+function getCSSValue(el, prop, unit) {
+    if (prop in el.style) {
+        var uppercasePropName = prop.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+        var value = el.style[prop] || getComputedStyle(el).getPropertyValue(uppercasePropName) || "0";
+        return unit ? convertPxToUnit(el, value, unit) : value;
+    }
+}
+function getAnimationType(el, prop) {
+    if (is.dom(el) && !is.inp(el) && (!is.nil(getAttribute(el, prop)) || is.svg(el) && el[prop])) return "attribute";
+    if (is.dom(el) && arrayContains(validTransforms, prop)) return "transform";
+    if (is.dom(el) && prop !== "transform" && getCSSValue(el, prop)) return "css";
+    if (el[prop] != null) return "object";
+}
+function getElementTransforms(el) {
+    if (!is.dom(el)) return;
+    var str = el.style.transform || "";
+    var reg = /(\w+)\(([^)]*)\)/g;
+    var transforms = new Map();
+    var m;
+    while(m = reg.exec(str))transforms.set(m[1], m[2]);
+    return transforms;
+}
+function getTransformValue(el, propName, animatable, unit) {
+    var defaultVal = stringContains(propName, "scale") ? 1 : 0 + getTransformUnit(propName);
+    var value = getElementTransforms(el).get(propName) || defaultVal;
+    if (animatable) {
+        animatable.transforms.list.set(propName, value);
+        animatable.transforms["last"] = propName;
+    }
+    return unit ? convertPxToUnit(el, value, unit) : value;
+}
+function getOriginalTargetValue(target, propName, unit, animatable) {
+    switch(getAnimationType(target, propName)){
+        case "transform":
+            return getTransformValue(target, propName, animatable, unit);
+        case "css":
+            return getCSSValue(target, propName, unit);
+        case "attribute":
+            return getAttribute(target, propName);
+        default:
+            return target[propName] || 0;
+    }
+}
+function getRelativeValue(to, from) {
+    var operator = /^(\*=|\+=|-=)/.exec(to);
+    if (!operator) return to;
+    var u = getUnit(to) || 0;
+    var x = parseFloat(from);
+    var y = parseFloat(to.replace(operator[0], ""));
+    switch(operator[0][0]){
+        case "+":
+            return x + y + u;
+        case "-":
+            return x - y + u;
+        case "*":
+            return x * y + u;
+    }
+}
+function validateValue(val, unit) {
+    if (is.col(val)) return colorToRgb(val);
+    if (/\s/g.test(val)) return val;
+    var originalUnit = getUnit(val);
+    var unitLess = originalUnit ? val.substr(0, val.length - originalUnit.length) : val;
+    if (unit) return unitLess + unit;
+    return unitLess;
+}
+// getTotalLength() equivalent for circle, rect, polyline, polygon and line shapes
+// adapted from https://gist.github.com/SebLambla/3e0550c496c236709744
+function getDistance(p1, p2) {
+    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+}
+function getCircleLength(el) {
+    return Math.PI * 2 * getAttribute(el, "r");
+}
+function getRectLength(el) {
+    return getAttribute(el, "width") * 2 + getAttribute(el, "height") * 2;
+}
+function getLineLength(el) {
+    return getDistance({
+        x: getAttribute(el, "x1"),
+        y: getAttribute(el, "y1")
+    }, {
+        x: getAttribute(el, "x2"),
+        y: getAttribute(el, "y2")
+    });
+}
+function getPolylineLength(el) {
+    var points = el.points;
+    var totalLength = 0;
+    var previousPos;
+    for(var i = 0; i < points.numberOfItems; i++){
+        var currentPos = points.getItem(i);
+        if (i > 0) totalLength += getDistance(previousPos, currentPos);
+        previousPos = currentPos;
+    }
+    return totalLength;
+}
+function getPolygonLength(el) {
+    var points = el.points;
+    return getPolylineLength(el) + getDistance(points.getItem(points.numberOfItems - 1), points.getItem(0));
+}
+// Path animation
+function getTotalLength(el) {
+    if (el.getTotalLength) return el.getTotalLength();
+    switch(el.tagName.toLowerCase()){
+        case "circle":
+            return getCircleLength(el);
+        case "rect":
+            return getRectLength(el);
+        case "line":
+            return getLineLength(el);
+        case "polyline":
+            return getPolylineLength(el);
+        case "polygon":
+            return getPolygonLength(el);
+    }
+}
+function setDashoffset(el) {
+    var pathLength = getTotalLength(el);
+    el.setAttribute("stroke-dasharray", pathLength);
+    return pathLength;
+}
+// Motion path
+function getParentSvgEl(el) {
+    var parentEl = el.parentNode;
+    while(is.svg(parentEl)){
+        if (!is.svg(parentEl.parentNode)) break;
+        parentEl = parentEl.parentNode;
+    }
+    return parentEl;
+}
+function getParentSvg(pathEl, svgData) {
+    var svg = svgData || {};
+    var parentSvgEl = svg.el || getParentSvgEl(pathEl);
+    var rect = parentSvgEl.getBoundingClientRect();
+    var viewBoxAttr = getAttribute(parentSvgEl, "viewBox");
+    var width = rect.width;
+    var height = rect.height;
+    var viewBox = svg.viewBox || (viewBoxAttr ? viewBoxAttr.split(" ") : [
+        0,
+        0,
+        width,
+        height
+    ]);
+    return {
+        el: parentSvgEl,
+        viewBox: viewBox,
+        x: viewBox[0] / 1,
+        y: viewBox[1] / 1,
+        w: width,
+        h: height,
+        vW: viewBox[2],
+        vH: viewBox[3]
+    };
+}
+function getPath(path, percent) {
+    var pathEl = is.str(path) ? selectString(path)[0] : path;
+    var p = percent || 100;
+    return function(property) {
+        return {
+            property: property,
+            el: pathEl,
+            svg: getParentSvg(pathEl),
+            totalLength: getTotalLength(pathEl) * (p / 100)
+        };
+    };
+}
+function getPathProgress(path, progress, isPathTargetInsideSVG) {
+    function point(offset) {
+        if (offset === void 0) offset = 0;
+        var l = progress + offset >= 1 ? progress + offset : 0;
+        return path.el.getPointAtLength(l);
+    }
+    var svg = getParentSvg(path.el, path.svg);
+    var p = point();
+    var p0 = point(-1);
+    var p1 = point(1);
+    var scaleX = isPathTargetInsideSVG ? 1 : svg.w / svg.vW;
+    var scaleY = isPathTargetInsideSVG ? 1 : svg.h / svg.vH;
+    switch(path.property){
+        case "x":
+            return (p.x - svg.x) * scaleX;
+        case "y":
+            return (p.y - svg.y) * scaleY;
+        case "angle":
+            return Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
+    }
+}
+// Decompose value
+function decomposeValue(val, unit) {
+    // const rgx = /-?\d*\.?\d+/g; // handles basic numbers
+    // const rgx = /[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
+    var rgx = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
+    var value = validateValue(is.pth(val) ? val.totalLength : val, unit) + "";
+    return {
+        original: value,
+        numbers: value.match(rgx) ? value.match(rgx).map(Number) : [
+            0
+        ],
+        strings: is.str(val) || unit ? value.split(rgx) : []
+    };
+}
+// Animatables
+function parseTargets(targets) {
+    var targetsArray = targets ? flattenArray(is.arr(targets) ? targets.map(toArray) : toArray(targets)) : [];
+    return filterArray(targetsArray, function(item, pos, self) {
+        return self.indexOf(item) === pos;
+    });
+}
+function getAnimatables(targets) {
+    var parsed = parseTargets(targets);
+    return parsed.map(function(t, i) {
+        return {
+            target: t,
+            id: i,
+            total: parsed.length,
+            transforms: {
+                list: getElementTransforms(t)
+            }
+        };
+    });
+}
+// Properties
+function normalizePropertyTweens(prop, tweenSettings) {
+    var settings = cloneObject(tweenSettings);
+    // Override duration if easing is a spring
+    if (/^spring/.test(settings.easing)) settings.duration = spring(settings.easing);
+    if (is.arr(prop)) {
+        var l = prop.length;
+        var isFromTo = l === 2 && !is.obj(prop[0]);
+        if (!isFromTo) // Duration divided by the number of tweens
+        {
+            if (!is.fnc(tweenSettings.duration)) settings.duration = tweenSettings.duration / l;
+        } else // Transform [from, to] values shorthand to a valid tween value
+        prop = {
+            value: prop
+        };
+    }
+    var propArray = is.arr(prop) ? prop : [
+        prop
+    ];
+    return propArray.map(function(v, i) {
+        var obj = is.obj(v) && !is.pth(v) ? v : {
+            value: v
+        };
+        // Default delay value should only be applied to the first tween
+        if (is.und(obj.delay)) obj.delay = !i ? tweenSettings.delay : 0;
+        // Default endDelay value should only be applied to the last tween
+        if (is.und(obj.endDelay)) obj.endDelay = i === propArray.length - 1 ? tweenSettings.endDelay : 0;
+        return obj;
+    }).map(function(k) {
+        return mergeObjects(k, settings);
+    });
+}
+function flattenKeyframes(keyframes) {
+    var propertyNames = filterArray(flattenArray(keyframes.map(function(key) {
+        return Object.keys(key);
+    })), function(p) {
+        return is.key(p);
+    }).reduce(function(a, b) {
+        if (a.indexOf(b) < 0) a.push(b);
+        return a;
+    }, []);
+    var properties = {};
+    var loop = function(i) {
+        var propName = propertyNames[i];
+        properties[propName] = keyframes.map(function(key) {
+            var newKey = {};
+            for(var p in key){
+                if (is.key(p)) {
+                    if (p == propName) newKey.value = key[p];
+                } else newKey[p] = key[p];
+            }
+            return newKey;
+        });
+    };
+    for(var i = 0; i < propertyNames.length; i++)loop(i);
+    return properties;
+}
+function getProperties(tweenSettings, params) {
+    var properties = [];
+    var keyframes = params.keyframes;
+    if (keyframes) params = mergeObjects(flattenKeyframes(keyframes), params);
+    for(var p in params)if (is.key(p)) properties.push({
+        name: p,
+        tweens: normalizePropertyTweens(params[p], tweenSettings)
+    });
+    return properties;
+}
+// Tweens
+function normalizeTweenValues(tween, animatable) {
+    var t = {};
+    for(var p in tween){
+        var value = getFunctionValue(tween[p], animatable);
+        if (is.arr(value)) {
+            value = value.map(function(v) {
+                return getFunctionValue(v, animatable);
+            });
+            if (value.length === 1) value = value[0];
+        }
+        t[p] = value;
+    }
+    t.duration = parseFloat(t.duration);
+    t.delay = parseFloat(t.delay);
+    return t;
+}
+function normalizeTweens(prop, animatable) {
+    var previousTween;
+    return prop.tweens.map(function(t) {
+        var tween = normalizeTweenValues(t, animatable);
+        var tweenValue = tween.value;
+        var to = is.arr(tweenValue) ? tweenValue[1] : tweenValue;
+        var toUnit = getUnit(to);
+        var originalValue = getOriginalTargetValue(animatable.target, prop.name, toUnit, animatable);
+        var previousValue = previousTween ? previousTween.to.original : originalValue;
+        var from = is.arr(tweenValue) ? tweenValue[0] : previousValue;
+        var fromUnit = getUnit(from) || getUnit(originalValue);
+        var unit = toUnit || fromUnit;
+        if (is.und(to)) to = previousValue;
+        tween.from = decomposeValue(from, unit);
+        tween.to = decomposeValue(getRelativeValue(to, from), unit);
+        tween.start = previousTween ? previousTween.end : 0;
+        tween.end = tween.start + tween.delay + tween.duration + tween.endDelay;
+        tween.easing = parseEasings(tween.easing, tween.duration);
+        tween.isPath = is.pth(tweenValue);
+        tween.isPathTargetInsideSVG = tween.isPath && is.svg(animatable.target);
+        tween.isColor = is.col(tween.from.original);
+        if (tween.isColor) tween.round = 1;
+        previousTween = tween;
+        return tween;
+    });
+}
+// Tween progress
+var setProgressValue = {
+    css: function(t, p, v) {
+        return t.style[p] = v;
+    },
+    attribute: function(t, p, v) {
+        return t.setAttribute(p, v);
+    },
+    object: function(t, p, v) {
+        return t[p] = v;
+    },
+    transform: function(t, p, v, transforms, manual) {
+        transforms.list.set(p, v);
+        if (p === transforms.last || manual) {
+            var str = "";
+            transforms.list.forEach(function(value, prop) {
+                str += prop + "(" + value + ") ";
+            });
+            t.style.transform = str;
+        }
+    }
+};
+// Set Value helper
+function setTargetsValue(targets, properties) {
+    var animatables = getAnimatables(targets);
+    animatables.forEach(function(animatable) {
+        for(var property in properties){
+            var value = getFunctionValue(properties[property], animatable);
+            var target = animatable.target;
+            var valueUnit = getUnit(value);
+            var originalValue = getOriginalTargetValue(target, property, valueUnit, animatable);
+            var unit = valueUnit || getUnit(originalValue);
+            var to = getRelativeValue(validateValue(value, unit), originalValue);
+            var animType = getAnimationType(target, property);
+            setProgressValue[animType](target, property, to, animatable.transforms, true);
+        }
+    });
+}
+// Animations
+function createAnimation(animatable, prop) {
+    var animType = getAnimationType(animatable.target, prop.name);
+    if (animType) {
+        var tweens = normalizeTweens(prop, animatable);
+        var lastTween = tweens[tweens.length - 1];
+        return {
+            type: animType,
+            property: prop.name,
+            animatable: animatable,
+            tweens: tweens,
+            duration: lastTween.end,
+            delay: tweens[0].delay,
+            endDelay: lastTween.endDelay
+        };
+    }
+}
+function getAnimations(animatables, properties) {
+    return filterArray(flattenArray(animatables.map(function(animatable) {
+        return properties.map(function(prop) {
+            return createAnimation(animatable, prop);
+        });
+    })), function(a) {
+        return !is.und(a);
+    });
+}
+// Create Instance
+function getInstanceTimings(animations, tweenSettings) {
+    var animLength = animations.length;
+    var getTlOffset = function(anim) {
+        return anim.timelineOffset ? anim.timelineOffset : 0;
+    };
+    var timings = {};
+    timings.duration = animLength ? Math.max.apply(Math, animations.map(function(anim) {
+        return getTlOffset(anim) + anim.duration;
+    })) : tweenSettings.duration;
+    timings.delay = animLength ? Math.min.apply(Math, animations.map(function(anim) {
+        return getTlOffset(anim) + anim.delay;
+    })) : tweenSettings.delay;
+    timings.endDelay = animLength ? timings.duration - Math.max.apply(Math, animations.map(function(anim) {
+        return getTlOffset(anim) + anim.duration - anim.endDelay;
+    })) : tweenSettings.endDelay;
+    return timings;
+}
+var instanceID = 0;
+function createNewInstance(params) {
+    var instanceSettings = replaceObjectProps(defaultInstanceSettings, params);
+    var tweenSettings = replaceObjectProps(defaultTweenSettings, params);
+    var properties = getProperties(tweenSettings, params);
+    var animatables = getAnimatables(params.targets);
+    var animations = getAnimations(animatables, properties);
+    var timings = getInstanceTimings(animations, tweenSettings);
+    var id = instanceID;
+    instanceID++;
+    return mergeObjects(instanceSettings, {
+        id: id,
+        children: [],
+        animatables: animatables,
+        animations: animations,
+        duration: timings.duration,
+        delay: timings.delay,
+        endDelay: timings.endDelay
+    });
+}
+// Core
+var activeInstances = [];
+var engine = function() {
+    var raf;
+    function play() {
+        if (!raf && (!isDocumentHidden() || !anime.suspendWhenDocumentHidden) && activeInstances.length > 0) raf = requestAnimationFrame(step);
+    }
+    function step(t) {
+        // memo on algorithm issue:
+        // dangerous iteration over mutable `activeInstances`
+        // (that collection may be updated from within callbacks of `tick`-ed animation instances)
+        var activeInstancesLength = activeInstances.length;
+        var i = 0;
+        while(i < activeInstancesLength){
+            var activeInstance = activeInstances[i];
+            if (!activeInstance.paused) {
+                activeInstance.tick(t);
+                i++;
+            } else {
+                activeInstances.splice(i, 1);
+                activeInstancesLength--;
+            }
+        }
+        raf = i > 0 ? requestAnimationFrame(step) : undefined;
+    }
+    function handleVisibilityChange() {
+        if (!anime.suspendWhenDocumentHidden) return;
+        if (isDocumentHidden()) // suspend ticks
+        raf = cancelAnimationFrame(raf);
+        else {
+            // first adjust animations to consider the time that ticks were suspended
+            activeInstances.forEach(function(instance) {
+                return instance._onDocumentVisibility();
+            });
+            engine();
+        }
+    }
+    if (typeof document !== "undefined") document.addEventListener("visibilitychange", handleVisibilityChange);
+    return play;
+}();
+function isDocumentHidden() {
+    return !!document && document.hidden;
+}
+// Public Instance
+function anime(params) {
+    if (params === void 0) params = {};
+    var startTime = 0, lastTime = 0, now = 0;
+    var children, childrenLength = 0;
+    var resolve = null;
+    function makePromise(instance) {
+        var promise = window.Promise && new Promise(function(_resolve) {
+            return resolve = _resolve;
+        });
+        instance.finished = promise;
+        return promise;
+    }
+    var instance = createNewInstance(params);
+    var promise = makePromise(instance);
+    function toggleInstanceDirection() {
+        var direction = instance.direction;
+        if (direction !== "alternate") instance.direction = direction !== "normal" ? "normal" : "reverse";
+        instance.reversed = !instance.reversed;
+        children.forEach(function(child) {
+            return child.reversed = instance.reversed;
+        });
+    }
+    function adjustTime(time) {
+        return instance.reversed ? instance.duration - time : time;
+    }
+    function resetTime() {
+        startTime = 0;
+        lastTime = adjustTime(instance.currentTime) * (1 / anime.speed);
+    }
+    function seekChild(time, child) {
+        if (child) child.seek(time - child.timelineOffset);
+    }
+    function syncInstanceChildren(time) {
+        if (!instance.reversePlayback) for(var i = 0; i < childrenLength; i++)seekChild(time, children[i]);
+        else for(var i$1 = childrenLength; i$1--;)seekChild(time, children[i$1]);
+    }
+    function setAnimationsProgress(insTime) {
+        var i = 0;
+        var animations = instance.animations;
+        var animationsLength = animations.length;
+        while(i < animationsLength){
+            var anim = animations[i];
+            var animatable = anim.animatable;
+            var tweens = anim.tweens;
+            var tweenLength = tweens.length - 1;
+            var tween = tweens[tweenLength];
+            // Only check for keyframes if there is more than one tween
+            if (tweenLength) tween = filterArray(tweens, function(t) {
+                return insTime < t.end;
+            })[0] || tween;
+            var elapsed = minMax(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
+            var eased = isNaN(elapsed) ? 1 : tween.easing(elapsed);
+            var strings = tween.to.strings;
+            var round = tween.round;
+            var numbers = [];
+            var toNumbersLength = tween.to.numbers.length;
+            var progress = void 0;
+            for(var n = 0; n < toNumbersLength; n++){
+                var value = void 0;
+                var toNumber = tween.to.numbers[n];
+                var fromNumber = tween.from.numbers[n] || 0;
+                if (!tween.isPath) value = fromNumber + eased * (toNumber - fromNumber);
+                else value = getPathProgress(tween.value, eased * toNumber, tween.isPathTargetInsideSVG);
+                if (round) {
+                    if (!(tween.isColor && n > 2)) value = Math.round(value * round) / round;
+                }
+                numbers.push(value);
+            }
+            // Manual Array.reduce for better performances
+            var stringsLength = strings.length;
+            if (!stringsLength) progress = numbers[0];
+            else {
+                progress = strings[0];
+                for(var s = 0; s < stringsLength; s++){
+                    var a = strings[s];
+                    var b = strings[s + 1];
+                    var n$1 = numbers[s];
+                    if (!isNaN(n$1)) {
+                        if (!b) progress += n$1 + " ";
+                        else progress += n$1 + b;
+                    }
+                }
+            }
+            setProgressValue[anim.type](animatable.target, anim.property, progress, animatable.transforms);
+            anim.currentValue = progress;
+            i++;
+        }
+    }
+    function setCallback(cb) {
+        if (instance[cb] && !instance.passThrough) instance[cb](instance);
+    }
+    function countIteration() {
+        if (instance.remaining && instance.remaining !== true) instance.remaining--;
+    }
+    function setInstanceProgress(engineTime) {
+        var insDuration = instance.duration;
+        var insDelay = instance.delay;
+        var insEndDelay = insDuration - instance.endDelay;
+        var insTime = adjustTime(engineTime);
+        instance.progress = minMax(insTime / insDuration * 100, 0, 100);
+        instance.reversePlayback = insTime < instance.currentTime;
+        if (children) syncInstanceChildren(insTime);
+        if (!instance.began && instance.currentTime > 0) {
+            instance.began = true;
+            setCallback("begin");
+        }
+        if (!instance.loopBegan && instance.currentTime > 0) {
+            instance.loopBegan = true;
+            setCallback("loopBegin");
+        }
+        if (insTime <= insDelay && instance.currentTime !== 0) setAnimationsProgress(0);
+        if (insTime >= insEndDelay && instance.currentTime !== insDuration || !insDuration) setAnimationsProgress(insDuration);
+        if (insTime > insDelay && insTime < insEndDelay) {
+            if (!instance.changeBegan) {
+                instance.changeBegan = true;
+                instance.changeCompleted = false;
+                setCallback("changeBegin");
+            }
+            setCallback("change");
+            setAnimationsProgress(insTime);
+        } else if (instance.changeBegan) {
+            instance.changeCompleted = true;
+            instance.changeBegan = false;
+            setCallback("changeComplete");
+        }
+        instance.currentTime = minMax(insTime, 0, insDuration);
+        if (instance.began) setCallback("update");
+        if (engineTime >= insDuration) {
+            lastTime = 0;
+            countIteration();
+            if (!instance.remaining) {
+                instance.paused = true;
+                if (!instance.completed) {
+                    instance.completed = true;
+                    setCallback("loopComplete");
+                    setCallback("complete");
+                    if (!instance.passThrough && "Promise" in window) {
+                        resolve();
+                        promise = makePromise(instance);
+                    }
+                }
+            } else {
+                startTime = now;
+                setCallback("loopComplete");
+                instance.loopBegan = false;
+                if (instance.direction === "alternate") toggleInstanceDirection();
+            }
+        }
+    }
+    instance.reset = function() {
+        var direction = instance.direction;
+        instance.passThrough = false;
+        instance.currentTime = 0;
+        instance.progress = 0;
+        instance.paused = true;
+        instance.began = false;
+        instance.loopBegan = false;
+        instance.changeBegan = false;
+        instance.completed = false;
+        instance.changeCompleted = false;
+        instance.reversePlayback = false;
+        instance.reversed = direction === "reverse";
+        instance.remaining = instance.loop;
+        children = instance.children;
+        childrenLength = children.length;
+        for(var i = childrenLength; i--;)instance.children[i].reset();
+        if (instance.reversed && instance.loop !== true || direction === "alternate" && instance.loop === 1) instance.remaining++;
+        setAnimationsProgress(instance.reversed ? instance.duration : 0);
+    };
+    // internal method (for engine) to adjust animation timings before restoring engine ticks (rAF)
+    instance._onDocumentVisibility = resetTime;
+    // Set Value helper
+    instance.set = function(targets, properties) {
+        setTargetsValue(targets, properties);
+        return instance;
+    };
+    instance.tick = function(t) {
+        now = t;
+        if (!startTime) startTime = now;
+        setInstanceProgress((now + (lastTime - startTime)) * anime.speed);
+    };
+    instance.seek = function(time) {
+        setInstanceProgress(adjustTime(time));
+    };
+    instance.pause = function() {
+        instance.paused = true;
+        resetTime();
+    };
+    instance.play = function() {
+        if (!instance.paused) return;
+        if (instance.completed) instance.reset();
+        instance.paused = false;
+        activeInstances.push(instance);
+        resetTime();
+        engine();
+    };
+    instance.reverse = function() {
+        toggleInstanceDirection();
+        instance.completed = instance.reversed ? false : true;
+        resetTime();
+    };
+    instance.restart = function() {
+        instance.reset();
+        instance.play();
+    };
+    instance.remove = function(targets) {
+        var targetsArray = parseTargets(targets);
+        removeTargetsFromInstance(targetsArray, instance);
+    };
+    instance.reset();
+    if (instance.autoplay) instance.play();
+    return instance;
+}
+// Remove targets from animation
+function removeTargetsFromAnimations(targetsArray, animations) {
+    for(var a = animations.length; a--;)if (arrayContains(targetsArray, animations[a].animatable.target)) animations.splice(a, 1);
+}
+function removeTargetsFromInstance(targetsArray, instance) {
+    var animations = instance.animations;
+    var children = instance.children;
+    removeTargetsFromAnimations(targetsArray, animations);
+    for(var c = children.length; c--;){
+        var child = children[c];
+        var childAnimations = child.animations;
+        removeTargetsFromAnimations(targetsArray, childAnimations);
+        if (!childAnimations.length && !child.children.length) children.splice(c, 1);
+    }
+    if (!animations.length && !children.length) instance.pause();
+}
+function removeTargetsFromActiveInstances(targets) {
+    var targetsArray = parseTargets(targets);
+    for(var i = activeInstances.length; i--;){
+        var instance = activeInstances[i];
+        removeTargetsFromInstance(targetsArray, instance);
+    }
+}
+// Stagger helpers
+function stagger(val, params) {
+    if (params === void 0) params = {};
+    var direction = params.direction || "normal";
+    var easing = params.easing ? parseEasings(params.easing) : null;
+    var grid = params.grid;
+    var axis = params.axis;
+    var fromIndex = params.from || 0;
+    var fromFirst = fromIndex === "first";
+    var fromCenter = fromIndex === "center";
+    var fromLast = fromIndex === "last";
+    var isRange = is.arr(val);
+    var val1 = isRange ? parseFloat(val[0]) : parseFloat(val);
+    var val2 = isRange ? parseFloat(val[1]) : 0;
+    var unit = getUnit(isRange ? val[1] : val) || 0;
+    var start = params.start || 0 + (isRange ? val1 : 0);
+    var values = [];
+    var maxValue = 0;
+    return function(el, i, t) {
+        if (fromFirst) fromIndex = 0;
+        if (fromCenter) fromIndex = (t - 1) / 2;
+        if (fromLast) fromIndex = t - 1;
+        if (!values.length) {
+            for(var index = 0; index < t; index++){
+                if (!grid) values.push(Math.abs(fromIndex - index));
+                else {
+                    var fromX = !fromCenter ? fromIndex % grid[0] : (grid[0] - 1) / 2;
+                    var fromY = !fromCenter ? Math.floor(fromIndex / grid[0]) : (grid[1] - 1) / 2;
+                    var toX = index % grid[0];
+                    var toY = Math.floor(index / grid[0]);
+                    var distanceX = fromX - toX;
+                    var distanceY = fromY - toY;
+                    var value = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                    if (axis === "x") value = -distanceX;
+                    if (axis === "y") value = -distanceY;
+                    values.push(value);
+                }
+                maxValue = Math.max.apply(Math, values);
+            }
+            if (easing) values = values.map(function(val) {
+                return easing(val / maxValue) * maxValue;
+            });
+            if (direction === "reverse") values = values.map(function(val) {
+                return axis ? val < 0 ? val * -1 : -val : Math.abs(maxValue - val);
+            });
+        }
+        var spacing = isRange ? (val2 - val1) / maxValue : val1;
+        return start + spacing * (Math.round(values[i] * 100) / 100) + unit;
+    };
+}
+// Timeline
+function timeline(params) {
+    if (params === void 0) params = {};
+    var tl = anime(params);
+    tl.duration = 0;
+    tl.add = function(instanceParams, timelineOffset) {
+        var tlIndex = activeInstances.indexOf(tl);
+        var children = tl.children;
+        if (tlIndex > -1) activeInstances.splice(tlIndex, 1);
+        function passThrough(ins) {
+            ins.passThrough = true;
+        }
+        for(var i = 0; i < children.length; i++)passThrough(children[i]);
+        var insParams = mergeObjects(instanceParams, replaceObjectProps(defaultTweenSettings, params));
+        insParams.targets = insParams.targets || params.targets;
+        var tlDuration = tl.duration;
+        insParams.autoplay = false;
+        insParams.direction = tl.direction;
+        insParams.timelineOffset = is.und(timelineOffset) ? tlDuration : getRelativeValue(timelineOffset, tlDuration);
+        passThrough(tl);
+        tl.seek(insParams.timelineOffset);
+        var ins = anime(insParams);
+        passThrough(ins);
+        children.push(ins);
+        var timings = getInstanceTimings(children, params);
+        tl.delay = timings.delay;
+        tl.endDelay = timings.endDelay;
+        tl.duration = timings.duration;
+        tl.seek(0);
+        tl.reset();
+        if (tl.autoplay) tl.play();
+        return tl;
+    };
+    return tl;
+}
+anime.version = "3.2.1";
+anime.speed = 1;
+// TODO:#review: naming, documentation
+anime.suspendWhenDocumentHidden = true;
+anime.running = activeInstances;
+anime.remove = removeTargetsFromActiveInstances;
+anime.get = getOriginalTargetValue;
+anime.set = setTargetsValue;
+anime.convertPx = convertPxToUnit;
+anime.path = getPath;
+anime.setDashoffset = setDashoffset;
+anime.stagger = stagger;
+anime.timeline = timeline;
+anime.easing = parseEasings;
+anime.penner = penner;
+anime.random = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+exports.default = anime;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lSDFi":[function(require,module,exports) {
+module.exports = require("3d0b759233c7b30a").getBundleURL("8Kyqb") + "arrowup-icon.6a03358b.png" + "?" + Date.now();
+
+},{"3d0b759233c7b30a":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+}
+// TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"68K6w":[function(require,module,exports) {
+module.exports = require("ee93f26d89823c7e").getBundleURL("8Kyqb") + "sound.965fd49b.svg" + "?" + Date.now();
+
+},{"ee93f26d89823c7e":"lgJ39"}],"bJrvG":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _three = require("three");
+var _tweenJs = require("@tweenjs/tween.js");
+var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
+class CameraHandler {
+    constructor(){
+        this.camera = null;
+        this.cameraGroup = null;
+        this.targetView = new (0, _three.Vector3)();
+        this.targetPosition = new (0, _three.Vector3)();
+        this.lastTargetView = null;
+        this.lastTargetPosition = null;
+        this.isAnimated = false;
+        this.isLoadOver = false;
+        this.isCameraInSection = false;
+        this.timing = 500;
+    }
+    setCamera(component) {
+        this.camera = component.camera;
+        this.cameraGroup = component.cameraGroup;
+        // Setup
+        this.targetView = new (0, _three.Vector3)();
+        component.camera.getWorldDirection(this.targetView);
+        this.targetPosition = this.cameraGroup.position.clone();
+        // Asignar durante unos segundos
+        setTimeout(()=>{
+            console.log("");
+            this.isLoadOver = false;
+            console.log("Camara INICIADA");
+        }, this.timing);
+        console.log("camera is ready:", this.camera, this.cameraGroup);
+        console.log("last pos updated: ", this.targetView, this.targetPosition);
+    }
+    animatedCamera(object, target, duration) {
+        // Crear animacion suavizada
+        const tween = new (0, _tweenJsDefault.default).Tween(object).to(target, duration).easing((0, _tweenJsDefault.default).Easing.Quadratic.InOut).onComplete(()=>{
+            this.isAnimated = false;
+            console.log("ANIM END: ", this.isAnimated);
+        });
+        // Devolver animación
+        return tween;
+    }
+    setParallax(target, time) {
+        this.camera.position.lerp(target, time);
+    }
+    moveCameraTo(targetPos, focusPos, callback) {
+        // Iniciar animación suavizada
+        if (!this.isAnimated) {
+            const cameraViewAnim = this.animatedCamera(this.targetView, targetPos, 4500);
+            cameraViewAnim.start();
+            cameraViewAnim.onStart(()=>{
+                this.isAnimated = true;
+                console.log("ANIM START: ", this.isAnimated);
+            });
+            cameraViewAnim.onComplete(()=>{
+                callback();
+            });
+            const cameraPosAnim = this.animatedCamera(this.targetPosition, focusPos, 6000);
+            cameraPosAnim.start();
+        }
+    }
+    updateComponents() {
+        this.cameraGroup.position.copy(this.targetPosition);
+        this.camera.lookAt(this.targetView);
+    }
+    update() {
+        // Actualizar animación
+        (0, _tweenJsDefault.default).update();
+        if (this.isAnimated) this.updateComponents();
+        else console.log("Modulo c\xe1mara en REPOSO");
+        if (!this.isLoadOver) this.updateComponents();
+    }
+}
+const cameraHandler = new CameraHandler();
+exports.default = cameraHandler;
+
+},{"three":"ktPTu","@tweenjs/tween.js":"7DfAI","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7DfAI":[function(require,module,exports) {
+/**
+ * The Ease class provides a collection of easing functions for use with tween.js.
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Easing", ()=>Easing);
+parcelHelpers.export(exports, "Group", ()=>Group);
+parcelHelpers.export(exports, "Interpolation", ()=>Interpolation);
+parcelHelpers.export(exports, "Sequence", ()=>Sequence);
+parcelHelpers.export(exports, "Tween", ()=>Tween);
+parcelHelpers.export(exports, "VERSION", ()=>VERSION);
+parcelHelpers.export(exports, "add", ()=>add);
+parcelHelpers.export(exports, "default", ()=>exports);
+parcelHelpers.export(exports, "getAll", ()=>getAll);
+parcelHelpers.export(exports, "nextId", ()=>nextId);
+parcelHelpers.export(exports, "now", ()=>now);
+parcelHelpers.export(exports, "remove", ()=>remove);
+parcelHelpers.export(exports, "removeAll", ()=>removeAll);
+parcelHelpers.export(exports, "update", ()=>update);
+var Easing = Object.freeze({
+    Linear: Object.freeze({
+        None: function(amount) {
+            return amount;
+        },
+        In: function(amount) {
+            return this.None(amount);
+        },
+        Out: function(amount) {
+            return this.None(amount);
+        },
+        InOut: function(amount) {
+            return this.None(amount);
+        }
+    }),
+    Quadratic: Object.freeze({
+        In: function(amount) {
+            return amount * amount;
+        },
+        Out: function(amount) {
+            return amount * (2 - amount);
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount;
+            return -0.5 * (--amount * (amount - 2) - 1);
+        }
+    }),
+    Cubic: Object.freeze({
+        In: function(amount) {
+            return amount * amount * amount;
+        },
+        Out: function(amount) {
+            return --amount * amount * amount + 1;
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount;
+            return 0.5 * ((amount -= 2) * amount * amount + 2);
+        }
+    }),
+    Quartic: Object.freeze({
+        In: function(amount) {
+            return amount * amount * amount * amount;
+        },
+        Out: function(amount) {
+            return 1 - --amount * amount * amount * amount;
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount;
+            return -0.5 * ((amount -= 2) * amount * amount * amount - 2);
+        }
+    }),
+    Quintic: Object.freeze({
+        In: function(amount) {
+            return amount * amount * amount * amount * amount;
+        },
+        Out: function(amount) {
+            return --amount * amount * amount * amount * amount + 1;
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return 0.5 * amount * amount * amount * amount * amount;
+            return 0.5 * ((amount -= 2) * amount * amount * amount * amount + 2);
+        }
+    }),
+    Sinusoidal: Object.freeze({
+        In: function(amount) {
+            return 1 - Math.sin((1.0 - amount) * Math.PI / 2);
+        },
+        Out: function(amount) {
+            return Math.sin(amount * Math.PI / 2);
+        },
+        InOut: function(amount) {
+            return 0.5 * (1 - Math.sin(Math.PI * (0.5 - amount)));
+        }
+    }),
+    Exponential: Object.freeze({
+        In: function(amount) {
+            return amount === 0 ? 0 : Math.pow(1024, amount - 1);
+        },
+        Out: function(amount) {
+            return amount === 1 ? 1 : 1 - Math.pow(2, -10 * amount);
+        },
+        InOut: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            if ((amount *= 2) < 1) return 0.5 * Math.pow(1024, amount - 1);
+            return 0.5 * (-Math.pow(2, -10 * (amount - 1)) + 2);
+        }
+    }),
+    Circular: Object.freeze({
+        In: function(amount) {
+            return 1 - Math.sqrt(1 - amount * amount);
+        },
+        Out: function(amount) {
+            return Math.sqrt(1 - --amount * amount);
+        },
+        InOut: function(amount) {
+            if ((amount *= 2) < 1) return -0.5 * (Math.sqrt(1 - amount * amount) - 1);
+            return 0.5 * (Math.sqrt(1 - (amount -= 2) * amount) + 1);
+        }
+    }),
+    Elastic: Object.freeze({
+        In: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            return -Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+        },
+        Out: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            return Math.pow(2, -10 * amount) * Math.sin((amount - 0.1) * 5 * Math.PI) + 1;
+        },
+        InOut: function(amount) {
+            if (amount === 0) return 0;
+            if (amount === 1) return 1;
+            amount *= 2;
+            if (amount < 1) return -0.5 * Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+            return 0.5 * Math.pow(2, -10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI) + 1;
+        }
+    }),
+    Back: Object.freeze({
+        In: function(amount) {
+            var s = 1.70158;
+            return amount === 1 ? 1 : amount * amount * ((s + 1) * amount - s);
+        },
+        Out: function(amount) {
+            var s = 1.70158;
+            return amount === 0 ? 0 : --amount * amount * ((s + 1) * amount + s) + 1;
+        },
+        InOut: function(amount) {
+            var s = 2.5949095;
+            if ((amount *= 2) < 1) return 0.5 * (amount * amount * ((s + 1) * amount - s));
+            return 0.5 * ((amount -= 2) * amount * ((s + 1) * amount + s) + 2);
+        }
+    }),
+    Bounce: Object.freeze({
+        In: function(amount) {
+            return 1 - Easing.Bounce.Out(1 - amount);
+        },
+        Out: function(amount) {
+            if (amount < 1 / 2.75) return 7.5625 * amount * amount;
+            else if (amount < 2 / 2.75) return 7.5625 * (amount -= 1.5 / 2.75) * amount + 0.75;
+            else if (amount < 2.5 / 2.75) return 7.5625 * (amount -= 2.25 / 2.75) * amount + 0.9375;
+            else return 7.5625 * (amount -= 2.625 / 2.75) * amount + 0.984375;
+        },
+        InOut: function(amount) {
+            if (amount < 0.5) return Easing.Bounce.In(amount * 2) * 0.5;
+            return Easing.Bounce.Out(amount * 2 - 1) * 0.5 + 0.5;
+        }
+    }),
+    generatePow: function(power) {
+        if (power === void 0) power = 4;
+        power = power < Number.EPSILON ? Number.EPSILON : power;
+        power = power > 10000 ? 10000 : power;
+        return {
+            In: function(amount) {
+                return Math.pow(amount, power);
+            },
+            Out: function(amount) {
+                return 1 - Math.pow(1 - amount, power);
+            },
+            InOut: function(amount) {
+                if (amount < 0.5) return Math.pow(amount * 2, power) / 2;
+                return (1 - Math.pow(2 - amount * 2, power)) / 2 + 0.5;
+            }
+        };
+    }
+});
+var now = function() {
+    return performance.now();
+};
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tween
+ */ var Group = /** @class */ function() {
+    function Group() {
+        this._tweens = {};
+        this._tweensAddedDuringUpdate = {};
+    }
+    Group.prototype.getAll = function() {
+        var _this = this;
+        return Object.keys(this._tweens).map(function(tweenId) {
+            return _this._tweens[tweenId];
+        });
+    };
+    Group.prototype.removeAll = function() {
+        this._tweens = {};
+    };
+    Group.prototype.add = function(tween) {
+        this._tweens[tween.getId()] = tween;
+        this._tweensAddedDuringUpdate[tween.getId()] = tween;
+    };
+    Group.prototype.remove = function(tween) {
+        delete this._tweens[tween.getId()];
+        delete this._tweensAddedDuringUpdate[tween.getId()];
+    };
+    Group.prototype.update = function(time, preserve) {
+        if (time === void 0) time = now();
+        if (preserve === void 0) preserve = false;
+        var tweenIds = Object.keys(this._tweens);
+        if (tweenIds.length === 0) return false;
+        // Tweens are updated in "batches". If you add a new tween during an
+        // update, then the new tween will be updated in the next batch.
+        // If you remove a tween during an update, it may or may not be updated.
+        // However, if the removed tween was added during the current batch,
+        // then it will not be updated.
+        while(tweenIds.length > 0){
+            this._tweensAddedDuringUpdate = {};
+            for(var i = 0; i < tweenIds.length; i++){
+                var tween = this._tweens[tweenIds[i]];
+                var autoStart = !preserve;
+                if (tween && tween.update(time, autoStart) === false && !preserve) delete this._tweens[tweenIds[i]];
+            }
+            tweenIds = Object.keys(this._tweensAddedDuringUpdate);
+        }
+        return true;
+    };
+    return Group;
+}();
+/**
+ *
+ */ var Interpolation = {
+    Linear: function(v, k) {
+        var m = v.length - 1;
+        var f = m * k;
+        var i = Math.floor(f);
+        var fn = Interpolation.Utils.Linear;
+        if (k < 0) return fn(v[0], v[1], f);
+        if (k > 1) return fn(v[m], v[m - 1], m - f);
+        return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+    },
+    Bezier: function(v, k) {
+        var b = 0;
+        var n = v.length - 1;
+        var pw = Math.pow;
+        var bn = Interpolation.Utils.Bernstein;
+        for(var i = 0; i <= n; i++)b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+        return b;
+    },
+    CatmullRom: function(v, k) {
+        var m = v.length - 1;
+        var f = m * k;
+        var i = Math.floor(f);
+        var fn = Interpolation.Utils.CatmullRom;
+        if (v[0] === v[m]) {
+            if (k < 0) i = Math.floor(f = m * (1 + k));
+            return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
+        } else {
+            if (k < 0) return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
+            if (k > 1) return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
+            return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
+        }
+    },
+    Utils: {
+        Linear: function(p0, p1, t) {
+            return (p1 - p0) * t + p0;
+        },
+        Bernstein: function(n, i) {
+            var fc = Interpolation.Utils.Factorial;
+            return fc(n) / fc(i) / fc(n - i);
+        },
+        Factorial: function() {
+            var a = [
+                1
+            ];
+            return function(n) {
+                var s = 1;
+                if (a[n]) return a[n];
+                for(var i = n; i > 1; i--)s *= i;
+                a[n] = s;
+                return s;
+            };
+        }(),
+        CatmullRom: function(p0, p1, p2, p3, t) {
+            var v0 = (p2 - p0) * 0.5;
+            var v1 = (p3 - p1) * 0.5;
+            var t2 = t * t;
+            var t3 = t * t2;
+            return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+        }
+    }
+};
+/**
+ * Utils
+ */ var Sequence = /** @class */ function() {
+    function Sequence() {}
+    Sequence.nextId = function() {
+        return Sequence._nextId++;
+    };
+    Sequence._nextId = 0;
+    return Sequence;
+}();
+var mainGroup = new Group();
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */ var Tween = /** @class */ function() {
+    function Tween(_object, _group) {
+        if (_group === void 0) _group = mainGroup;
+        this._object = _object;
+        this._group = _group;
+        this._isPaused = false;
+        this._pauseStart = 0;
+        this._valuesStart = {};
+        this._valuesEnd = {};
+        this._valuesStartRepeat = {};
+        this._duration = 1000;
+        this._isDynamic = false;
+        this._initialRepeat = 0;
+        this._repeat = 0;
+        this._yoyo = false;
+        this._isPlaying = false;
+        this._reversed = false;
+        this._delayTime = 0;
+        this._startTime = 0;
+        this._easingFunction = Easing.Linear.None;
+        this._interpolationFunction = Interpolation.Linear;
+        // eslint-disable-next-line
+        this._chainedTweens = [];
+        this._onStartCallbackFired = false;
+        this._onEveryStartCallbackFired = false;
+        this._id = Sequence.nextId();
+        this._isChainStopped = false;
+        this._propertiesAreSetUp = false;
+        this._goToEnd = false;
+    }
+    Tween.prototype.getId = function() {
+        return this._id;
+    };
+    Tween.prototype.isPlaying = function() {
+        return this._isPlaying;
+    };
+    Tween.prototype.isPaused = function() {
+        return this._isPaused;
+    };
+    Tween.prototype.to = function(target, duration) {
+        if (duration === void 0) duration = 1000;
+        if (this._isPlaying) throw new Error("Can not call Tween.to() while Tween is already started or paused. Stop the Tween first.");
+        this._valuesEnd = target;
+        this._propertiesAreSetUp = false;
+        this._duration = duration;
+        return this;
+    };
+    Tween.prototype.duration = function(duration) {
+        if (duration === void 0) duration = 1000;
+        this._duration = duration;
+        return this;
+    };
+    Tween.prototype.dynamic = function(dynamic) {
+        if (dynamic === void 0) dynamic = false;
+        this._isDynamic = dynamic;
+        return this;
+    };
+    Tween.prototype.start = function(time, overrideStartingValues) {
+        if (time === void 0) time = now();
+        if (overrideStartingValues === void 0) overrideStartingValues = false;
+        if (this._isPlaying) return this;
+        // eslint-disable-next-line
+        this._group && this._group.add(this);
+        this._repeat = this._initialRepeat;
+        if (this._reversed) {
+            // If we were reversed (f.e. using the yoyo feature) then we need to
+            // flip the tween direction back to forward.
+            this._reversed = false;
+            for(var property in this._valuesStartRepeat){
+                this._swapEndStartRepeatValues(property);
+                this._valuesStart[property] = this._valuesStartRepeat[property];
+            }
+        }
+        this._isPlaying = true;
+        this._isPaused = false;
+        this._onStartCallbackFired = false;
+        this._onEveryStartCallbackFired = false;
+        this._isChainStopped = false;
+        this._startTime = time;
+        this._startTime += this._delayTime;
+        if (!this._propertiesAreSetUp || overrideStartingValues) {
+            this._propertiesAreSetUp = true;
+            // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
+            if (!this._isDynamic) {
+                var tmp = {};
+                for(var prop in this._valuesEnd)tmp[prop] = this._valuesEnd[prop];
+                this._valuesEnd = tmp;
+            }
+            this._setupProperties(this._object, this._valuesStart, this._valuesEnd, this._valuesStartRepeat, overrideStartingValues);
+        }
+        return this;
+    };
+    Tween.prototype.startFromCurrentValues = function(time) {
+        return this.start(time, true);
+    };
+    Tween.prototype._setupProperties = function(_object, _valuesStart, _valuesEnd, _valuesStartRepeat, overrideStartingValues) {
+        for(var property in _valuesEnd){
+            var startValue = _object[property];
+            var startValueIsArray = Array.isArray(startValue);
+            var propType = startValueIsArray ? "array" : typeof startValue;
+            var isInterpolationList = !startValueIsArray && Array.isArray(_valuesEnd[property]);
+            // If `to()` specifies a property that doesn't exist in the source object,
+            // we should not set that property in the object
+            if (propType === "undefined" || propType === "function") continue;
+            // Check if an Array was provided as property value
+            if (isInterpolationList) {
+                var endValues = _valuesEnd[property];
+                if (endValues.length === 0) continue;
+                // Handle an array of relative values.
+                // Creates a local copy of the Array with the start value at the front
+                var temp = [
+                    startValue
+                ];
+                for(var i = 0, l = endValues.length; i < l; i += 1){
+                    var value = this._handleRelativeValue(startValue, endValues[i]);
+                    if (isNaN(value)) {
+                        isInterpolationList = false;
+                        console.warn("Found invalid interpolation list. Skipping.");
+                        break;
+                    }
+                    temp.push(value);
+                }
+                if (isInterpolationList) // if (_valuesStart[property] === undefined) { // handle end values only the first time. NOT NEEDED? setupProperties is now guarded by _propertiesAreSetUp.
+                _valuesEnd[property] = temp;
+            }
+            // handle the deepness of the values
+            if ((propType === "object" || startValueIsArray) && startValue && !isInterpolationList) {
+                _valuesStart[property] = startValueIsArray ? [] : {};
+                var nestedObject = startValue;
+                for(var prop in nestedObject)_valuesStart[property][prop] = nestedObject[prop];
+                // TODO? repeat nested values? And yoyo? And array values?
+                _valuesStartRepeat[property] = startValueIsArray ? [] : {};
+                var endValues = _valuesEnd[property];
+                // If dynamic is not enabled, clone the end values instead of using the passed-in end values.
+                if (!this._isDynamic) {
+                    var tmp = {};
+                    for(var prop in endValues)tmp[prop] = endValues[prop];
+                    _valuesEnd[property] = endValues = tmp;
+                }
+                this._setupProperties(nestedObject, _valuesStart[property], endValues, _valuesStartRepeat[property], overrideStartingValues);
+            } else {
+                // Save the starting value, but only once unless override is requested.
+                if (typeof _valuesStart[property] === "undefined" || overrideStartingValues) _valuesStart[property] = startValue;
+                if (!startValueIsArray) // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                _valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
+                if (isInterpolationList) // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                _valuesStartRepeat[property] = _valuesEnd[property].slice().reverse();
+                else _valuesStartRepeat[property] = _valuesStart[property] || 0;
+            }
+        }
+    };
+    Tween.prototype.stop = function() {
+        if (!this._isChainStopped) {
+            this._isChainStopped = true;
+            this.stopChainedTweens();
+        }
+        if (!this._isPlaying) return this;
+        // eslint-disable-next-line
+        this._group && this._group.remove(this);
+        this._isPlaying = false;
+        this._isPaused = false;
+        if (this._onStopCallback) this._onStopCallback(this._object);
+        return this;
+    };
+    Tween.prototype.end = function() {
+        this._goToEnd = true;
+        this.update(Infinity);
+        return this;
+    };
+    Tween.prototype.pause = function(time) {
+        if (time === void 0) time = now();
+        if (this._isPaused || !this._isPlaying) return this;
+        this._isPaused = true;
+        this._pauseStart = time;
+        // eslint-disable-next-line
+        this._group && this._group.remove(this);
+        return this;
+    };
+    Tween.prototype.resume = function(time) {
+        if (time === void 0) time = now();
+        if (!this._isPaused || !this._isPlaying) return this;
+        this._isPaused = false;
+        this._startTime += time - this._pauseStart;
+        this._pauseStart = 0;
+        // eslint-disable-next-line
+        this._group && this._group.add(this);
+        return this;
+    };
+    Tween.prototype.stopChainedTweens = function() {
+        for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)this._chainedTweens[i].stop();
+        return this;
+    };
+    Tween.prototype.group = function(group) {
+        if (group === void 0) group = mainGroup;
+        this._group = group;
+        return this;
+    };
+    Tween.prototype.delay = function(amount) {
+        if (amount === void 0) amount = 0;
+        this._delayTime = amount;
+        return this;
+    };
+    Tween.prototype.repeat = function(times) {
+        if (times === void 0) times = 0;
+        this._initialRepeat = times;
+        this._repeat = times;
+        return this;
+    };
+    Tween.prototype.repeatDelay = function(amount) {
+        this._repeatDelayTime = amount;
+        return this;
+    };
+    Tween.prototype.yoyo = function(yoyo) {
+        if (yoyo === void 0) yoyo = false;
+        this._yoyo = yoyo;
+        return this;
+    };
+    Tween.prototype.easing = function(easingFunction) {
+        if (easingFunction === void 0) easingFunction = Easing.Linear.None;
+        this._easingFunction = easingFunction;
+        return this;
+    };
+    Tween.prototype.interpolation = function(interpolationFunction) {
+        if (interpolationFunction === void 0) interpolationFunction = Interpolation.Linear;
+        this._interpolationFunction = interpolationFunction;
+        return this;
+    };
+    // eslint-disable-next-line
+    Tween.prototype.chain = function() {
+        var tweens = [];
+        for(var _i = 0; _i < arguments.length; _i++)tweens[_i] = arguments[_i];
+        this._chainedTweens = tweens;
+        return this;
+    };
+    Tween.prototype.onStart = function(callback) {
+        this._onStartCallback = callback;
+        return this;
+    };
+    Tween.prototype.onEveryStart = function(callback) {
+        this._onEveryStartCallback = callback;
+        return this;
+    };
+    Tween.prototype.onUpdate = function(callback) {
+        this._onUpdateCallback = callback;
+        return this;
+    };
+    Tween.prototype.onRepeat = function(callback) {
+        this._onRepeatCallback = callback;
+        return this;
+    };
+    Tween.prototype.onComplete = function(callback) {
+        this._onCompleteCallback = callback;
+        return this;
+    };
+    Tween.prototype.onStop = function(callback) {
+        this._onStopCallback = callback;
+        return this;
+    };
+    /**
+     * @returns true if the tween is still playing after the update, false
+     * otherwise (calling update on a paused tween still returns true because
+     * it is still playing, just paused).
+     */ Tween.prototype.update = function(time, autoStart) {
+        if (time === void 0) time = now();
+        if (autoStart === void 0) autoStart = true;
+        if (this._isPaused) return true;
+        var property;
+        var elapsed;
+        var endTime = this._startTime + this._duration;
+        if (!this._goToEnd && !this._isPlaying) {
+            if (time > endTime) return false;
+            if (autoStart) this.start(time, true);
+        }
+        this._goToEnd = false;
+        if (time < this._startTime) return true;
+        if (this._onStartCallbackFired === false) {
+            if (this._onStartCallback) this._onStartCallback(this._object);
+            this._onStartCallbackFired = true;
+        }
+        if (this._onEveryStartCallbackFired === false) {
+            if (this._onEveryStartCallback) this._onEveryStartCallback(this._object);
+            this._onEveryStartCallbackFired = true;
+        }
+        elapsed = (time - this._startTime) / this._duration;
+        elapsed = this._duration === 0 || elapsed > 1 ? 1 : elapsed;
+        var value = this._easingFunction(elapsed);
+        // properties transformations
+        this._updateProperties(this._object, this._valuesStart, this._valuesEnd, value);
+        if (this._onUpdateCallback) this._onUpdateCallback(this._object, elapsed);
+        if (elapsed === 1) {
+            if (this._repeat > 0) {
+                if (isFinite(this._repeat)) this._repeat--;
+                // Reassign starting values, restart by making startTime = now
+                for(property in this._valuesStartRepeat){
+                    if (!this._yoyo && typeof this._valuesEnd[property] === "string") this._valuesStartRepeat[property] = // eslint-disable-next-line
+                    // @ts-ignore FIXME?
+                    this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
+                    if (this._yoyo) this._swapEndStartRepeatValues(property);
+                    this._valuesStart[property] = this._valuesStartRepeat[property];
+                }
+                if (this._yoyo) this._reversed = !this._reversed;
+                if (this._repeatDelayTime !== undefined) this._startTime = time + this._repeatDelayTime;
+                else this._startTime = time + this._delayTime;
+                if (this._onRepeatCallback) this._onRepeatCallback(this._object);
+                this._onEveryStartCallbackFired = false;
+                return true;
+            } else {
+                if (this._onCompleteCallback) this._onCompleteCallback(this._object);
+                for(var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++)// Make the chained tweens start exactly at the time they should,
+                // even if the `update()` method was called way past the duration of the tween
+                this._chainedTweens[i].start(this._startTime + this._duration, false);
+                this._isPlaying = false;
+                return false;
+            }
+        }
+        return true;
+    };
+    Tween.prototype._updateProperties = function(_object, _valuesStart, _valuesEnd, value) {
+        for(var property in _valuesEnd){
+            // Don't update properties that do not exist in the source object
+            if (_valuesStart[property] === undefined) continue;
+            var start = _valuesStart[property] || 0;
+            var end = _valuesEnd[property];
+            var startIsArray = Array.isArray(_object[property]);
+            var endIsArray = Array.isArray(end);
+            var isInterpolationList = !startIsArray && endIsArray;
+            if (isInterpolationList) _object[property] = this._interpolationFunction(end, value);
+            else if (typeof end === "object" && end) // eslint-disable-next-line
+            // @ts-ignore FIXME?
+            this._updateProperties(_object[property], start, end, value);
+            else {
+                // Parses relative end values with start as base (e.g.: +10, -3)
+                end = this._handleRelativeValue(start, end);
+                // Protect against non numeric properties.
+                if (typeof end === "number") // eslint-disable-next-line
+                // @ts-ignore FIXME?
+                _object[property] = start + (end - start) * value;
+            }
+        }
+    };
+    Tween.prototype._handleRelativeValue = function(start, end) {
+        if (typeof end !== "string") return end;
+        if (end.charAt(0) === "+" || end.charAt(0) === "-") return start + parseFloat(end);
+        return parseFloat(end);
+    };
+    Tween.prototype._swapEndStartRepeatValues = function(property) {
+        var tmp = this._valuesStartRepeat[property];
+        var endValue = this._valuesEnd[property];
+        if (typeof endValue === "string") this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(endValue);
+        else this._valuesStartRepeat[property] = this._valuesEnd[property];
+        this._valuesEnd[property] = tmp;
+    };
+    return Tween;
+}();
+var VERSION = "21.0.0";
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */ var nextId = Sequence.nextId;
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tweens.
+ */ var TWEEN = mainGroup;
+// This is the best way to export things in a way that's compatible with both ES
+// Modules and CommonJS, without build hacks, and so as not to break the
+// existing API.
+// https://github.com/rollup/rollup/issues/1961#issuecomment-423037881
+var getAll = TWEEN.getAll.bind(TWEEN);
+var removeAll = TWEEN.removeAll.bind(TWEEN);
+var add = TWEEN.add.bind(TWEEN);
+var remove = TWEEN.remove.bind(TWEEN);
+var update = TWEEN.update.bind(TWEEN);
+var exports = {
+    Easing: Easing,
+    Group: Group,
+    Interpolation: Interpolation,
+    now: now,
+    Sequence: Sequence,
+    nextId: nextId,
+    Tween: Tween,
+    VERSION: VERSION,
+    getAll: getAll,
+    removeAll: removeAll,
+    add: add,
+    remove: remove,
+    update: update
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7K3aZ":[function(require,module,exports) {
+// Definir el objeto literal de sonidos
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "sounEffect", ()=>sounEffect);
+// Definir la función playSound
+parcelHelpers.export(exports, "playSound", ()=>playSound) // Ejemplo de uso
+ //  playSound(sonidos.sonidoA); // Reproducirá el sonidoA
+;
+const sounEffect = {
+    start: new Audio(new URL(require("7290cff1342e043f")).href),
+    click: new Audio(new URL(require("8d1bf478d2debefa")).href),
+    hover: new Audio(new URL(require("c23240d6fe8196b0")).href),
+    background: new Audio(new URL(require("99f00fedf593a43d")).href)
+};
+function playSound(sound, loop = false) {
+    if (sound && sound instanceof Audio) {
+        // sound.loop = loop; // Configuramos la propiedad loop del objeto Audio
+        sound.play();
+        actualSound = sound;
+    // console.log(sound, " >>REPRODUCIR SONIDO");
+    } else console.error("El sonido proporcionado no es v\xe1lido.");
+}
+
+},{"7290cff1342e043f":"4U2PY","8d1bf478d2debefa":"4QKE3","c23240d6fe8196b0":"4xFi4","99f00fedf593a43d":"47X6V","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4U2PY":[function(require,module,exports) {
+module.exports = require("e737036ee2ccc7a6").getBundleURL("8Kyqb") + "start.0befac28.ogg" + "?" + Date.now();
+
+},{"e737036ee2ccc7a6":"lgJ39"}],"4QKE3":[function(require,module,exports) {
+module.exports = require("c6a9bd1701eca9e1").getBundleURL("8Kyqb") + "click.12d770f3.ogg" + "?" + Date.now();
+
+},{"c6a9bd1701eca9e1":"lgJ39"}],"4xFi4":[function(require,module,exports) {
+module.exports = require("2a7058d48cbbe70").getBundleURL("8Kyqb") + "hover.346c2b95.ogg" + "?" + Date.now();
+
+},{"2a7058d48cbbe70":"lgJ39"}],"47X6V":[function(require,module,exports) {
+module.exports = require("db8993148a34c6e7").getBundleURL("8Kyqb") + "background.e29eed9b.ogg" + "?" + Date.now();
+
+},{"db8993148a34c6e7":"lgJ39"}],"4rB7c":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "STATE", ()=>STATE);
+var _three = require("three");
+let STATE = {
+    actualActive: null,
+    lastActive: null,
+    nodeCount: 0,
+    cameraIsMoving: false
+};
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kST2h":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _three = require("three");
@@ -44593,7 +39930,954 @@ var _three = require("three");
     return f;
 });
 
-},{}],"97wAT":[function(require,module,exports) {
+},{}],"ei2FO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+//clase principal
+parcelHelpers.export(exports, "DotManager", ()=>DotManager);
+var _three = require("three");
+var _dotItem = require("./DotItem");
+var _cameraHandler = require("../../Handlers/CameraHandler");
+var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
+class DotManager {
+    constructor(scene, dotData, isNetwork){
+        this.scene = scene;
+        this.isNetwork = isNetwork;
+        console.log("cargando dots.....");
+        //cargar navigator
+        this.navigationMenu = document.getElementById("navigator"); //barra de navegacion
+        //cargar todos los dotItems
+        this.dotItem = this.loadDotComponent(dotData); //lista de [DOTS] objetos
+        //configurar el listener
+        console.log("[DOTS CARGADOS!!]\n", this.dotItem);
+        console.log(this, "<<OBJETO LISTO");
+        //aux variables
+        this.__relativeFront = new (0, _three.Vector3);
+        this.__relativePos = new (0, _three.Vector3);
+    }
+    //cargar los dots del conjunto dado
+    loadDotComponent(dotData) {
+        //crear un array temporal
+        const tempArray = [];
+        const navigationMenu = this.navigationMenu;
+        //configurar barra de navegacion
+        //recorrer cada elemento y generar un css3object
+        for(const key in dotData)if (dotData.hasOwnProperty(key)) {
+            //console.log("GENERAR: [", dotData[key], "]");
+            //cargar el actual dotItem
+            const prop = dotData[key];
+            const dotItem = new (0, _dotItem.DotItem)(prop);
+            //configurar la barra con cada item
+            const navigationBtn = dotItem.setupNavigationIcon();
+            //configurar referencia de [NAVIGATION MENU]
+            dotItem.navigatorMenuRef = navigationMenu;
+            //agregar al menu
+            //SOLO LOS que no seAN DE NETWORK
+            const haveIndex = prop.index == null;
+            if (haveIndex) navigationMenu.appendChild(navigationBtn);
+            //crear dotItem
+            tempArray.push(dotItem);
+        //crear barra de navegacion para cada item
+        }
+        //regresar lista
+        return tempArray;
+    }
+    //setear posicion de los dots
+    setDomItemPosition(rangeIn, rangeOut, WEB) {
+        const centro = new (0, _three.Vector3)(0, 0, 0);
+        const angle = 2 * Math.PI / this.dotItem.length;
+        const domRadio = rangeIn / angle;
+        const castRadio = rangeOut / angle;
+        for(let i = 0; i < this.dotItem.length; i++){
+            const x = centro.x + domRadio * Math.cos(angle * i);
+            const y = centro.y;
+            const z = centro.z + domRadio * Math.sin(angle * i);
+            const actualDotItem = this.dotItem[i];
+            //set position
+            actualDotItem.position.set(x, y, z);
+            //calcular el punto de vista
+            const xCast = centro.x + castRadio * Math.cos(angle * i);
+            const yCast = centro.y;
+            const zCast = centro.z + castRadio * Math.sin(angle * i);
+            //set view
+            actualDotItem.focusPosition.set(xCast, yCast, zCast);
+        //ayuda visual
+        //crearAxisHelper(x, y, z, WEB);
+        }
+    }
+    //items ven a la camara
+    viewToCamera() {
+        this.dotItem.forEach((element)=>{
+            this.__relativeFront = new (0, _three.Vector3)().addVectors((0, _cameraHandlerDefault.default).cameraGroup.position, element.position);
+            this.__relativePos = new (0, _three.Vector3)().addVectors(this.__relativeFront, (0, _cameraHandlerDefault.default).camera.position);
+            element.component.lookAt(this.__relativePos);
+        });
+    }
+    //los dots se apagan o encienden
+    setDotVisibility(isActive) {
+        this.dotItem.forEach((item)=>{
+            item.toggleIconVisibility(isActive);
+        });
+    }
+    //renderizar los dots generados
+    render() {
+        //agregarlos a la escena
+        this.dotItem.forEach((item)=>{
+            this.scene.add(item.component);
+        });
+    }
+}
+function crearAxisHelper(x, y, z, scene) {
+    const axisHelper = new (0, _three.AxesHelper)(20);
+    axisHelper.position.set(x, y, z);
+    scene.add(axisHelper);
+}
+
+},{"three":"ktPTu","./DotItem":"4OrAm","../../Handlers/CameraHandler":"bJrvG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4OrAm":[function(require,module,exports) {
+//representa un icono
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "DotItem", ()=>DotItem) //fin
+;
+var _animejs = require("animejs");
+var _three = require("three");
+var _css3Drenderer = require("three/examples/jsm/renderers/CSS3DRenderer");
+var _soundEffects = require("../../effects/SoundEffects");
+var _cameraHandler = require("../../Handlers/CameraHandler");
+var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
+var _mouseHandler = require("../../Handlers/MouseHandler");
+var _mouseHandlerDefault = parcelHelpers.interopDefault(_mouseHandler);
+var _textAnim = require("../../../js/text-anim");
+var _main = require("../../Main");
+var _dotState = require("./DotState");
+var _dotTemplate = require("./DotTemplate");
+class DotItem {
+    constructor(prop, isNetwork){
+        this.component = null;
+        //propiedades de identidad
+        this.index = prop.index;
+        this.id = prop.id;
+        this.title = prop.title;
+        this.iconUrl = prop.iconUrl;
+        this.jsonData = prop.jsonData;
+        //otras propiedades
+        this.isActive = false;
+        this.isVisible = true;
+        this.isNetwork = isNetwork;
+        //objetos
+        this.element = document.createElement("div"); //main container
+        this.mainSubPageContainer = document.createElement("div"); //sub page main container
+        this.subPageContainer = null; //esta es la pagina actual [HIJO]
+        this.element.classList.add("dot");
+        this.iconElement = this.generateIcon(prop); //dot icon element
+        this.mainSection = this.generateSection(prop.jsonData); //dot [section] element
+        this.subPages = this.generateSubPages(prop.jsonData); //es un objeto literal contenedor de todas las subpaginas
+        this.navigatorMenuRef = null; //referencia al navigator menu
+        //configura el dot
+        this.setupDot();
+        //agrega listeners al dot
+        this.setListener();
+        //propiedades auxiliares
+        this.position = this.component.position; //posicion del dot en el plano
+        this.focusPosition = new (0, _three.Vector3)(); //posicion de la camara
+    }
+    //crea el dot icon
+    generateIcon(prop) {
+        //crear elemento, configurar clase
+        const dotIcon = document.createElement("div");
+        dotIcon.id = prop.id;
+        dotIcon.classList.add("icon");
+        const haveIndex = this.index == null;
+        if (!haveIndex) dotIcon.classList.add("network-sub-page");
+        //setup template
+        const template = `<h3 class="icon-title">${prop.title}</h3>
+        <img src="${prop.iconUrl}" alt="Icon" class="icon-img" />`;
+        //agregar el template al dotIcon
+        dotIcon.innerHTML = template;
+        //devolver el html element
+        return dotIcon;
+    }
+    //crear desde el json
+    generateFromJSonData(jsonData) {
+        const tempContainer = document.createElement("div");
+        if (jsonData.subTitle) {
+            const subTitle = document.createElement("h2");
+            subTitle.classList.add("sub-title");
+            subTitle.innerHTML = jsonData.subTitle;
+            //agregar al principal
+            tempContainer.appendChild(subTitle);
+        }
+        if (jsonData.title) {
+            const title = document.createElement("h1");
+            title.innerHTML = jsonData.title;
+            title.classList.add("title");
+            //agregar al principal
+            tempContainer.appendChild(title);
+        }
+        if (jsonData.description) {
+            const description = document.createElement("p");
+            description.classList.add("description");
+            description.innerHTML = jsonData.description;
+            //agregar al principal
+            tempContainer.appendChild(description);
+        }
+        if (jsonData.preview) {
+            //image previews
+            const imagePreview = document.createElement("div");
+            imagePreview.classList.add("img-preview");
+            const imageTemplate = `
+  <img
+    src=${jsonData.preview}
+    alt="Imagen Normal"
+  />`;
+            //agregar img a contenedor
+            imagePreview.innerHTML = imageTemplate;
+            //agregar al principal
+            tempContainer.appendChild(imagePreview);
+        }
+        if (jsonData.buttons) {
+            const handleClick = (event)=>{
+                if (event.target.classList.contains("dot-button")) {
+                    //reproducir sonido
+                    (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
+                    console.log("A hecho click!!\n CARGANDO SUBPAGE");
+                    console.log(event.target.id);
+                    this.loadSubPage(event.target.id);
+                }
+            };
+            const handleHover = (event)=>{
+                (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
+            };
+            //botones de subpaginas
+            const buttonsContainer = document.createElement("div");
+            buttonsContainer.id = "subPageLinks";
+            buttonsContainer.classList.add("sub-page-links");
+            buttonsContainer.classList.add("list-container");
+            //generar n cantidad de botones
+            jsonData.buttons.forEach((element1)=>{
+                //contenedor principal
+                const btnContainer = document.createElement("div");
+                btnContainer.classList.add("btn-sub-page-container");
+                //texto o span
+                const btnSpan = document.createElement("span");
+                btnSpan.innerHTML = element1.name;
+                //boton
+                //el boton tiene la referencia a la sub page
+                const button = document.createElement("div");
+                button.id = element1.id;
+                button.classList.add("dot-button");
+                button.classList.add("round");
+                //setup element
+                btnContainer.appendChild(btnSpan);
+                btnContainer.appendChild(button);
+                //agregar n botones
+                buttonsContainer.appendChild(btnContainer);
+                buttonsContainer.addEventListener("click", handleClick);
+                buttonsContainer.addEventListener("mouseenter", handleHover);
+            });
+            //fin de botones de subpaginas
+            //agregar al principal
+            tempContainer.appendChild(buttonsContainer);
+        }
+        if (jsonData.extLink) {
+            //external links
+            //botones con enlace externo
+            const externalBtnContainer = document.createElement("div");
+            externalBtnContainer.classList.add("external-links");
+            externalBtnContainer.classList.add("list-container");
+            //genera n numero de extbuttons
+            jsonData.extLink.forEach((element1)=>{
+                const extButtonTemplate = `
+      <a href="${element1.link}" class="dot-link">
+      <button class="dot-button">${element1.name}</button>
+      </a>
+      `;
+                //agregar n botones
+                externalBtnContainer.innerHTML += extButtonTemplate;
+            });
+            //agregar al principal
+            tempContainer.appendChild(externalBtnContainer);
+        //fin de external btn
+        }
+        if (jsonData.imgLink) {
+            //imagenes con enlace
+            const imgLinksContainer = document.createElement("div");
+            imgLinksContainer.classList.add("img-links-container");
+            imgLinksContainer.classList.add("list-container");
+            //generar n img links
+            // Suponiendo que jsonData es el objeto JSON que contiene los datos
+            jsonData.imgLink.forEach((element1)=>{
+                let imgSrc = element1.imgLink;
+                if (this.index != null) {
+                    let ICONS = (0, _dotTemplate.PAGE_ICONS)["network"];
+                    imgSrc = ICONS[imgSrc];
+                    console.log("LINK DE:", imgSrc);
+                }
+                let imgLinkTemplate = `
+          <a href="${element1.extLink}" class="img-link">
+            <img src="${imgSrc}" alt="Imagen con Enlace" />
+          </a>`;
+                // Agregar el enlace de la imagen al contenedor
+                imgLinksContainer.innerHTML += imgLinkTemplate;
+            });
+            tempContainer.appendChild(imgLinksContainer);
+        //fin de imglinks
+        }
+        //devolver el objeto
+        return tempContainer;
+    }
+    //crear
+    createElementsFromJSON(jsonData) {
+        const tempContainer = document.createElement("div");
+        for(let key in jsonData)//si son hijos
+        // La propiedad es un array con hijos
+        if (Array.isArray(jsonData[key])) {
+            //si son botones
+            if (key === "buttons") {
+                //contenedor
+                //botones de subpaginas
+                const buttonsContainer = document.createElement("div");
+                buttonsContainer.id = "subPageLinks";
+                buttonsContainer.classList.add("sub-page-links");
+                buttonsContainer.classList.add("list-container");
+                const handleClick = (event)=>{
+                    console.log(event.target, "externo click");
+                    if (event.target.classList.contains("btn-sub-page-container")) console.log("A hecho click!!");
+                };
+                //generar n cantidad de botones
+                jsonData[key].forEach((element1)=>{
+                    //contenedor principal
+                    const btnContainer = document.createElement("div");
+                    btnContainer.classList.add("btn-sub-page-container");
+                    //texto o span
+                    const btnSpan = document.createElement("span");
+                    btnSpan.innerHTML = element1.name;
+                    //boton
+                    const button = document.createElement("div");
+                    button.classList.add("dot-button");
+                    button.classList.add("round");
+                    //setup element
+                    btnContainer.appendChild(btnSpan);
+                    btnContainer.appendChild(button);
+                    //agregar n botones
+                    buttonsContainer.appendChild(btnContainer);
+                });
+                buttonsContainer.addEventListener("click", handleClick);
+                tempContainer.appendChild(buttonsContainer);
+            }
+            console.log("<<HIJOS>> en ", this.id);
+            console.log("ITEM: >>", key, " :", jsonData[key]);
+        } else console.log("ITEM: >>", key, " :", jsonData[key], this.id);
+        return tempContainer;
+    }
+    setupNavigationIcon() {
+        const handleClick = (event)=>{
+            //reproducir sonido
+            (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
+            //si la camara aun se mueve, no hacer nada
+            if ((0, _dotState.STATE).cameraIsMoving) {
+                console.log("ACCION DENEGADA\n CAMARA MOVIENDOSE");
+                return;
+            }
+            //la pagina actual se vuelve la anterior
+            (0, _dotState.STATE).lastActive = (0, _dotState.STATE).actualActive;
+            //la pagina siguiente se vuelve la actual
+            (0, _dotState.STATE).actualActive = this;
+            let paginaAnterior = (0, _dotState.STATE).lastActive;
+            let paginaSiguiente = (0, _dotState.STATE).actualActive;
+            //verificar que no es la misma pagina
+            if (paginaAnterior.id !== paginaSiguiente.id) {
+                console.log("VIAJAR");
+                console.log(paginaAnterior.id, "<<>>", paginaSiguiente.id);
+                //ocultar pagina actual
+                paginaAnterior.mainSection.classList.add("hidden-section");
+                //si el hijo esta activo, ocultar al hijo
+                if (paginaAnterior.subPageContainer) paginaAnterior.subPageContainer.classList.add("hidden-section");
+                //actualizar el estado de la camara
+                (0, _dotState.STATE).cameraIsMoving = true;
+                //mover la camara hacia
+                (0, _cameraHandlerDefault.default).moveCameraTo(this.position, this.focusPosition, ()=>{
+                    //si la animacion termina, actualizar camara
+                    (0, _dotState.STATE).cameraIsMoving = false;
+                    //ocultar PAGINA ANTERIOR
+                    paginaAnterior.mainSection.classList.remove("hidden-section");
+                    paginaAnterior.mainSection.classList.remove("active-section");
+                    if (paginaAnterior.subPageContainer) {
+                        paginaAnterior.subPageContainer.classList.remove("hidden-section");
+                        paginaAnterior.subPageContainer.classList.remove("active-section");
+                    }
+                    //mostrar este item
+                    this.toggleSectionVisibility(true);
+                    console.log("STATE ACTUALZADO CON>>", (0, _dotState.STATE).actualActive.id);
+                });
+            } else {
+                console.log("MISMA PAGINA< NO VIAJAR!!");
+                console.log(paginaAnterior.id, "<<>>", paginaSiguiente.id);
+            }
+        };
+        const handleHover = (event)=>{
+            //reproducir el hover
+            (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
+        };
+        // Crear el elemento principal <div> con la clase "dot"
+        const iconContainer = document.createElement("div");
+        iconContainer.classList.add("icon");
+        //setup listener
+        iconContainer.addEventListener("click", handleClick);
+        iconContainer.addEventListener("mouseenter", handleHover);
+        //setup icon img
+        const imageIcon = document.createElement("img");
+        imageIcon.src = this.iconUrl;
+        // Agregar el elemento del ícono al elemento principal <div>
+        iconContainer.appendChild(imageIcon);
+        // Devolver el elemento <div> completo con la estructura generada
+        return iconContainer;
+    }
+    //generar seccion
+    generateSection(jsonData) {
+        console.log("GENERAR: [", jsonData, "]", "\n>>>>>>>>>>>>>>>>>>>>>>>>", this.index);
+        const haveIndex = this.index == null;
+        if (jsonData.MainPage && haveIndex) {
+            jsonData = jsonData.MainPage[0];
+            console.log("<<MAIN>> ", this.id, this.index, jsonData);
+        } else if (jsonData.MainSubPages) {
+            jsonData = jsonData.MainSubPages[this.index];
+            console.log("<<NETWORK>> ", this.id, this.index, jsonData);
+        }
+        //cargar los elementos del json
+        //contenedor principal
+        const content = document.createElement("div");
+        content.classList.add("content");
+        //agregar sub clase para paginas de network
+        if (!haveIndex) content.classList.add("network-sub-page-content");
+        //cargar contenido
+        //content.innerHTML = this.generateFromJSonData(jsonData);
+        content.appendChild(this.generateFromJSonData(jsonData));
+        //fin de generar
+        return content;
+    }
+    //carga una subpagina
+    loadSubPage(id) {
+        //eliminar desactivar la seccion anterioir
+        this.mainSection.classList.remove("active-section");
+        //cargar la subpageEspecifica
+        const actualPage = this.subPages[id];
+        if (this.id === "home") {
+            console.log("SUBPAGINA DE HOME");
+            actualPage.classList.add("alternative");
+        }
+        //activar seccion
+        actualPage.classList.add("active-section");
+        actualPage.classList.add("content");
+        //guardar la referencia de la ultima pagina
+        this.subPageContainer = actualPage;
+        console.log(actualPage, "<< CARGAR SUB PAGE: ", id);
+        //set to main container
+        this.mainSubPageContainer.appendChild(actualPage);
+    }
+    generateSubPages(jsonData) {
+        jsonData = jsonData.SubPage; //asignar la seccion de subpaginas
+        const subPagesList = {};
+        if (jsonData) {
+            //console.log(jsonData, this.id);
+            // Suponiendo que jsonData es el objeto JSON que contiene los datos
+            for(let key in jsonData)if (jsonData.hasOwnProperty(key)) {
+                let subPageData = jsonData[key];
+                //generar contenido de subpae
+                let subpage = this.generateFromJSonData(subPageData);
+                // Añadir propiedades de forma dinámica
+                let identify = jsonData[key].id;
+                subPagesList[identify] = subpage;
+            }
+            console.log(subPagesList);
+        } else {
+            console.log(this.id, "NO TIENE HIJOS");
+            return;
+        }
+        return subPagesList;
+    }
+    createSliders(mainContainer) {
+        const container = document.createElement("div");
+        container.classList.add("home-swiper");
+        //sub-container
+        const innerContainer = document.createElement("div");
+        innerContainer.classList.add("swiper-wrapper");
+        //agreagar slides a el objeto
+        let slide = loadPage(element, 0, true);
+        slide.classList.add("swiper-slide");
+        innerContainer.appendChild(slide);
+        slide = loadPage(element, 1, true);
+        slide.classList.add("swiper-slide");
+        innerContainer.appendChild(slide);
+        console.log(LAST_ITEM);
+        //organizar los elementos
+        container.appendChild(innerContainer);
+        slide = document.createElement("div");
+        slide.classList.add("swiper-button-next");
+        container.appendChild(slide);
+        slide = document.createElement("div");
+        slide.classList.add("swiper-button-prev");
+        container.appendChild(slide);
+    }
+    //activar o desactivar icono
+    toggleIconVisibility(state) {
+        if (state) {
+            //al agregar la clase, animar la aparicion
+            this.iconElement.classList.add("active-section");
+            (0, _textAnim.ShowTextAnimation)(".active-section");
+        } else //al eliminar la clase animar el icono
+        (0, _textAnim.HideTextAnimation)(".active-section", "easeInSine", 1200, ()=>{
+            setTimeout(()=>{
+                this.iconElement.classList.remove("active-section");
+            }, 800);
+        });
+    }
+    toggleSectionVisibility(isactive) {
+        if (isactive) {
+            //al agregar la clase, animar la aparicion
+            this.mainSection.classList.add("active-section");
+            (0, _textAnim.ShowTextAnimation)(".active-section");
+        } else //al eliminar la clase animar el icono
+        (0, _textAnim.HideTextAnimation)(".active-section", "easeInSine", 1200, ()=>{
+            setTimeout(()=>{
+                this.mainSection.classList.remove("active-section");
+            }, 800);
+        });
+    }
+    setPosition(x, y, z) {
+        this.position.set(x, y, z); //setear posicon local
+    }
+    toggleSubPage(value) {
+        if (value) {
+            //al agregar la clase, animar la aparicion
+            this.subPageContainer.classList.add("active-section");
+            (0, _textAnim.ShowTextAnimation)(".active-section");
+        } else //al eliminar la clase animar el icono
+        (0, _textAnim.HideTextAnimation)(".active-section", "easeInSine", 100, ()=>{
+            //apagar la SUBAGINA
+            this.subPageContainer.classList.remove("active-section");
+            this.subPageContainer.classList.remove("alternative");
+            setTimeout(()=>{
+                //activar la MAIN PAGE
+                this.toggleSectionVisibility(true); //activa el padre[MAINSECTION]
+            }, 50);
+        });
+    }
+    //configurar listener
+    setListener() {
+        const clickEvent = (event)=>{
+            if (event.target.classList.contains("icon-img")) {
+                //reproducir click
+                (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
+                console.log("ACTIVAR SECTION>>: ", this.id);
+                if (this.id === "network") {
+                    (0, _main.NTW_MAIN_DOT).setDotVisibility(true);
+                    (0, _main.MAIN_DOTS).setDotVisibility(false);
+                    console.log("NETWORK ESTA ACTIVO");
+                    return;
+                }
+                //esconder el dot actual
+                (0, _main.MAIN_DOTS).setDotVisibility(false);
+                (0, _main.NTW_MAIN_DOT).setDotVisibility(false);
+                //configurar la intensidad del mouse parallax
+                (0, _mouseHandlerDefault.default).intensity = 10;
+                //mover la camara hacia
+                (0, _cameraHandlerDefault.default).moveCameraTo(this.position, this.focusPosition, ()=>{
+                    (0, _mouseHandlerDefault.default).isSectionInCamera = true;
+                    console.log((0, _mouseHandlerDefault.default).isSectionInCamera, "\nVALOR DE CAMERA ACTUALIZADO");
+                    //activar [NAVIGATION MENU]
+                    // Mostrar una vez terminada la animación
+                    this.navigatorMenuRef.style.zIndex = "100";
+                    this.navigatorMenuRef.classList.add("active");
+                    //activar el desenfoque
+                    const desenfoque = document.getElementById("blur");
+                    desenfoque.classList.add("active-blur");
+                    //mostrar este item
+                    this.toggleSectionVisibility(true);
+                    //ACTUALIZAR ESTADO
+                    (0, _dotState.STATE).actualActive = this;
+                });
+            }
+        };
+        const hoverEvent = (event)=>{
+            //console.log("[HOVER]\n", this.id);
+            //reproducir hover
+            (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
+        };
+        const overEvent = (event)=>{
+            console.log("hover out\n", event.target);
+        };
+        //deteactar click
+        this.element.addEventListener("click", clickEvent);
+        //detectar hover
+        this.element.addEventListener("mouseenter", hoverEvent);
+    //detectar cuando termina
+    //this.element.addEventListener("mouseover", overEvent);
+    }
+    //configura el dot, crea un solo elemento
+    setupDot() {
+        const mainContainer = this.element;
+        const subPageContainer = this.mainSubPageContainer;
+        const dotIcon = this.iconElement;
+        const dotSection = this.mainSection;
+        //agregar el item al elemento
+        mainContainer.appendChild(dotIcon);
+        //agregar el contenido
+        mainContainer.appendChild(dotSection);
+        //agreagar el subpagecontinaer
+        mainContainer.appendChild(subPageContainer);
+        //crear el css3dobject
+        //regresar objeto tipo css3object
+        const size = 0.2;
+        const dotItem = new (0, _css3Drenderer.CSS3DObject)(mainContainer);
+        //configuarr dot
+        dotItem.scale.set(size, size, size);
+        dotItem.position.set(0, 0, 0);
+        //decolver el objeto
+        //console.log("[CARGAR DOT] \n",dotIcon.id, dotIcon);
+        this.component = dotItem;
+    }
+}
+
+},{"animejs":"jokr5","three":"ktPTu","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","../../effects/SoundEffects":"7K3aZ","../../Handlers/CameraHandler":"bJrvG","../../Handlers/MouseHandler":"7ESAf","../../../js/text-anim":"jjSxz","../../Main":"jYf5p","./DotState":"4rB7c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./DotTemplate":"6OcLf"}],"6OcLf":[function(require,module,exports) {
+// Importar los archivos JSON correspondientes
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "DOT", ()=>DOT);
+parcelHelpers.export(exports, "NTW_DOT", ()=>NTW_DOT);
+parcelHelpers.export(exports, "PAGE_ICONS", ()=>PAGE_ICONS);
+var _homeJson = require("./view/home.json");
+var _homeJsonDefault = parcelHelpers.interopDefault(_homeJson);
+var _ntfsJson = require("./view/ntfs.json");
+var _ntfsJsonDefault = parcelHelpers.interopDefault(_ntfsJson);
+var _blogJson = require("./view/blog.json");
+var _blogJsonDefault = parcelHelpers.interopDefault(_blogJson);
+var _networkJson = require("./view/network.json");
+var _networkJsonDefault = parcelHelpers.interopDefault(_networkJson);
+const DOT = {
+    home: {
+        id: "home",
+        title: "Home",
+        iconUrl: new URL(require("3e2c9c878fcbdda3")).href,
+        jsonData: (0, _homeJsonDefault.default)
+    },
+    contact: {
+        id: "contact",
+        title: "Contact",
+        iconUrl: new URL(require("758cc138d805a5d3")).href,
+        jsonData: (0, _blogJsonDefault.default)
+    },
+    blog: {
+        id: "blog",
+        title: "Blog",
+        iconUrl: new URL(require("a063a5c51aa1c7bc")).href,
+        jsonData: (0, _blogJsonDefault.default)
+    },
+    ntfs: {
+        id: "ntfs",
+        title: "Ntfs",
+        iconUrl: new URL(require("ac06a08ca56ce2cf")).href,
+        jsonData: (0, _ntfsJsonDefault.default)
+    },
+    network: {
+        id: "network",
+        title: "Network",
+        iconUrl: new URL(require("79447627a3936f3e")).href,
+        jsonData: (0, _networkJsonDefault.default)
+    }
+};
+const NTW_DOT = {
+    global: {
+        id: "global",
+        title: "Global scalability",
+        iconUrl: new URL(require("bb453a4506923ae4")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 3
+    },
+    optimised: {
+        id: "optimised",
+        title: "Optimised fee mechanism",
+        iconUrl: new URL(require("9f858718625b36aa")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 4
+    },
+    bxn: {
+        id: "bxn",
+        title: "BXN NFT Node Network",
+        iconUrl: new URL(require("b4c7f6fd4578ed9a")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 0
+    },
+    smart: {
+        id: "smart",
+        title: "Smart contract operability",
+        iconUrl: new URL(require("d6518df1ddf6bae")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 6
+    },
+    fast: {
+        id: "fast",
+        title: "Fast Transactions",
+        iconUrl: new URL(require("bf6d45839571a625")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 2
+    },
+    tokenising: {
+        id: "tokenising",
+        title: "Tokenising to Blockchain",
+        iconUrl: new URL(require("fba54994d2f82a34")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 7
+    },
+    proof: {
+        id: "proof",
+        title: "Proof-of-Algorithm Staking",
+        iconUrl: new URL(require("619985f4957f22d8")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 5
+    },
+    environmentally: {
+        id: "environmentally",
+        title: "Environmentally friendly",
+        iconUrl: new URL(require("1330f08a08187251")).href,
+        jsonData: (0, _networkJsonDefault.default),
+        index: 1
+    }
+};
+//objeto que contiene iconos
+const SUB_PAGE_ICON = {
+    twiter: new URL(require("4058fc86d8bd9436")).href,
+    telegram: new URL(require("fdf7a65a82d448c9")).href
+};
+const PAGE_ICONS = {
+    network: SUB_PAGE_ICON
+};
+
+},{"./view/home.json":"la34J","./view/ntfs.json":"5egMc","./view/blog.json":"2VY0o","./view/network.json":"eKe8m","3e2c9c878fcbdda3":"8zI4v","758cc138d805a5d3":"2VxXl","a063a5c51aa1c7bc":"4QvhB","ac06a08ca56ce2cf":"oktiP","79447627a3936f3e":"2DOKH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","bb453a4506923ae4":"4w3Ee","9f858718625b36aa":"3lLAA","b4c7f6fd4578ed9a":"h5yTN","d6518df1ddf6bae":"kw3z7","bf6d45839571a625":"lKUxo","fba54994d2f82a34":"fbn85","619985f4957f22d8":"bV3EN","1330f08a08187251":"feagA","4058fc86d8bd9436":"VxqrY","fdf7a65a82d448c9":"51WCd"}],"la34J":[function(require,module,exports) {
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"what is it?","title":"BlackFort Exchange Network","description":"BlackFort is an innovative blockchain platform that has all the attributes needed for a top–tier blockchain. It is a Layer 1 blockchain that is EVM compatible, fast, scalable, secure, and efficient, with POSA and easy access to become a delegator. Transparency is a key priority for BlackFort, ensuring that all parties in a transaction have the information they need to feel secure. This combination of features makes BlackFort an ideal platform for anyone looking to build a blockchain–based solution.","buttons":[{"id":"bxn","index":"0","name":"BXN Smartchain"},{"id":"blackfort","index":"1","name":"BlackFort Explorer"},{"id":"audited","index":"2","name":"Audited Code"},{"id":"posa","index":"3","name":"PoSA & Decentralization"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}]},{"title":"BlackFort Wallet &\\n Exchange APP","imgLink":[{"extLink":"localhost","imgSrc":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand"}],"buttons":[{"id":"home","index":"0","name":"Client side wallet"},{"id":"home","index":"1","name":"Swap Function"},{"id":"home","index":"2","name":"Buy & Sell with FIAT"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}],"custom":""}],"SubPage":[{"id":"bxn","title":"BXN Smartchain","description":"BlackFort Exchange Network is a smartchain technology. this form of Blockchain is a revolutionary way to manage digital assets more securely and efficiently. With a smartchain, users can quickly and easily transfer digital assets between multiple parties in a secure and transparent manner. The smartchain can also be used to facilitate smart contracts, allowing for the automation of complex transactions and smart contract interactions. This technology has the potential to open up new possibilities for the global economy.","preview":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"id":"blackfort","title":"BlackFort Explorer","description":"A Cryptocurrency smartchain explorer is a tool that provides users with access to the blockchain data associated with a given cryptocurrency. It can be used to view the transactions and blocks associated with a particular altcoin, as well as the address balances, network hashrate, and block rewards. The information provided can be used to analyze the activity of a given Blockchain Network.  ","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"audited","title":"Audited Code","description":"Auditing is an important step for any cryptocurrency project, as it ensures that the code is secure, efficient, and compliant with the latest industry standards. By enlisting the services of an experienced and reputable third–party auditor like Certik, a project can ensure that its code is thoroughly reviewed and tested, and that any potential issues are identified and addressed. Additionally, auditing provides an important layer of transparency and trust for a project, which can go a long way in helping to build and maintain a strong and engaged community.","preview":"https://i.imgur.com/E9Rs9kK_d.webp?maxwidth=760&amp;fidelity=grand","extLink":[{"name":"Certik Audit Report","link":"link"}]},{"id":"posa","title":"PoSA & Decentralization","description":"Proof-of-staked-authority is an efficient and secure way to validate a Cryptocurrency smartchain. BXN Blockchain has implemented this system, and is reaping the rewards, with over 60,000 delegators from over 120 countries, it ensures that the network is well-distributed. This allows for a much greater level of decentralization and security than other PoS or PoW methods, as well as increased scalability. BXN Blockchain is clearly at the forefront of the latest technologies, and is an excellent example of the benefits of using PoSA.","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"More Info","link":"link"}]}]}');
+
+},{}],"5egMc":[function(require,module,exports) {
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BlackFort Genesis Knights NFTs","description":"We’re glad to introduce you our Exclusive Genesis NFT collection! Only 500 NFTs will be minted. These limited NFTs provide additional, elite opportunities…. First sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!Second sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!! Third sales Phase of 150 pieces: ENDED SUCCESSFULLY LAST PHASE COMING SOON","imgLink":[{"extLink":"localhost","imgSrc":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand"}],"custom":"ref to element"}]}');
+
+},{}],"2VY0o":[function(require,module,exports) {
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"Blackfort Blog","description":"Welcome to the BlackFort blog section, where you’ll find the latest news, announcements, press releases, and informative articles on a variety of topics related to blockchain, client-side applications, smart contracts, DeFi, cryptocurrency news, and more. Our expert team consistently updates the blog with valuable insights and industry trends to keep you informed and up-to-date on the latest developments in the blockchain and cryptocurrency space.","buttons":[{"id":"blog","index":"0","name":"Blog Posts"},{"id":"blog","index":"1","name":"Announcements"},{"id":"blog","index":"2","name":"Medium"}]}],"SubPage":[{"title":"Blog Posts","description":"BLOGS HERE","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"title":"Announcements","description":"Announcements HERE","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"title":"Medium","description":"Medium HERE","extLink":[{"name":"Certik Audit Report","link":"link"}]}]}');
+
+},{}],"eKe8m":[function(require,module,exports) {
+module.exports = JSON.parse('{"MainPage":[{"title":"XD ","description":""}],"MainSubPages":[{"index":0,"title":"BXN NFT Node Network","description":"BXN is a unique blockchain that introduces NFTs as a key element of its validation process. Users can acquire NFTs from the BlackFort knight collection, where each NFT represents a certain weight in the network’s validation process. By staking the NFT, users can participate in node and validator rewards in BXN. Additionally, opting out of delegation increases the rarity of the remaining NFT nodes, while any delegated NFTs can be transferred at any time to any address on the BXN blockchain network using a client-side wallet that supports BXN. The use of NFTs as keys in the validation process adds decentralization to the network and creates a unique approach to blockchain validation.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":1,"title":"Environmentally friendly","description":"As a Proof-of-Staked-Authority driven blockchain, BXN offers the benefits of staking, including reduced energy consumption and the elimination of the need for expensive and advanced hardware. With a focus on stability, scalability, and energy savings, BXN provides a reliable and efficient platform for decentralization. Furthermore, BXN ensures the safety and security of blockchain attributes, such as immutability and transparency, through its use of advanced cryptographic algorithms and consensus mechanisms. The combination of staking benefits and robust security measures makes BXN a compelling option for those seeking a high-performance and secure blockchain platform.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":2,"title":"Fast Transactions","description":"The speed of a blockchain network is a critical factor for businesses and individuals looking to engage in transactions on a blockchain platform. BXN offers a high transaction per second throughput and low block time, creating an almost immediate transaction execution environment. This speed enables businesses to prosper and provides certainty in transaction confirmations, ensuring a reliable and efficient platform for users. By providing a fast and efficient blockchain network, BXN offers a high-performance platform that can meet the demands of businesses and individuals looking to engage in fast and secure transactions. Overall, the speed of the BXN platform is a critical aspect that contributes to its overall reliability and appeal to users.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":3,"title":"Global scalability","description":"Scalability is a crucial factor in the success of any blockchain project, and BXN has prioritized scalability in its design. The blockchain platform is built to cater to the needs of individuals, researchers, and businesses without compromising on features or the need for complicated updates. The efficiency of validation, block height, and transaction speed are all factors that have been carefully considered in the development of BXN. The platform is designed to provide reliable and efficient services to users, regardless of the scale of their project or transaction volume. With its focus on scalability, BXN offers a high-performance blockchain platform that is suitable for a wide range of use cases.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":4,"title":"Optimised fee mechanism","description":"Fee optimization is an essential aspect of blockchain technology, and BXN has implemented an efficient fee system that ensures network congestion will not lead to a surge in prices as we know it up until today. Fees for transactions are calculated dynamically and denominated in BXN, with different types of transactions attracting different fees. The validation system on the BXN blockchain is highly resource-efficient, ensuring fair and transparent value to users. Additionally, BXN provides an opportunity for anyone to become a delegator in the network, further promoting decentralization and fairness in the blockchain ecosystem.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":5,"title":"Proof-of-Algorithm Staking","description":"BlackFort Network has developed its own staking method called Proof-of-Staked-Authority (PoSA), which is designed to provide a truly decentralized and effortless staking experience. PoSA is a consensus mechanism that allows users to stake their tokens and earn rewards by validating transactions on the network. The staking process is simple and can be done through validator nodes, delegation, or a do-it-yourself (DIY) approach. By staking through PoSA, users can participate in the validation process and contribute to the overall security and efficiency of the network. The use of PoSA also eliminates the need for energy-intensive processes and expensive hardware, making staking accessible to all. Overall, PoSA is a reliable and efficient staking method that allows for greater decentralization and accessibility on the BXN blockchain platform.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":6,"title":"Smart contract operability","description":"BlackFort Network is an easy-to-use blockchain platform that simplifies the creation and management of smart contracts. Its user-friendly interface allows anyone to launch their own tokens and projects on the blockchain without needing specialized knowledge. Additionally, the platform offers migration services for users who want to switch from other EVM blockchains to BXN, providing a seamless transition with all the new features and benefits. By using BXN, users can leverage innovative capabilities and be part of a community that is shaping the future of decentralized finance.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":7,"title":"Tokenising to Blockchain","description":"BXN offers a unique feature that enables users to bring liquidity and assets from other blockchain networks to the BXN platform and receive incentives in BXN tokens. By tokenizing assets and creating NFTs, users can transfer liquidity and other assets to the BlackFort Network Vault at an equivalent value on the BXN chain. This feature provides a simple and efficient way to bring assets and liquidity to the BXN platform and take advantage of the benefits offered by the BXN blockchain network. Overall, BXN’s asset transfer feature enables users to easily move assets and liquidity between blockchain networks, further promoting decentralization and accessibility in the blockchain ecosystem.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"}]}');
+
+},{}],"8zI4v":[function(require,module,exports) {
+module.exports = require("bb1a9c7055e56a05").getBundleURL("8Kyqb") + "home-icon.df8ecc8f.svg" + "?" + Date.now();
+
+},{"bb1a9c7055e56a05":"lgJ39"}],"2VxXl":[function(require,module,exports) {
+module.exports = require("3afece63c869dd1e").getBundleURL("8Kyqb") + "contact-icon.fa692c16.svg" + "?" + Date.now();
+
+},{"3afece63c869dd1e":"lgJ39"}],"4QvhB":[function(require,module,exports) {
+module.exports = require("4705e257bc87ba07").getBundleURL("8Kyqb") + "blog-icon.0b703f83.svg" + "?" + Date.now();
+
+},{"4705e257bc87ba07":"lgJ39"}],"oktiP":[function(require,module,exports) {
+module.exports = require("c4cd186e5b08e87a").getBundleURL("8Kyqb") + "ntfs-icon.92824bc2.svg" + "?" + Date.now();
+
+},{"c4cd186e5b08e87a":"lgJ39"}],"2DOKH":[function(require,module,exports) {
+module.exports = require("24d1003b67101089").getBundleURL("8Kyqb") + "network-icon.fe484848.svg" + "?" + Date.now();
+
+},{"24d1003b67101089":"lgJ39"}],"4w3Ee":[function(require,module,exports) {
+module.exports = require("a67e4b74623bf12e").getBundleURL("8Kyqb") + "global.abe95969.svg" + "?" + Date.now();
+
+},{"a67e4b74623bf12e":"lgJ39"}],"3lLAA":[function(require,module,exports) {
+module.exports = require("f42177b490f647e7").getBundleURL("8Kyqb") + "optimized.f2acfad5.svg" + "?" + Date.now();
+
+},{"f42177b490f647e7":"lgJ39"}],"h5yTN":[function(require,module,exports) {
+module.exports = require("be3f38d49b781ed0").getBundleURL("8Kyqb") + "bxn.f06bbe4a.svg" + "?" + Date.now();
+
+},{"be3f38d49b781ed0":"lgJ39"}],"kw3z7":[function(require,module,exports) {
+module.exports = require("b437c895d8e87012").getBundleURL("8Kyqb") + "smart.8e771f98.svg" + "?" + Date.now();
+
+},{"b437c895d8e87012":"lgJ39"}],"lKUxo":[function(require,module,exports) {
+module.exports = require("56a8142bec19efa").getBundleURL("8Kyqb") + "fast.ccc8416e.svg" + "?" + Date.now();
+
+},{"56a8142bec19efa":"lgJ39"}],"fbn85":[function(require,module,exports) {
+module.exports = require("9c45ae26215970d7").getBundleURL("8Kyqb") + "tokenising.7bcb8e1d.svg" + "?" + Date.now();
+
+},{"9c45ae26215970d7":"lgJ39"}],"bV3EN":[function(require,module,exports) {
+module.exports = require("b028ebae00611ee4").getBundleURL("8Kyqb") + "proof.42def3d0.svg" + "?" + Date.now();
+
+},{"b028ebae00611ee4":"lgJ39"}],"feagA":[function(require,module,exports) {
+module.exports = require("5e686203adc67926").getBundleURL("8Kyqb") + "enviromentally.c63b195e.svg" + "?" + Date.now();
+
+},{"5e686203adc67926":"lgJ39"}],"VxqrY":[function(require,module,exports) {
+module.exports = "https://i.imgur.com/cWG0cLy.png";
+
+},{}],"51WCd":[function(require,module,exports) {
+module.exports = "https://i.imgur.com/s8dEpAA.png";
+
+},{}],"gmEI9":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "CSS3DObject", ()=>CSS3DObject);
+parcelHelpers.export(exports, "CSS3DSprite", ()=>CSS3DSprite);
+parcelHelpers.export(exports, "CSS3DRenderer", ()=>CSS3DRenderer);
+var _three = require("three");
+/**
+ * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
+ */ const _position = new (0, _three.Vector3)();
+const _quaternion = new (0, _three.Quaternion)();
+const _scale = new (0, _three.Vector3)();
+class CSS3DObject extends (0, _three.Object3D) {
+    constructor(element = document.createElement("div")){
+        super();
+        this.isCSS3DObject = true;
+        this.element = element;
+        this.element.style.position = "absolute";
+        this.element.style.pointerEvents = "auto";
+        this.element.style.userSelect = "none";
+        this.element.setAttribute("draggable", false);
+        this.addEventListener("removed", function() {
+            this.traverse(function(object) {
+                if (object.element instanceof Element && object.element.parentNode !== null) object.element.parentNode.removeChild(object.element);
+            });
+        });
+    }
+    copy(source, recursive) {
+        super.copy(source, recursive);
+        this.element = source.element.cloneNode(true);
+        return this;
+    }
+}
+class CSS3DSprite extends CSS3DObject {
+    constructor(element){
+        super(element);
+        this.isCSS3DSprite = true;
+        this.rotation2D = 0;
+    }
+    copy(source, recursive) {
+        super.copy(source, recursive);
+        this.rotation2D = source.rotation2D;
+        return this;
+    }
+}
+//
+const _matrix = new (0, _three.Matrix4)();
+const _matrix2 = new (0, _three.Matrix4)();
+class CSS3DRenderer {
+    constructor(parameters = {}){
+        const _this = this;
+        let _width, _height;
+        let _widthHalf, _heightHalf;
+        const cache = {
+            camera: {
+                fov: 0,
+                style: ""
+            },
+            objects: new WeakMap()
+        };
+        const domElement = parameters.element !== undefined ? parameters.element : document.createElement("div");
+        domElement.style.overflow = "hidden";
+        this.domElement = domElement;
+        const viewElement = document.createElement("div");
+        viewElement.style.transformOrigin = "0 0";
+        viewElement.style.pointerEvents = "none";
+        domElement.appendChild(viewElement);
+        const cameraElement = document.createElement("div");
+        cameraElement.style.transformStyle = "preserve-3d";
+        viewElement.appendChild(cameraElement);
+        this.getSize = function() {
+            return {
+                width: _width,
+                height: _height
+            };
+        };
+        this.render = function(scene, camera) {
+            const fov = camera.projectionMatrix.elements[5] * _heightHalf;
+            if (cache.camera.fov !== fov) {
+                viewElement.style.perspective = camera.isPerspectiveCamera ? fov + "px" : "";
+                cache.camera.fov = fov;
+            }
+            if (camera.view && camera.view.enabled) {
+                // view offset
+                viewElement.style.transform = `translate( ${-camera.view.offsetX * (_width / camera.view.width)}px, ${-camera.view.offsetY * (_height / camera.view.height)}px )`;
+                // view fullWidth and fullHeight, view width and height
+                viewElement.style.transform += `scale( ${camera.view.fullWidth / camera.view.width}, ${camera.view.fullHeight / camera.view.height} )`;
+            } else viewElement.style.transform = "";
+            if (scene.matrixWorldAutoUpdate === true) scene.updateMatrixWorld();
+            if (camera.parent === null && camera.matrixWorldAutoUpdate === true) camera.updateMatrixWorld();
+            let tx, ty;
+            if (camera.isOrthographicCamera) {
+                tx = -(camera.right + camera.left) / 2;
+                ty = (camera.top + camera.bottom) / 2;
+            }
+            const scaleByViewOffset = camera.view && camera.view.enabled ? camera.view.height / camera.view.fullHeight : 1;
+            const cameraCSSMatrix = camera.isOrthographicCamera ? `scale( ${scaleByViewOffset} )` + "scale(" + fov + ")" + "translate(" + epsilon(tx) + "px," + epsilon(ty) + "px)" + getCameraCSSMatrix(camera.matrixWorldInverse) : `scale( ${scaleByViewOffset} )` + "translateZ(" + fov + "px)" + getCameraCSSMatrix(camera.matrixWorldInverse);
+            const style = cameraCSSMatrix + "translate(" + _widthHalf + "px," + _heightHalf + "px)";
+            if (cache.camera.style !== style) {
+                cameraElement.style.transform = style;
+                cache.camera.style = style;
+            }
+            renderObject(scene, scene, camera, cameraCSSMatrix);
+        };
+        this.setSize = function(width, height) {
+            _width = width;
+            _height = height;
+            _widthHalf = _width / 2;
+            _heightHalf = _height / 2;
+            domElement.style.width = width + "px";
+            domElement.style.height = height + "px";
+            viewElement.style.width = width + "px";
+            viewElement.style.height = height + "px";
+            cameraElement.style.width = width + "px";
+            cameraElement.style.height = height + "px";
+        };
+        function epsilon(value) {
+            return Math.abs(value) < 1e-10 ? 0 : value;
+        }
+        function getCameraCSSMatrix(matrix) {
+            const elements = matrix.elements;
+            return "matrix3d(" + epsilon(elements[0]) + "," + epsilon(-elements[1]) + "," + epsilon(elements[2]) + "," + epsilon(elements[3]) + "," + epsilon(elements[4]) + "," + epsilon(-elements[5]) + "," + epsilon(elements[6]) + "," + epsilon(elements[7]) + "," + epsilon(elements[8]) + "," + epsilon(-elements[9]) + "," + epsilon(elements[10]) + "," + epsilon(elements[11]) + "," + epsilon(elements[12]) + "," + epsilon(-elements[13]) + "," + epsilon(elements[14]) + "," + epsilon(elements[15]) + ")";
+        }
+        function getObjectCSSMatrix(matrix) {
+            const elements = matrix.elements;
+            const matrix3d = "matrix3d(" + epsilon(elements[0]) + "," + epsilon(elements[1]) + "," + epsilon(elements[2]) + "," + epsilon(elements[3]) + "," + epsilon(-elements[4]) + "," + epsilon(-elements[5]) + "," + epsilon(-elements[6]) + "," + epsilon(-elements[7]) + "," + epsilon(elements[8]) + "," + epsilon(elements[9]) + "," + epsilon(elements[10]) + "," + epsilon(elements[11]) + "," + epsilon(elements[12]) + "," + epsilon(elements[13]) + "," + epsilon(elements[14]) + "," + epsilon(elements[15]) + ")";
+            return "translate(-50%,-50%)" + matrix3d;
+        }
+        function renderObject(object, scene, camera, cameraCSSMatrix) {
+            if (object.isCSS3DObject) {
+                const visible = object.visible === true && object.layers.test(camera.layers) === true;
+                object.element.style.display = visible === true ? "" : "none";
+                if (visible === true) {
+                    object.onBeforeRender(_this, scene, camera);
+                    let style;
+                    if (object.isCSS3DSprite) {
+                        // http://swiftcoder.wordpress.com/2008/11/25/constructing-a-billboard-matrix/
+                        _matrix.copy(camera.matrixWorldInverse);
+                        _matrix.transpose();
+                        if (object.rotation2D !== 0) _matrix.multiply(_matrix2.makeRotationZ(object.rotation2D));
+                        object.matrixWorld.decompose(_position, _quaternion, _scale);
+                        _matrix.setPosition(_position);
+                        _matrix.scale(_scale);
+                        _matrix.elements[3] = 0;
+                        _matrix.elements[7] = 0;
+                        _matrix.elements[11] = 0;
+                        _matrix.elements[15] = 1;
+                        style = getObjectCSSMatrix(_matrix);
+                    } else style = getObjectCSSMatrix(object.matrixWorld);
+                    const element = object.element;
+                    const cachedObject = cache.objects.get(object);
+                    if (cachedObject === undefined || cachedObject.style !== style) {
+                        element.style.transform = style;
+                        const objectData = {
+                            style: style
+                        };
+                        cache.objects.set(object, objectData);
+                    }
+                    if (element.parentNode !== cameraElement) cameraElement.appendChild(element);
+                    object.onAfterRender(_this, scene, camera);
+                }
+            }
+            for(let i = 0, l = object.children.length; i < l; i++)renderObject(object.children[i], scene, camera, cameraCSSMatrix);
+        }
+    }
+}
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"97wAT":[function(require,module,exports) {
 module.exports = require("1065846c8c783c61").getBundleURL("8Kyqb") + "final.23f53255.glb" + "?" + Date.now();
 
 },{"1065846c8c783c61":"lgJ39"}]},["gLv3T","jYf5p"], "jYf5p", "parcelRequire94c2")
