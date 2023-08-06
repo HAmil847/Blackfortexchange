@@ -118,13 +118,14 @@ div.active-section {
 
 .dot-button {
   background-color: unset;
-  filter: brightness(3) invert();
+  color: #fff;
+  filter: brightness(3);
   cursor: pointer;
   transition: transform .3s;
   transition: opacity .3;
   -webkit-text-decoration: unset;
   text-decoration: unset;
-  border: 2px solid #000;
+  border: 2px solid #fff;
   border-radius: 2rem;
   width: -moz-fit-content;
   width: fit-content;
