@@ -201,7 +201,6 @@ div.active-section {
 }
 
 .img-links-container .img-link {
-  filter: invert();
   height: 30px;
   margin: 0 5px;
   text-decoration: none;

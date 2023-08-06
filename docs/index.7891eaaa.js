@@ -643,7 +643,7 @@ NTW_MAIN_DOT.setDomItemPosition(50, 140, WEB);
 MAIN_DOTS.render();
 NTW_MAIN_DOT.render();
 // Set up post-processing
-//WEB.setPostProcessing(PostProcessing.bloomPass);
+WEB.setPostProcessing((0, _postProcessingDefault.default).bloomPass);
 // Set the scene's animation loop
 //exportar camara 
 WEB.renderer.setAnimationLoop(RenderExperience);
