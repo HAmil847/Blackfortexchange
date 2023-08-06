@@ -36876,10 +36876,12 @@ function ntwHandleClick(event) {
         //sonido de ambiente
         (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).background, true);
         //esconder la intro
-        (0, _textAnimJs.HideTextAnimation)(".animated-item", "easeInExpo", 1200, function(completed) {
+        (0, _textAnimJs.HideTextAnimation)(".animated-item", "easeInExpo", 1200, function() {
             INTRO_REF.style.display = "none";
             //mostrar los dots
             (0, _main.NTW_MAIN_DOT).setDotVisibility(true);
+            (0, _dotState.STATE).actualMenu = "network";
+            console.log((0, _dotState.STATE).actualMenu, "<<<");
         });
     }
 }
@@ -36959,6 +36961,8 @@ function startScene(event) {
         INTRO_REF.style.display = "none";
         //mostrar los dots
         (0, _main.MAIN_DOTS).setDotVisibility(true);
+        (0, _dotState.STATE).actualMenu = "home";
+        console.log((0, _dotState.STATE).actualMenu, "<<<");
     });
 }
 function backButton(event) {
@@ -36967,8 +36971,41 @@ function backButton(event) {
     //regresar al nodo anterior
     const actualPage = (0, _dotState.STATE).actualActive;
     console.log(actualPage);
-    //activa la pagina anterior
-    actualPage.toggleSubPage(false); //desactivar el hijo[SUBPAGE]
+    if ((0, _dotState.STATE).nodeCount <= 0) {
+        console.log("VOLVER AL INICIO!!");
+        //esconder la seccion actual
+        actualPage.toggleSectionVisibility(false);
+        //esconder la navbar
+        NAVIGATOR_REF.classList.remove("active");
+        NAVIGATOR_REF.style.zIndex = "0";
+        const desenfoque = document.getElementById("blur");
+        desenfoque.classList.remove("active-blur");
+        (0, _cameraHandlerDefault.default).moveCameraTo((0, _cameraHandlerDefault.default).camerastartFocus, (0, _dotState.STATE).cameraStart, ()=>{
+            //mostrar este item
+            console.log("IR A:", (0, _dotState.STATE).cameraStart, (0, _cameraHandlerDefault.default).camerastartFocus);
+            switch((0, _dotState.STATE).actualMenu){
+                case "home":
+                    console.log("[HOME] MAIN MENU ACTIVE");
+                    //aparecer los iconos otra vez
+                    (0, _main.MAIN_DOTS).setDotVisibility(true);
+                    break;
+                case "network":
+                    console.log("[NETWORK] MAIN MENU ACTIVE");
+                    (0, _main.NTW_MAIN_DOT).setDotVisibility(true);
+                    break;
+                default:
+                    console.log("CASO NO CONTROLADO");
+                    break;
+            }
+            console.log("STATE ACTUALZADO CON>>", (0, _dotState.STATE).actualActive.id);
+        });
+    } else {
+        //actualizar el indice
+        (0, _dotState.STATE).nodeCount--;
+        console.log((0, _dotState.STATE).nodeCount);
+        //activa la pagina anterior
+        actualPage.toggleSubPage(false); //desactivar el hijo[SUBPAGE]
+    }
 }
 function backButtonHover(event) {
     (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
@@ -37072,7 +37109,7 @@ FOOTER_REF.innerHTML = `
   </div>
 `;
 // Animar la primera escena
-function ShowTextAnimation(target) {
+function ShowTextAnimation(target, time) {
     (0, _animejsDefault.default).timeline({
         loop: false
     }).add({
@@ -37083,7 +37120,7 @@ function ShowTextAnimation(target) {
         ],
         opacity: 1,
         easing: "easeOutExpo",
-        duration: 1500,
+        duration: time,
         delay: (0, _animejsDefault.default).stagger(30)
     });
 }
@@ -38435,10 +38472,13 @@ parcelHelpers.defineInteropFlag(exports);
 var _three = require("three");
 var _tweenJs = require("@tweenjs/tween.js");
 var _tweenJsDefault = parcelHelpers.interopDefault(_tweenJs);
+var _dotState = require("../scene/dom/DotState");
 class CameraHandler {
     constructor(){
         this.camera = null;
         this.cameraGroup = null;
+        this.cameraStart = null;
+        this.camerastartFocus = null;
         this.targetView = new (0, _three.Vector3)();
         this.targetPosition = new (0, _three.Vector3)();
         this.lastTargetView = null;
@@ -38451,6 +38491,11 @@ class CameraHandler {
     setCamera(component) {
         this.camera = component.camera;
         this.cameraGroup = component.cameraGroup;
+        //CONFIGURAR POSICION INICIAL
+        const startP = this.cameraGroup.position;
+        (0, _dotState.STATE).cameraStart.set(startP.x, startP.y, startP.z);
+        console.log((0, _dotState.STATE).cameraStart, "<<<<<");
+        this.camerastartFocus = new (0, _three.Vector3)();
         // Setup
         this.targetView = new (0, _three.Vector3)();
         component.camera.getWorldDirection(this.targetView);
@@ -38507,7 +38552,7 @@ class CameraHandler {
 const cameraHandler = new CameraHandler();
 exports.default = cameraHandler;
 
-},{"three":"ktPTu","@tweenjs/tween.js":"7DfAI","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7DfAI":[function(require,module,exports) {
+},{"three":"ktPTu","@tweenjs/tween.js":"7DfAI","../scene/dom/DotState":"4rB7c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7DfAI":[function(require,module,exports) {
 /**
  * The Ease class provides a collection of easing functions for use with tween.js.
  */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -39223,7 +39268,21 @@ var exports = {
     update: update
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7K3aZ":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4rB7c":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "STATE", ()=>STATE);
+var _three = require("three");
+let STATE = {
+    actualMenu: "",
+    actualActive: null,
+    lastActive: null,
+    nodeCount: 0,
+    cameraIsMoving: false,
+    cameraStart: new (0, _three.Vector3)()
+};
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7K3aZ":[function(require,module,exports) {
 // Definir el objeto literal de sonidos
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -39259,19 +39318,7 @@ module.exports = require("2a7058d48cbbe70").getBundleURL("8Kyqb") + "hover.346c2
 },{"2a7058d48cbbe70":"lgJ39"}],"47X6V":[function(require,module,exports) {
 module.exports = require("db8993148a34c6e7").getBundleURL("8Kyqb") + "background.e29eed9b.ogg" + "?" + Date.now();
 
-},{"db8993148a34c6e7":"lgJ39"}],"4rB7c":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "STATE", ()=>STATE);
-var _three = require("three");
-let STATE = {
-    actualActive: null,
-    lastActive: null,
-    nodeCount: 0,
-    cameraIsMoving: false
-};
-
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kST2h":[function(require,module,exports) {
+},{"db8993148a34c6e7":"lgJ39"}],"kST2h":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _three = require("three");
@@ -39952,8 +39999,8 @@ class DotManager {
         console.log("[DOTS CARGADOS!!]\n", this.dotItem);
         console.log(this, "<<OBJETO LISTO");
         //aux variables
-        this.__relativeFront = new (0, _three.Vector3);
-        this.__relativePos = new (0, _three.Vector3);
+        this.__relativeFront = new (0, _three.Vector3)();
+        this.__relativePos = new (0, _three.Vector3)();
     }
     //cargar los dots del conjunto dado
     loadDotComponent(dotData) {
@@ -40014,9 +40061,9 @@ class DotManager {
         });
     }
     //los dots se apagan o encienden
-    setDotVisibility(isActive) {
+    setDotVisibility(isActive, time) {
         this.dotItem.forEach((item)=>{
-            item.toggleIconVisibility(isActive);
+            item.toggleIconVisibility(isActive, time);
         });
     }
     //renderizar los dots generados
@@ -40137,12 +40184,16 @@ class DotItem {
         }
         if (jsonData.buttons) {
             const handleClick = (event)=>{
+                console.log("CARGAR SUB PAGE");
                 if (event.target.classList.contains("dot-button")) {
                     //reproducir sonido
                     (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
                     console.log("A hecho click!!\n CARGANDO SUBPAGE");
                     console.log(event.target.id);
+                    //actualizar el indice
                     this.loadSubPage(event.target.id);
+                    (0, _dotState.STATE).nodeCount++;
+                    console.log((0, _dotState.STATE).nodeCount);
                 }
             };
             const handleHover = (event)=>{
@@ -40167,7 +40218,12 @@ class DotItem {
                 button.id = element1.id;
                 button.classList.add("dot-button");
                 button.classList.add("round");
+                //icono
+                const iconBtn = document.createElement("img");
+                iconBtn.src = (0, _dotTemplate.PAGE_ICONS).main.iconBtn;
+                console.log("BOTON AGREGADO");
                 //setup element
+                button.appendChild(iconBtn);
                 btnContainer.appendChild(btnSpan);
                 btnContainer.appendChild(button);
                 //agregar n botones
@@ -40189,7 +40245,7 @@ class DotItem {
             jsonData.extLink.forEach((element1)=>{
                 const extButtonTemplate = `
       <a href="${element1.link}" class="dot-link">
-      <button class="dot-button">${element1.name}</button>
+      <button class="dot-button"><p>${element1.name}</p></button>
       </a>
       `;
                 //agregar n botones
@@ -40226,50 +40282,7 @@ class DotItem {
         //devolver el objeto
         return tempContainer;
     }
-    //crear
-    createElementsFromJSON(jsonData) {
-        const tempContainer = document.createElement("div");
-        for(let key in jsonData)//si son hijos
-        // La propiedad es un array con hijos
-        if (Array.isArray(jsonData[key])) {
-            //si son botones
-            if (key === "buttons") {
-                //contenedor
-                //botones de subpaginas
-                const buttonsContainer = document.createElement("div");
-                buttonsContainer.id = "subPageLinks";
-                buttonsContainer.classList.add("sub-page-links");
-                buttonsContainer.classList.add("list-container");
-                const handleClick = (event)=>{
-                    console.log(event.target, "externo click");
-                    if (event.target.classList.contains("btn-sub-page-container")) console.log("A hecho click!!");
-                };
-                //generar n cantidad de botones
-                jsonData[key].forEach((element1)=>{
-                    //contenedor principal
-                    const btnContainer = document.createElement("div");
-                    btnContainer.classList.add("btn-sub-page-container");
-                    //texto o span
-                    const btnSpan = document.createElement("span");
-                    btnSpan.innerHTML = element1.name;
-                    //boton
-                    const button = document.createElement("div");
-                    button.classList.add("dot-button");
-                    button.classList.add("round");
-                    //setup element
-                    btnContainer.appendChild(btnSpan);
-                    btnContainer.appendChild(button);
-                    //agregar n botones
-                    buttonsContainer.appendChild(btnContainer);
-                });
-                buttonsContainer.addEventListener("click", handleClick);
-                tempContainer.appendChild(buttonsContainer);
-            }
-            console.log("<<HIJOS>> en ", this.id);
-            console.log("ITEM: >>", key, " :", jsonData[key]);
-        } else console.log("ITEM: >>", key, " :", jsonData[key], this.id);
-        return tempContainer;
-    }
+    //crear ICOONOS PARA LA BARRA DE NAVEGACION
     setupNavigationIcon() {
         const handleClick = (event)=>{
             //reproducir sonido
@@ -40296,7 +40309,7 @@ class DotItem {
                 //actualizar el estado de la camara
                 (0, _dotState.STATE).cameraIsMoving = true;
                 //mover la camara hacia
-                (0, _cameraHandlerDefault.default).moveCameraTo(this.position, this.focusPosition, ()=>{
+                if (paginaSiguiente.id !== "network") (0, _cameraHandlerDefault.default).moveCameraTo(this.position, this.focusPosition, ()=>{
                     //si la animacion termina, actualizar camara
                     (0, _dotState.STATE).cameraIsMoving = false;
                     //ocultar PAGINA ANTERIOR
@@ -40310,6 +40323,31 @@ class DotItem {
                     this.toggleSectionVisibility(true);
                     console.log("STATE ACTUALZADO CON>>", (0, _dotState.STATE).actualActive.id);
                 });
+                else {
+                    console.log("IR A NETWORK!!");
+                    //ocultar la pagina actual
+                    this.toggleSectionVisibility(false);
+                    //esconder la NAVIGATION MENU
+                    this.navigatorMenuRef.classList.remove("active");
+                    this.navigatorMenuRef.style.zIndex = "0";
+                    const desenfoque = document.getElementById("blur");
+                    desenfoque.classList.remove("active-blur");
+                    (0, _cameraHandlerDefault.default).moveCameraTo((0, _cameraHandlerDefault.default).camerastartFocus, (0, _dotState.STATE).cameraStart, ()=>{
+                        //mostrar este item
+                        console.log("IR A:", (0, _dotState.STATE).cameraStart, (0, _cameraHandlerDefault.default).camerastartFocus);
+                        //si la animacion termina, actualizar camara
+                        (0, _dotState.STATE).cameraIsMoving = false;
+                        //ocultar PAGINA ANTERIOR
+                        paginaAnterior.mainSection.classList.remove("hidden-section");
+                        paginaAnterior.mainSection.classList.remove("active-section");
+                        //aparecer los iconos otra vez
+                        //mostrar este item
+                        this.toggleSectionVisibility(false);
+                        //mostrar los dots
+                        (0, _main.NTW_MAIN_DOT).setDotVisibility(true);
+                        console.log("STATE ACTUALZADO CON>>", (0, _dotState.STATE).actualActive.id);
+                    });
+                }
             } else {
                 console.log("MISMA PAGINA< NO VIAJAR!!");
                 console.log(paginaAnterior.id, "<<>>", paginaSiguiente.id);
@@ -40348,6 +40386,8 @@ class DotItem {
         //contenedor principal
         const content = document.createElement("div");
         content.classList.add("content");
+        //estilos perzonalizados para cada section
+        content.classList.add(this.id + "-section");
         //agregar sub clase para paginas de network
         if (!haveIndex) content.classList.add("network-sub-page-content");
         //cargar contenido
@@ -40420,28 +40460,28 @@ class DotItem {
         container.appendChild(slide);
     }
     //activar o desactivar icono
-    toggleIconVisibility(state) {
+    toggleIconVisibility(state, time = 1200) {
         if (state) {
             //al agregar la clase, animar la aparicion
             this.iconElement.classList.add("active-section");
-            (0, _textAnim.ShowTextAnimation)(".active-section");
+            (0, _textAnim.ShowTextAnimation)(".active-section", time);
         } else //al eliminar la clase animar el icono
-        (0, _textAnim.HideTextAnimation)(".active-section", "easeInSine", 1200, ()=>{
+        (0, _textAnim.HideTextAnimation)(".active-section", "easeInSine", time, ()=>{
             setTimeout(()=>{
                 this.iconElement.classList.remove("active-section");
-            }, 800);
+            }, time - 400);
         });
     }
-    toggleSectionVisibility(isactive) {
+    toggleSectionVisibility(isactive, time = 1200) {
         if (isactive) {
             //al agregar la clase, animar la aparicion
             this.mainSection.classList.add("active-section");
             (0, _textAnim.ShowTextAnimation)(".active-section");
         } else //al eliminar la clase animar el icono
-        (0, _textAnim.HideTextAnimation)(".active-section", "easeInSine", 1200, ()=>{
+        (0, _textAnim.HideTextAnimation)(".active-section", "easeInSine", time, ()=>{
             setTimeout(()=>{
                 this.mainSection.classList.remove("active-section");
-            }, 800);
+            }, time - 400);
         });
     }
     setPosition(x, y, z) {
@@ -40471,9 +40511,13 @@ class DotItem {
                 (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
                 console.log("ACTIVAR SECTION>>: ", this.id);
                 if (this.id === "network") {
-                    (0, _main.NTW_MAIN_DOT).setDotVisibility(true);
-                    (0, _main.MAIN_DOTS).setDotVisibility(false);
-                    console.log("NETWORK ESTA ACTIVO");
+                    //desactivar la pagina actual
+                    (0, _main.MAIN_DOTS).setDotVisibility(false, 100);
+                    //activar la nueva
+                    setTimeout(()=>{
+                        (0, _main.NTW_MAIN_DOT).setDotVisibility(true, 400);
+                        console.log("NETWORK ESTA ACTIVO");
+                    }, 800);
                     return;
                 }
                 //esconder el dot actual
@@ -40539,7 +40583,7 @@ class DotItem {
     }
 }
 
-},{"animejs":"jokr5","three":"ktPTu","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","../../effects/SoundEffects":"7K3aZ","../../Handlers/CameraHandler":"bJrvG","../../Handlers/MouseHandler":"7ESAf","../../../js/text-anim":"jjSxz","../../Main":"jYf5p","./DotState":"4rB7c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./DotTemplate":"6OcLf"}],"6OcLf":[function(require,module,exports) {
+},{"animejs":"jokr5","three":"ktPTu","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi","../../effects/SoundEffects":"7K3aZ","../../Handlers/CameraHandler":"bJrvG","../../Handlers/MouseHandler":"7ESAf","../../../js/text-anim":"jjSxz","../../Main":"jYf5p","./DotState":"4rB7c","./DotTemplate":"6OcLf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6OcLf":[function(require,module,exports) {
 // Importar los archivos JSON correspondientes
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -40646,21 +40690,25 @@ const NTW_DOT = {
 };
 //objeto que contiene iconos
 const SUB_PAGE_ICON = {
-    twiter: new URL(require("4058fc86d8bd9436")).href,
-    telegram: new URL(require("fdf7a65a82d448c9")).href
+    twiter: new URL(require("e6eacc998e753464")).href,
+    telegram: new URL(require("5da705c59daee8e")).href
+};
+const MAIN_PAGE_ICON = {
+    iconBtn: new URL(require("d528d76de6dbf4c7")).href
 };
 const PAGE_ICONS = {
-    network: SUB_PAGE_ICON
+    network: SUB_PAGE_ICON,
+    main: MAIN_PAGE_ICON
 };
 
-},{"./view/home.json":"la34J","./view/ntfs.json":"5egMc","./view/blog.json":"2VY0o","./view/network.json":"eKe8m","3e2c9c878fcbdda3":"8zI4v","758cc138d805a5d3":"2VxXl","a063a5c51aa1c7bc":"4QvhB","ac06a08ca56ce2cf":"oktiP","79447627a3936f3e":"2DOKH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","bb453a4506923ae4":"4w3Ee","9f858718625b36aa":"3lLAA","b4c7f6fd4578ed9a":"h5yTN","d6518df1ddf6bae":"kw3z7","bf6d45839571a625":"lKUxo","fba54994d2f82a34":"fbn85","619985f4957f22d8":"bV3EN","1330f08a08187251":"feagA","4058fc86d8bd9436":"VxqrY","fdf7a65a82d448c9":"51WCd"}],"la34J":[function(require,module,exports) {
+},{"./view/home.json":"la34J","./view/ntfs.json":"5egMc","./view/blog.json":"2VY0o","./view/network.json":"eKe8m","3e2c9c878fcbdda3":"8zI4v","758cc138d805a5d3":"2VxXl","a063a5c51aa1c7bc":"4QvhB","ac06a08ca56ce2cf":"oktiP","79447627a3936f3e":"2DOKH","bb453a4506923ae4":"4w3Ee","9f858718625b36aa":"3lLAA","b4c7f6fd4578ed9a":"h5yTN","d6518df1ddf6bae":"kw3z7","bf6d45839571a625":"lKUxo","fba54994d2f82a34":"fbn85","619985f4957f22d8":"bV3EN","1330f08a08187251":"feagA","e6eacc998e753464":"gpP3d","5da705c59daee8e":"W2RoT","d528d76de6dbf4c7":"lSDFi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"la34J":[function(require,module,exports) {
 module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"what is it?","title":"BlackFort Exchange Network","description":"BlackFort is an innovative blockchain platform that has all the attributes needed for a top–tier blockchain. It is a Layer 1 blockchain that is EVM compatible, fast, scalable, secure, and efficient, with POSA and easy access to become a delegator. Transparency is a key priority for BlackFort, ensuring that all parties in a transaction have the information they need to feel secure. This combination of features makes BlackFort an ideal platform for anyone looking to build a blockchain–based solution.","buttons":[{"id":"bxn","index":"0","name":"BXN Smartchain"},{"id":"blackfort","index":"1","name":"BlackFort Explorer"},{"id":"audited","index":"2","name":"Audited Code"},{"id":"posa","index":"3","name":"PoSA & Decentralization"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}]},{"title":"BlackFort Wallet &\\n Exchange APP","imgLink":[{"extLink":"localhost","imgSrc":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand"}],"buttons":[{"id":"home","index":"0","name":"Client side wallet"},{"id":"home","index":"1","name":"Swap Function"},{"id":"home","index":"2","name":"Buy & Sell with FIAT"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}],"custom":""}],"SubPage":[{"id":"bxn","title":"BXN Smartchain","description":"BlackFort Exchange Network is a smartchain technology. this form of Blockchain is a revolutionary way to manage digital assets more securely and efficiently. With a smartchain, users can quickly and easily transfer digital assets between multiple parties in a secure and transparent manner. The smartchain can also be used to facilitate smart contracts, allowing for the automation of complex transactions and smart contract interactions. This technology has the potential to open up new possibilities for the global economy.","preview":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"id":"blackfort","title":"BlackFort Explorer","description":"A Cryptocurrency smartchain explorer is a tool that provides users with access to the blockchain data associated with a given cryptocurrency. It can be used to view the transactions and blocks associated with a particular altcoin, as well as the address balances, network hashrate, and block rewards. The information provided can be used to analyze the activity of a given Blockchain Network.  ","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"audited","title":"Audited Code","description":"Auditing is an important step for any cryptocurrency project, as it ensures that the code is secure, efficient, and compliant with the latest industry standards. By enlisting the services of an experienced and reputable third–party auditor like Certik, a project can ensure that its code is thoroughly reviewed and tested, and that any potential issues are identified and addressed. Additionally, auditing provides an important layer of transparency and trust for a project, which can go a long way in helping to build and maintain a strong and engaged community.","preview":"https://i.imgur.com/E9Rs9kK_d.webp?maxwidth=760&amp;fidelity=grand","extLink":[{"name":"Certik Audit Report","link":"link"}]},{"id":"posa","title":"PoSA & Decentralization","description":"Proof-of-staked-authority is an efficient and secure way to validate a Cryptocurrency smartchain. BXN Blockchain has implemented this system, and is reaping the rewards, with over 60,000 delegators from over 120 countries, it ensures that the network is well-distributed. This allows for a much greater level of decentralization and security than other PoS or PoW methods, as well as increased scalability. BXN Blockchain is clearly at the forefront of the latest technologies, and is an excellent example of the benefits of using PoSA.","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"More Info","link":"link"}]}]}');
 
 },{}],"5egMc":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BlackFort Genesis Knights NFTs","description":"We’re glad to introduce you our Exclusive Genesis NFT collection! Only 500 NFTs will be minted. These limited NFTs provide additional, elite opportunities…. First sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!Second sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!! Third sales Phase of 150 pieces: ENDED SUCCESSFULLY LAST PHASE COMING SOON","imgLink":[{"extLink":"localhost","imgSrc":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand"}],"custom":"ref to element"}]}');
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BlackFort Genesis Knights NFTs","description":"We’re glad to introduce you our Exclusive Genesis NFT collection! Only 500 NFTs will be minted.<br> These limited NFTs provide additional, elite opportunities….<br> First sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br>Second sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br> Third sales Phase of 150 pieces: ENDED SUCCESSFULLY <br>LAST PHASE COMING SOON","preview":"https://i.imgur.com/6SlRZpZ.png","extLink":[{"name":"Certik Audit Report","link":"link"}],"custom":"ref to element"}]}');
 
 },{}],"2VY0o":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"Blackfort Blog","description":"Welcome to the BlackFort blog section, where you’ll find the latest news, announcements, press releases, and informative articles on a variety of topics related to blockchain, client-side applications, smart contracts, DeFi, cryptocurrency news, and more. Our expert team consistently updates the blog with valuable insights and industry trends to keep you informed and up-to-date on the latest developments in the blockchain and cryptocurrency space.","buttons":[{"id":"blog","index":"0","name":"Blog Posts"},{"id":"blog","index":"1","name":"Announcements"},{"id":"blog","index":"2","name":"Medium"}]}],"SubPage":[{"title":"Blog Posts","description":"BLOGS HERE","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"title":"Announcements","description":"Announcements HERE","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"title":"Medium","description":"Medium HERE","extLink":[{"name":"Certik Audit Report","link":"link"}]}]}');
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"Blackfort Blog","description":"Welcome to the BlackFort blog section, where you’ll find the latest news, announcements, press releases, and informative articles on a variety of topics related to blockchain, client-side applications, smart contracts, DeFi, cryptocurrency news, and more. Our expert team consistently updates the blog with valuable insights and industry trends to keep you informed and up-to-date on the latest developments in the blockchain and cryptocurrency space.","buttons":[{"id":"post","index":"0","name":"Blog Posts"},{"id":"announcements","index":"1","name":"Announcements"},{"id":"medium","index":"2","name":"Medium"}]}],"SubPage":[{"id":"post","title":"Blog Posts","description":"BLOGS HERE","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"id":"announcements","title":"Announcements","description":"Announcements HERE","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"medium","title":"Medium","description":"Medium HERE","extLink":[{"name":"Certik Audit Report","link":"link"}]}]}');
 
 },{}],"eKe8m":[function(require,module,exports) {
 module.exports = JSON.parse('{"MainPage":[{"title":"XD ","description":""}],"MainSubPages":[{"index":0,"title":"BXN NFT Node Network","description":"BXN is a unique blockchain that introduces NFTs as a key element of its validation process. Users can acquire NFTs from the BlackFort knight collection, where each NFT represents a certain weight in the network’s validation process. By staking the NFT, users can participate in node and validator rewards in BXN. Additionally, opting out of delegation increases the rarity of the remaining NFT nodes, while any delegated NFTs can be transferred at any time to any address on the BXN blockchain network using a client-side wallet that supports BXN. The use of NFTs as keys in the validation process adds decentralization to the network and creates a unique approach to blockchain validation.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":1,"title":"Environmentally friendly","description":"As a Proof-of-Staked-Authority driven blockchain, BXN offers the benefits of staking, including reduced energy consumption and the elimination of the need for expensive and advanced hardware. With a focus on stability, scalability, and energy savings, BXN provides a reliable and efficient platform for decentralization. Furthermore, BXN ensures the safety and security of blockchain attributes, such as immutability and transparency, through its use of advanced cryptographic algorithms and consensus mechanisms. The combination of staking benefits and robust security measures makes BXN a compelling option for those seeking a high-performance and secure blockchain platform.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":2,"title":"Fast Transactions","description":"The speed of a blockchain network is a critical factor for businesses and individuals looking to engage in transactions on a blockchain platform. BXN offers a high transaction per second throughput and low block time, creating an almost immediate transaction execution environment. This speed enables businesses to prosper and provides certainty in transaction confirmations, ensuring a reliable and efficient platform for users. By providing a fast and efficient blockchain network, BXN offers a high-performance platform that can meet the demands of businesses and individuals looking to engage in fast and secure transactions. Overall, the speed of the BXN platform is a critical aspect that contributes to its overall reliability and appeal to users.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":3,"title":"Global scalability","description":"Scalability is a crucial factor in the success of any blockchain project, and BXN has prioritized scalability in its design. The blockchain platform is built to cater to the needs of individuals, researchers, and businesses without compromising on features or the need for complicated updates. The efficiency of validation, block height, and transaction speed are all factors that have been carefully considered in the development of BXN. The platform is designed to provide reliable and efficient services to users, regardless of the scale of their project or transaction volume. With its focus on scalability, BXN offers a high-performance blockchain platform that is suitable for a wide range of use cases.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":4,"title":"Optimised fee mechanism","description":"Fee optimization is an essential aspect of blockchain technology, and BXN has implemented an efficient fee system that ensures network congestion will not lead to a surge in prices as we know it up until today. Fees for transactions are calculated dynamically and denominated in BXN, with different types of transactions attracting different fees. The validation system on the BXN blockchain is highly resource-efficient, ensuring fair and transparent value to users. Additionally, BXN provides an opportunity for anyone to become a delegator in the network, further promoting decentralization and fairness in the blockchain ecosystem.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":5,"title":"Proof-of-Algorithm Staking","description":"BlackFort Network has developed its own staking method called Proof-of-Staked-Authority (PoSA), which is designed to provide a truly decentralized and effortless staking experience. PoSA is a consensus mechanism that allows users to stake their tokens and earn rewards by validating transactions on the network. The staking process is simple and can be done through validator nodes, delegation, or a do-it-yourself (DIY) approach. By staking through PoSA, users can participate in the validation process and contribute to the overall security and efficiency of the network. The use of PoSA also eliminates the need for energy-intensive processes and expensive hardware, making staking accessible to all. Overall, PoSA is a reliable and efficient staking method that allows for greater decentralization and accessibility on the BXN blockchain platform.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":6,"title":"Smart contract operability","description":"BlackFort Network is an easy-to-use blockchain platform that simplifies the creation and management of smart contracts. Its user-friendly interface allows anyone to launch their own tokens and projects on the blockchain without needing specialized knowledge. Additionally, the platform offers migration services for users who want to switch from other EVM blockchains to BXN, providing a seamless transition with all the new features and benefits. By using BXN, users can leverage innovative capabilities and be part of a community that is shaping the future of decentralized finance.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":7,"title":"Tokenising to Blockchain","description":"BXN offers a unique feature that enables users to bring liquidity and assets from other blockchain networks to the BXN platform and receive incentives in BXN tokens. By tokenizing assets and creating NFTs, users can transfer liquidity and other assets to the BlackFort Network Vault at an equivalent value on the BXN chain. This feature provides a simple and efficient way to bring assets and liquidity to the BXN platform and take advantage of the benefits offered by the BXN blockchain network. Overall, BXN’s asset transfer feature enables users to easily move assets and liquidity between blockchain networks, further promoting decentralization and accessibility in the blockchain ecosystem.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"}]}');
@@ -40704,13 +40752,13 @@ module.exports = require("b028ebae00611ee4").getBundleURL("8Kyqb") + "proof.42de
 },{"b028ebae00611ee4":"lgJ39"}],"feagA":[function(require,module,exports) {
 module.exports = require("5e686203adc67926").getBundleURL("8Kyqb") + "enviromentally.c63b195e.svg" + "?" + Date.now();
 
-},{"5e686203adc67926":"lgJ39"}],"VxqrY":[function(require,module,exports) {
-module.exports = "https://i.imgur.com/cWG0cLy.png";
+},{"5e686203adc67926":"lgJ39"}],"gpP3d":[function(require,module,exports) {
+module.exports = require("5b62e2aafe4b2937").getBundleURL("8Kyqb") + "twitter.b236bd19.png" + "?" + Date.now();
 
-},{}],"51WCd":[function(require,module,exports) {
-module.exports = "https://i.imgur.com/s8dEpAA.png";
+},{"5b62e2aafe4b2937":"lgJ39"}],"W2RoT":[function(require,module,exports) {
+module.exports = require("c34bb37e035e0b3c").getBundleURL("8Kyqb") + "telegram.98331493.png" + "?" + Date.now();
 
-},{}],"gmEI9":[function(require,module,exports) {
+},{"c34bb37e035e0b3c":"lgJ39"}],"gmEI9":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CSS3DObject", ()=>CSS3DObject);
