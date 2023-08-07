@@ -394,6 +394,15 @@ header {
   right: 0;
 }
 
+header .logo img {
+  height: 60px;
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translate(-50%);
+  z-index: 200 !important;
+}
+
 header .navbar {
   height: 120px;
 }
