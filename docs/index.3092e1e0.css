@@ -336,7 +336,7 @@ div#navigator {
   padding: 0 35%;
   display: flex;
   position: absolute;
-  bottom: 40px;
+  bottom: 10px;
   left: 0;
   right: 0;
 }

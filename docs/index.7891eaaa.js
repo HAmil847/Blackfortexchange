@@ -643,7 +643,7 @@ NTW_MAIN_DOT.setDomItemPosition(50, 140, WEB);
 MAIN_DOTS.render();
 NTW_MAIN_DOT.render();
 // Set up post-processing
-WEB.setPostProcessing((0, _postProcessingDefault.default).bloomPass);
+//WEB.setPostProcessing(PostProcessing.bloomPass);
 // Set the scene's animation loop
 //exportar camara 
 WEB.renderer.setAnimationLoop(RenderExperience);
@@ -36849,6 +36849,7 @@ const BEGIN_BTN_REF = document.getElementById("start-scene");
 const NAVIGATOR_REF = document.getElementById("navigator");
 const BACK_BTN = document.getElementById("back-btn");
 const NTW_BTN_REF = document.getElementById("bxn-network");
+const FORM_BTN = document.getElementById("form-container");
 console.log(NAVIGATOR_REF);
 //escenas
 const INTRO_REF = document.getElementById("intro");
@@ -36866,6 +36867,15 @@ function setupListeners() {
     document.addEventListener("DOMContentLoaded", pageLoaded);
     //activar los dost de network
     NTW_BTN_REF.addEventListener("click", ntwHandleClick);
+}
+//boton para el formulurio
+function contactFormHandleClick(event) {
+    console.log(event.id, "ENVIAR FORMULARIO");
+    (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).click);
+}
+function contactFormHandleHover(event) {
+    console.log(event.id, "hover form");
+    (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
 }
 //cuando el boton de btn es activado
 function ntwHandleClick(event) {
@@ -36896,9 +36906,15 @@ function pageLoaded() {
     (0, _textAnimJs.ShowTextAnimation)(".animated-item"); //reproducir animacion de inicio
     //reproducir sonido de fondo
     // Verificar si el renderizador de Three.js está listo
-    if ((0, _three.DefaultLoadingManager).isLoading === false) // El renderizador ha cargado
-    console.log("El renderizador de Three.js ha cargado correctamente.");
-    else {
+    if ((0, _three.DefaultLoadingManager).isLoading === false) {
+        // El renderizador ha cargado
+        console.log(FORM_BTN, "HOLA HOLA  ");
+        console.log("El renderizador de Three.js ha cargado correctamente.");
+        // Aquí puedes realizar cualquier acción adicional que necesites
+        //eventos para el formulario
+        FORM_BTN.addEventListener("click", contactFormHandleClick);
+        FORM_BTN.addEventListener("mouseenter", contactFormHandleHover);
+    } else {
         // El renderizador aún se está cargando, puedes esperar a que el evento 'load' se dispare
         console.log("Esperando a que el renderizador de Three.js cargue...");
         (0, _three.DefaultLoadingManager).onLoad = function() {
@@ -36998,6 +37014,8 @@ function backButton(event) {
                     break;
             }
             console.log("STATE ACTUALZADO CON>>", (0, _dotState.STATE).actualActive.id);
+            (0, _dotState.STATE).isCameraInSection = false;
+            console.log("EJES CAMBIADOS< PARALAX>>>", (0, _dotState.STATE).isCameraInSection);
         });
     } else {
         //actualizar el indice
@@ -37015,6 +37033,7 @@ function backButtonHover(event) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _three = require("three");
+var _dotState = require("../scene/dom/DotState");
 const mouseData = {
     lastMouseX: null,
     lastMouseY: null,
@@ -37039,7 +37058,7 @@ class MouseHandler {
         const mouseY = event.clientY; // Posición Y actual del mouse
         const normalizedX = (mouseX / mouseData.screenWidth - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición X
         const normalizedY = (mouseY / mouseData.screenHeight - mouseData.fixedValue) * this.intensity; // Valor normalizado de la posición Y
-        if (!this.isSectionInCamera) this.normalized.set(normalizedX, normalizedY * 2, 0);
+        if (!(0, _dotState.STATE).isCameraInSection) this.normalized.set(normalizedX, normalizedY * 2, 0);
         else this.normalized.set(normalizedX, 0, normalizedY);
         if (!this.isMouseMoving) // El mouse estaba detenido y ahora se está moviendo
         //console.log("El mouse se ha movido");
@@ -37060,6 +37079,20 @@ class MouseHandler {
 const MOUSE_HANDLER = new MouseHandler();
 // Exportar la instancia del MouseHandler
 exports.default = MOUSE_HANDLER;
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../scene/dom/DotState":"4rB7c"}],"4rB7c":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "STATE", ()=>STATE);
+var _three = require("three");
+let STATE = {
+    actualMenu: "",
+    actualActive: null,
+    lastActive: null,
+    nodeCount: 0,
+    cameraIsMoving: false,
+    cameraStart: new (0, _three.Vector3)()
+};
 
 },{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jjSxz":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -39268,21 +39301,7 @@ var exports = {
     update: update
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4rB7c":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "STATE", ()=>STATE);
-var _three = require("three");
-let STATE = {
-    actualMenu: "",
-    actualActive: null,
-    lastActive: null,
-    nodeCount: 0,
-    cameraIsMoving: false,
-    cameraStart: new (0, _three.Vector3)()
-};
-
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7K3aZ":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7K3aZ":[function(require,module,exports) {
 // Definir el objeto literal de sonidos
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -40281,6 +40300,9 @@ class DotItem {
             tempContainer.appendChild(imgLinksContainer);
         //fin de imglinks
         }
+        if (jsonData.slides) //generar n cantidad de botones
+        jsonData.slides.forEach((element)=>{});
+        if (jsonData.custom) tempContainer.innerHTML += jsonData.custom;
         //devolver el objeto
         return tempContainer;
     }
@@ -40569,6 +40591,9 @@ class DotItem {
                     this.toggleSectionVisibility(true);
                     //ACTUALIZAR ESTADO
                     (0, _dotState.STATE).actualActive = this;
+                    //actualizar estado de camara
+                    (0, _dotState.STATE).isCameraInSection = true;
+                    console.log("EJES CAMBIADOS< PARALAX>>>", (0, _dotState.STATE).isCameraInSection);
                 });
             }
         };
@@ -40619,6 +40644,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "DOT", ()=>DOT);
 parcelHelpers.export(exports, "NTW_DOT", ()=>NTW_DOT);
 parcelHelpers.export(exports, "PAGE_ICONS", ()=>PAGE_ICONS);
+parcelHelpers.export(exports, "SLIDES_IMG", ()=>SLIDES_IMG);
 var _homeJson = require("./view/home.json");
 var _homeJsonDefault = parcelHelpers.interopDefault(_homeJson);
 var _ntfsJson = require("./view/ntfs.json");
@@ -40627,6 +40653,8 @@ var _blogJson = require("./view/blog.json");
 var _blogJsonDefault = parcelHelpers.interopDefault(_blogJson);
 var _networkJson = require("./view/network.json");
 var _networkJsonDefault = parcelHelpers.interopDefault(_networkJson);
+var _contactJson = require("./view/contact.json");
+var _contactJsonDefault = parcelHelpers.interopDefault(_contactJson);
 const DOT = {
     home: {
         id: "home",
@@ -40638,7 +40666,7 @@ const DOT = {
         id: "contact",
         title: "Contact",
         iconUrl: new URL(require("758cc138d805a5d3")).href,
-        jsonData: (0, _blogJsonDefault.default)
+        jsonData: (0, _contactJsonDefault.default)
     },
     blog: {
         id: "blog",
@@ -40729,15 +40757,22 @@ const PAGE_ICONS = {
     network: SUB_PAGE_ICON,
     main: MAIN_PAGE_ICON
 };
+const SLIDES_IMG = {
+    post1: new URL(require("d528d76de6dbf4c7")).href,
+    post2: new URL(require("d528d76de6dbf4c7")).href,
+    post3: new URL(require("d528d76de6dbf4c7")).href,
+    post4: new URL(require("d528d76de6dbf4c7")).href,
+    post5: new URL(require("d528d76de6dbf4c7")).href
+};
 
-},{"./view/home.json":"la34J","./view/ntfs.json":"5egMc","./view/blog.json":"2VY0o","./view/network.json":"eKe8m","3e2c9c878fcbdda3":"8zI4v","758cc138d805a5d3":"2VxXl","a063a5c51aa1c7bc":"4QvhB","ac06a08ca56ce2cf":"oktiP","79447627a3936f3e":"2DOKH","bb453a4506923ae4":"4w3Ee","9f858718625b36aa":"3lLAA","b4c7f6fd4578ed9a":"h5yTN","d6518df1ddf6bae":"kw3z7","bf6d45839571a625":"lKUxo","fba54994d2f82a34":"fbn85","619985f4957f22d8":"bV3EN","1330f08a08187251":"feagA","e6eacc998e753464":"gpP3d","5da705c59daee8e":"W2RoT","d528d76de6dbf4c7":"lSDFi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"la34J":[function(require,module,exports) {
+},{"./view/home.json":"la34J","./view/ntfs.json":"5egMc","./view/blog.json":"2VY0o","./view/network.json":"eKe8m","3e2c9c878fcbdda3":"8zI4v","758cc138d805a5d3":"2VxXl","a063a5c51aa1c7bc":"4QvhB","ac06a08ca56ce2cf":"oktiP","79447627a3936f3e":"2DOKH","bb453a4506923ae4":"4w3Ee","9f858718625b36aa":"3lLAA","b4c7f6fd4578ed9a":"h5yTN","d6518df1ddf6bae":"kw3z7","bf6d45839571a625":"lKUxo","fba54994d2f82a34":"fbn85","619985f4957f22d8":"bV3EN","1330f08a08187251":"feagA","e6eacc998e753464":"gpP3d","5da705c59daee8e":"W2RoT","d528d76de6dbf4c7":"lSDFi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./view/contact.json":"lKLGe"}],"la34J":[function(require,module,exports) {
 module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"what is it?","title":"BlackFort Exchange Network","description":"BlackFort is an innovative blockchain platform that has all the attributes needed for a top–tier blockchain. It is a Layer 1 blockchain that is EVM compatible, fast, scalable, secure, and efficient, with POSA and easy access to become a delegator. Transparency is a key priority for BlackFort, ensuring that all parties in a transaction have the information they need to feel secure. This combination of features makes BlackFort an ideal platform for anyone looking to build a blockchain–based solution.","buttons":[{"id":"bxn","index":"0","name":"BXN Smartchain"},{"id":"blackfort","index":"1","name":"BlackFort Explorer"},{"id":"audited","index":"2","name":"Audited Code"},{"id":"posa","index":"3","name":"PoSA & Decentralization"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}]},{"title":"BlackFort Wallet &\\n Exchange APP","imgLink":[{"extLink":"localhost","imgSrc":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand"}],"buttons":[{"id":"home","index":"0","name":"Client side wallet"},{"id":"home","index":"1","name":"Swap Function"},{"id":"home","index":"2","name":"Buy & Sell with FIAT"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}],"custom":""}],"SubPage":[{"id":"bxn","title":"BXN Smartchain","description":"BlackFort Exchange Network is a smartchain technology. this form of Blockchain is a revolutionary way to manage digital assets more securely and efficiently. With a smartchain, users can quickly and easily transfer digital assets between multiple parties in a secure and transparent manner. The smartchain can also be used to facilitate smart contracts, allowing for the automation of complex transactions and smart contract interactions. This technology has the potential to open up new possibilities for the global economy.","preview":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"id":"blackfort","title":"BlackFort Explorer","description":"A Cryptocurrency smartchain explorer is a tool that provides users with access to the blockchain data associated with a given cryptocurrency. It can be used to view the transactions and blocks associated with a particular altcoin, as well as the address balances, network hashrate, and block rewards. The information provided can be used to analyze the activity of a given Blockchain Network.  ","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"audited","title":"Audited Code","description":"Auditing is an important step for any cryptocurrency project, as it ensures that the code is secure, efficient, and compliant with the latest industry standards. By enlisting the services of an experienced and reputable third–party auditor like Certik, a project can ensure that its code is thoroughly reviewed and tested, and that any potential issues are identified and addressed. Additionally, auditing provides an important layer of transparency and trust for a project, which can go a long way in helping to build and maintain a strong and engaged community.","preview":"https://i.imgur.com/E9Rs9kK_d.webp?maxwidth=760&amp;fidelity=grand","extLink":[{"name":"Certik Audit Report","link":"link"}]},{"id":"posa","title":"PoSA & Decentralization","description":"Proof-of-staked-authority is an efficient and secure way to validate a Cryptocurrency smartchain. BXN Blockchain has implemented this system, and is reaping the rewards, with over 60,000 delegators from over 120 countries, it ensures that the network is well-distributed. This allows for a much greater level of decentralization and security than other PoS or PoW methods, as well as increased scalability. BXN Blockchain is clearly at the forefront of the latest technologies, and is an excellent example of the benefits of using PoSA.","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"More Info","link":"link"}]}]}');
 
 },{}],"5egMc":[function(require,module,exports) {
 module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BlackFort Genesis Knights NFTs","description":"We’re glad to introduce you our Exclusive Genesis NFT collection! Only 500 NFTs will be minted.<br> These limited NFTs provide additional, elite opportunities….<br> First sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br>Second sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br> Third sales Phase of 150 pieces: ENDED SUCCESSFULLY <br>LAST PHASE COMING SOON","preview":"https://i.imgur.com/6SlRZpZ.png","extLink":[{"name":"Certik Audit Report","link":"link"}],"custom":"ref to element"}]}');
 
 },{}],"2VY0o":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"Blackfort Blog","description":"Welcome to the BlackFort blog section, where you’ll find the latest news, announcements, press releases, and informative articles on a variety of topics related to blockchain, client-side applications, smart contracts, DeFi, cryptocurrency news, and more. Our expert team consistently updates the blog with valuable insights and industry trends to keep you informed and up-to-date on the latest developments in the blockchain and cryptocurrency space.","buttons":[{"id":"post","index":"0","name":"Blog Posts"},{"id":"announcements","index":"1","name":"Announcements"},{"id":"medium","index":"2","name":"Medium"}]}],"SubPage":[{"id":"post","title":"Blog Posts","description":"BLOGS HERE","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"id":"announcements","title":"Announcements","description":"Announcements HERE","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"medium","title":"Medium","description":"Medium HERE","extLink":[{"name":"Certik Audit Report","link":"link"}]}]}');
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"Blackfort Blog","description":"Welcome to the BlackFort blog section, where you’ll find the latest news, announcements, press releases, and informative articles on a variety of topics related to blockchain, client-side applications, smart contracts, DeFi, cryptocurrency news, and more. Our expert team consistently updates the blog with valuable insights and industry trends to keep you informed and up-to-date on the latest developments in the blockchain and cryptocurrency space.","buttons":[{"id":"post","index":"0","name":"Blog Posts"},{"id":"announcements","index":"1","name":"Announcements"},{"id":"medium","index":"2","name":"Medium"}]}],"SubPage":[{"id":"post","title":"Blog Posts","description":"BLOGS HERE","slides":[{"previewImg":"post1","title":"BlackFort Layer 1 Blockchain Is Live on Mainnet","description":"BlackFort, a Layer-1 blockchain, launched its mainnet at the end of January 2023. After announcing on January 13, 2023, on its Twitter account that the mainnet was coming soon, BlackFort is now waiting for increasingly more crypto enthusiasts to join the community."},{"previewImg":"post2","title":"When Will Crypto Replace Fiat?","description":"A growing number of businesses and individuals are turning to crypto, especially during these turbulent times. In the last five years, cryptocurrency startups have raised over $20 billion via initial coin offerings and proven to be of great use in the business sector. Financial analysts predict that fiat money will be digitized and we will inevitably see digital versions of existing currencies…."},{"previewImg":"post3","title":"What Are Central Banks’ Digital Currencies and Do They Have a Future?","description":"A blockchain is essentially a digital ledger of transactions that is duplicated and distributed across the entire network of computer systems on the blockchain. Each block in the chain contains a number of transactions, and every time a new transaction occurs on the blockchain, a record of that transaction is added to every participant’s ledger."},{"previewImg":"post4","title":"Blackfort Wallet Security","description":"Before you enter the crypto market, you should be well-versed in the basics of cryptocurrency trading. In addition, one must be aware of the aspects that influence bitcoin security. In this article, we will examine the importance of securing cryptocurrency and how digital currencies and cybersecurity are connected."},{"previewImg":"post5","title":"What is Web 3.0, and Why Should We Care?","description":"In 1990, Berners-Lee pioneered the early development of the Internet and ushered in the era of Web 1.0. This was the age of static web pages retrieved from servers, a far cry from today’s slick content. Over the past 15 to 20 years, Web 2.0 replaced the static web pages with interactivity, social connectivity, and…"}]},{"id":"announcements","title":"Announcements","description":"Announcements HERE","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"medium","title":"Medium","description":"Medium HERE","extLink":[{"name":"Certik Audit Report","link":"link"}]}]}');
 
 },{}],"eKe8m":[function(require,module,exports) {
 module.exports = JSON.parse('{"MainPage":[{"title":"XD ","description":""}],"MainSubPages":[{"index":0,"title":"BXN NFT Node Network","description":"BXN is a unique blockchain that introduces NFTs as a key element of its validation process. Users can acquire NFTs from the BlackFort knight collection, where each NFT represents a certain weight in the network’s validation process. By staking the NFT, users can participate in node and validator rewards in BXN. Additionally, opting out of delegation increases the rarity of the remaining NFT nodes, while any delegated NFTs can be transferred at any time to any address on the BXN blockchain network using a client-side wallet that supports BXN. The use of NFTs as keys in the validation process adds decentralization to the network and creates a unique approach to blockchain validation.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":1,"title":"Environmentally friendly","description":"As a Proof-of-Staked-Authority driven blockchain, BXN offers the benefits of staking, including reduced energy consumption and the elimination of the need for expensive and advanced hardware. With a focus on stability, scalability, and energy savings, BXN provides a reliable and efficient platform for decentralization. Furthermore, BXN ensures the safety and security of blockchain attributes, such as immutability and transparency, through its use of advanced cryptographic algorithms and consensus mechanisms. The combination of staking benefits and robust security measures makes BXN a compelling option for those seeking a high-performance and secure blockchain platform.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":2,"title":"Fast Transactions","description":"The speed of a blockchain network is a critical factor for businesses and individuals looking to engage in transactions on a blockchain platform. BXN offers a high transaction per second throughput and low block time, creating an almost immediate transaction execution environment. This speed enables businesses to prosper and provides certainty in transaction confirmations, ensuring a reliable and efficient platform for users. By providing a fast and efficient blockchain network, BXN offers a high-performance platform that can meet the demands of businesses and individuals looking to engage in fast and secure transactions. Overall, the speed of the BXN platform is a critical aspect that contributes to its overall reliability and appeal to users.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":3,"title":"Global scalability","description":"Scalability is a crucial factor in the success of any blockchain project, and BXN has prioritized scalability in its design. The blockchain platform is built to cater to the needs of individuals, researchers, and businesses without compromising on features or the need for complicated updates. The efficiency of validation, block height, and transaction speed are all factors that have been carefully considered in the development of BXN. The platform is designed to provide reliable and efficient services to users, regardless of the scale of their project or transaction volume. With its focus on scalability, BXN offers a high-performance blockchain platform that is suitable for a wide range of use cases.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":4,"title":"Optimised fee mechanism","description":"Fee optimization is an essential aspect of blockchain technology, and BXN has implemented an efficient fee system that ensures network congestion will not lead to a surge in prices as we know it up until today. Fees for transactions are calculated dynamically and denominated in BXN, with different types of transactions attracting different fees. The validation system on the BXN blockchain is highly resource-efficient, ensuring fair and transparent value to users. Additionally, BXN provides an opportunity for anyone to become a delegator in the network, further promoting decentralization and fairness in the blockchain ecosystem.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":5,"title":"Proof-of-Algorithm Staking","description":"BlackFort Network has developed its own staking method called Proof-of-Staked-Authority (PoSA), which is designed to provide a truly decentralized and effortless staking experience. PoSA is a consensus mechanism that allows users to stake their tokens and earn rewards by validating transactions on the network. The staking process is simple and can be done through validator nodes, delegation, or a do-it-yourself (DIY) approach. By staking through PoSA, users can participate in the validation process and contribute to the overall security and efficiency of the network. The use of PoSA also eliminates the need for energy-intensive processes and expensive hardware, making staking accessible to all. Overall, PoSA is a reliable and efficient staking method that allows for greater decentralization and accessibility on the BXN blockchain platform.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":6,"title":"Smart contract operability","description":"BlackFort Network is an easy-to-use blockchain platform that simplifies the creation and management of smart contracts. Its user-friendly interface allows anyone to launch their own tokens and projects on the blockchain without needing specialized knowledge. Additionally, the platform offers migration services for users who want to switch from other EVM blockchains to BXN, providing a seamless transition with all the new features and benefits. By using BXN, users can leverage innovative capabilities and be part of a community that is shaping the future of decentralized finance.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"},{"index":7,"title":"Tokenising to Blockchain","description":"BXN offers a unique feature that enables users to bring liquidity and assets from other blockchain networks to the BXN platform and receive incentives in BXN tokens. By tokenizing assets and creating NFTs, users can transfer liquidity and other assets to the BlackFort Network Vault at an equivalent value on the BXN chain. This feature provides a simple and efficient way to bring assets and liquidity to the BXN platform and take advantage of the benefits offered by the BXN blockchain network. Overall, BXN’s asset transfer feature enables users to easily move assets and liquidity between blockchain networks, further promoting decentralization and accessibility in the blockchain ecosystem.","imgLink":[{"extLink":"locahost","imgLink":"twiter"},{"extLink":"locahost","imgLink":"telegram"}],"custom":"ref to element"}]}');
@@ -40787,7 +40822,10 @@ module.exports = require("5b62e2aafe4b2937").getBundleURL("8Kyqb") + "twitter.b2
 },{"5b62e2aafe4b2937":"lgJ39"}],"W2RoT":[function(require,module,exports) {
 module.exports = require("c34bb37e035e0b3c").getBundleURL("8Kyqb") + "telegram.98331493.png" + "?" + Date.now();
 
-},{"c34bb37e035e0b3c":"lgJ39"}],"iM6UL":[function(require,module,exports) {
+},{"c34bb37e035e0b3c":"lgJ39"}],"lKLGe":[function(require,module,exports) {
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"Lets start reading","title":"Contact Us","custom":"<div class=\\"contact-container\\">\\n  <div class=\\"contact-blur\\"> </div>\\n <div class=\\"contact-content\\">\\n    <div id=\\"form-container\\" class=\\"contact-us-form\\">\\n      <h2>Don\'t worry, we hate spam too,<br> Your e-mail is safe with us.</h2>\\n      <div class=\\"section\\">\\n        <label for=\\"name\\">Name</label>\\n        <input type=\\"text\\" id=\\"name\\" name=\\"name\\">\\n      </div>\\n      <div class=\\"section\\">\\n        <label for=\\"email\\">Email</label>\\n        <input type=\\"email\\" id=\\"email\\" name=\\"email\\">\\n      </div>\\n      <div class=\\"section\\">\\n        <label for=\\"phone\\">Phone</label>\\n        <input type=\\"tel\\" id=\\"phone\\" name=\\"phone\\">\\n      </div>\\n      <button id=\\"contact-send-btn\\" type=\\"submit\\">Subscribe</button>\\n\\n      <div class=\\"footer-form\\">\\n          <div class=\\"address\\">\\n            <p>BlackFort Tech Estonia O\xdc</p>\\n            <p>L\xf5kke Tn 4, 10122, Tallinn,<br> Harju county, Estonia</p>\\n          </div>\\n          <div class=\\"contact\\">\\n            <p>Business enquiries</p>\\n            <p><a href=\\"mailto:support@blackfort.exchange\\">office@blackfort.exchange</a></p>\\n            <p>Support</p>\\n            <p><a href=\\"mailto:support@blackfort.exchange\\">support@blackfort.exchange</a></p>\\n          </div>\\n          <div class=\\"follow-us\\">\\n            <p>Follow us</p>\\n            <a href=\\"https://twitter.com/blackfortbxn\\" class=\\"icon\\"><img width=\\"30\\" height=\\"30\\" src=\\"https://img.icons8.com/ios-glyphs/30/twitter--v1.png\\" alt=\\"twitter--v1\\"/></a>\\n            <a href=\\"#\\" class=\\"icon\\"><img width=\\"50\\" height=\\"50\\" src=\\"https://img.icons8.com/ios/50/instagram-new--v1.png\\" alt=\\"instagram-new--v1\\"/></a>\\n            <a href=\\"#\\" class=\\"icon\\"><img width=\\"48\\" height=\\"48\\" src=\\"https://img.icons8.com/fluency-systems-filled/48/facebook-f.png\\" alt=\\"facebook-f\\"/></a>\\n          </div>\\n        </div>\\n    </div>\\n  </div>\\n  <div class=\\"contact-preview\\">\\n    <img src=\\"https://lh3.googleusercontent.com/u/0/drive-viewer/AITFw-y41Q-FXz3azCKx7hnOPxmA9wLT7lJ5jnd_mUrAGC3Bj_quUhilrRBUimF38N6hyCnkiAtSpWHjQTxl2bExikuKhOwb=w1868-h952\\" alt=\\"\\">\\n  </div>\\n</div>"}]}');
+
+},{}],"iM6UL":[function(require,module,exports) {
 /**
  * Swiper 10.0.4
  * Most modern mobile touch slider and framework with hardware accelerated transitions
