@@ -1,0 +1,236 @@
+@media (width <= 767px) {
+  body {
+    position: fixed;
+    overflow: hidden;
+  }
+
+  body main.intro {
+    place-content: center;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    inset: 0;
+  }
+
+  body main.intro .content-container {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .navbar .logo-link {
+    height: 45px;
+  }
+
+  .navbar .logo-link img {
+    height: 100%;
+  }
+
+  main.intro .content-container * {
+    text-align: center;
+  }
+
+  div.content-container .sub-title {
+    place-content: center;
+    display: grid;
+  }
+
+  div.text-animated-container {
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
+  div.content-container .title {
+    font-size: 35px;
+  }
+
+  div.content-container .title.span {
+    font-size: 20px;
+  }
+
+  div.content-container .description {
+    place-content: center;
+    display: grid;
+  }
+
+  div.content-container .description .animated-item {
+    margin-top: 30px;
+    padding: 0 120px;
+  }
+
+  .animated-item {
+    border: 1px solid red;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
+  div.content-container div.start-ui {
+    place-content: center;
+    margin: 20px 0 0;
+    padding: 0;
+    display: grid;
+  }
+
+  div.content-container div.start-ui * {
+    margin: 0;
+  }
+
+  div.content-container div.ui-controls {
+    width: 100vw;
+  }
+
+  .content.active-section {
+    width: 100vw !important;
+  }
+
+  .home-swiper {
+    width: 100%;
+  }
+
+  .home-swiper .list-container {
+    flex-wrap: wrap;
+  }
+
+  .home-swiper .list-container .btn-sub-page-container {
+    justify-content: end;
+    width: 47.6191%;
+    margin: 2px 0;
+  }
+
+  .alternative.active-section.content * {
+    text-align: center;
+    margin: 0;
+  }
+
+  .alternative.active-section.content {
+    justify-content: center;
+    align-items: center;
+    display: flex !important;
+  }
+
+  .alternative.active-section.content .title {
+    font-size: 35px;
+  }
+
+  .alternative.active-section.content .external-links.list-container {
+    justify-content: center;
+    margin: 0;
+  }
+
+  .content.contact-section.active-section div {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    display: flex;
+  }
+
+  .content.contact-section.active-section div h2 {
+    text-align: center;
+  }
+
+  .content.contact-section.active-section div .section {
+    margin: 15px 0 0;
+  }
+
+  .content.contact-section.active-section div .section label {
+    font-size: 15px;
+  }
+
+  .content.contact-section.active-section div .section input {
+    width: 50%;
+  }
+
+  .content.contact-section.active-section div .contact-container {
+    height: -moz-fit-content;
+    height: fit-content;
+    padding-bottom: 60px;
+  }
+
+  .content.contact-section.active-section div #contact-send-btn {
+    margin: 40px 0 0;
+  }
+
+  .content.contact-section.active-section div .contact-preview {
+    display: none;
+  }
+
+  .content.contact-section.active-section div .contact-blur {
+    height: 100%;
+  }
+
+  .content.contact-section.active-section div .footer-form {
+    width: 100%;
+  }
+
+  .content.contact-section.active-section div .footer-form .follow-us {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+
+  .content.active-section .title {
+    margin-bottom: 40px;
+    font-size: 50px;
+  }
+
+  .content.active-section .description {
+    margin: 0;
+    padding: 0 30px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .content.active-section .list-container {
+    margin-top: 30px;
+  }
+
+  .content.ntfs-section.active-section div {
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+  }
+
+  .content.ntfs-section.active-section div .title {
+    width: 92%;
+    font-size: 35px;
+    margin-bottom: 20px !important;
+  }
+
+  .content.ntfs-section.active-section div .description {
+    font-size: 15px;
+    line-height: 20px;
+    margin: 10px 0 !important;
+  }
+
+  .content.ntfs-section.active-section div .img-preview {
+    height: 230px;
+    margin-bottom: 20px !important;
+  }
+
+  .content.ntfs-section.active-section * {
+    text-align: center !important;
+    margin: 0 !important;
+  }
+
+  .content.network-sub-page-content.active-section .description {
+    padding: 0 !important;
+    font-size: 20px !important;
+    line-height: 20px !important;
+  }
+
+  div#navigator {
+    justify-content: center;
+    padding: 0;
+  }
+
+  div#back-btn {
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+}
+
+/*# sourceMappingURL=index.f52f494f.css.map */

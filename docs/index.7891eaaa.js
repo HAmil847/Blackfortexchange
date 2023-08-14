@@ -596,7 +596,7 @@ var _cameraHandler = require("./Handlers/CameraHandler");
 var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
 var _dotManager = require("./scene/dom/DotManager");
 var _dotTemplate = require("./scene/dom/DotTemplate");
-var _css3Drenderer = require("three/examples/jsm/renderers/css3drenderer");
+var _css3Drenderer = require("three/examples/jsm/renderers/CSS3DRenderer");
 /*
 const stats = new Stats();
 document.body.appendChild(stats.dom);
@@ -624,8 +624,9 @@ const DOM = new (0, _webScene.DomScene)(camera);
 //crear particulas
 // Create an instance of ParticleSystem
 const particleSystem = new (0, _particleSystemDefault.default)(WEB);
-// Create and add particles to the scene
+if (!(0, _listener.esDispositivoMovilPorResolucion)()) // Create and add particles to the scene
 particleSystem.CreateParticles(50, 6000, 180, new _three.Color(0x0CF7DF), new _three.Color(0x0C51ED));
+else particleSystem.CreateParticles(150, 600, 150, new _three.Color(0x0CF7DF), new _three.Color(0x0C51ED));
 // Set up helpers in the 3D scene
 // WEB.add(gridHelper);
 // WEB.add(axisHelper);
@@ -639,11 +640,20 @@ const NTW_MAIN_DOT = new (0, _dotManager.DotManager)(DOM, (0, _dotTemplate.NTW_D
 //configurar su posicion
 MAIN_DOTS.setDomItemPosition(75, 240, WEB);
 NTW_MAIN_DOT.setDomItemPosition(50, 140, WEB);
+//si es un dispositivo movil
+// Uso
+if ((0, _listener.esDispositivoMovilPorResolucion)()) {
+    console.log("Es un dispositivo m\xf3vil");
+    cameraPather.position.set(0, 260, 210);
+    //configurar su NUEVA posicion
+    MAIN_DOTS.setDomItemPosition(75, 350, WEB);
+    NTW_MAIN_DOT.setDomItemPosition(40, 250, WEB);
+}
 //mostrar estos dots
 MAIN_DOTS.render();
 NTW_MAIN_DOT.render();
 // Set up post-processing
-WEB.setPostProcessing((0, _postProcessingDefault.default).bloomPass);
+//WEB.setPostProcessing(PostProcessing.bloomPass);
 // Set the scene's animation loop
 //exportar camara 
 WEB.renderer.setAnimationLoop(RenderExperience);
@@ -748,7 +758,7 @@ gui.add(cameraControls, 'cameraZ', -1000, 1000).name('Camera Z').onChange((value
 
 */ 
 
-},{"three":"ktPTu","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","stats.js":"9lwC6","./Handlers/CameraHandler":"bJrvG","./scene/dom/DotManager":"ei2FO","./scene/dom/DotTemplate":"6OcLf","three/examples/jsm/renderers/css3drenderer":"gmEI9","ddd27ad91f13ba8c":"97wAT","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","./scene/WebScene":"53Grz","./loader/ModelLoader":"lwMLX","dat.gui":"k3xQk","./scene/Listener":"j6bPM","./Handlers/MouseHandler":"7ESAf","./effects/ParticleSystem":"kST2h","./effects/PostProcessing":"kHmxx","stats.js":"9lwC6","./Handlers/CameraHandler":"bJrvG","./scene/dom/DotManager":"ei2FO","./scene/dom/DotTemplate":"6OcLf","ddd27ad91f13ba8c":"97wAT","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","three/examples/jsm/renderers/CSS3DRenderer":"dWhzi"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -36831,6 +36841,9 @@ exports.default = index;
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j6bPM":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+//funcion para detectar si es un movil o tablet
+// Función para detectar si es un dispositivo móvil basado en resolución
+parcelHelpers.export(exports, "esDispositivoMovilPorResolucion", ()=>esDispositivoMovilPorResolucion);
 // Exportar la función setupListeners
 parcelHelpers.export(exports, "setupListeners", ()=>setupListeners);
 var _mouseHandler = require("../Handlers/MouseHandler");
@@ -37027,6 +37040,9 @@ function backButton(event) {
 }
 function backButtonHover(event) {
     (0, _soundEffects.playSound)((0, _soundEffects.sounEffect).hover);
+}
+function esDispositivoMovilPorResolucion() {
+    return window.innerWidth <= 768; // Cambia este valor según tus necesidades
 }
 
 },{"../Handlers/MouseHandler":"7ESAf","../../js/text-anim.js":"jjSxz","three":"ktPTu","../Main":"jYf5p","../Handlers/CameraHandler":"bJrvG","../effects/SoundEffects":"7K3aZ","./dom/DotState":"4rB7c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ESAf":[function(require,module,exports) {
@@ -40005,6 +40021,8 @@ var _three = require("three");
 var _dotItem = require("./DotItem");
 var _cameraHandler = require("../../Handlers/CameraHandler");
 var _cameraHandlerDefault = parcelHelpers.interopDefault(_cameraHandler);
+var _swiper = require("swiper");
+var _swiperDefault = parcelHelpers.interopDefault(_swiper);
 class DotManager {
     constructor(scene, dotData, isNetwork){
         this.scene = scene;
@@ -40099,7 +40117,7 @@ function crearAxisHelper(x, y, z, scene) {
     scene.add(axisHelper);
 }
 
-},{"three":"ktPTu","./DotItem":"4OrAm","../../Handlers/CameraHandler":"bJrvG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4OrAm":[function(require,module,exports) {
+},{"three":"ktPTu","./DotItem":"4OrAm","../../Handlers/CameraHandler":"bJrvG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","swiper":"iM6UL"}],"4OrAm":[function(require,module,exports) {
 //representa un icono
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -40242,7 +40260,7 @@ class DotItem {
                 //icono
                 const iconBtn = document.createElement("img");
                 iconBtn.src = (0, _dotTemplate.PAGE_ICONS).main.iconBtn;
-                console.log("BOTON AGREGADO");
+                //console.log("BOTON AGREGADO");
                 //setup element
                 button.appendChild(iconBtn);
                 btnContainer.appendChild(btnSpan);
@@ -40439,7 +40457,7 @@ class DotItem {
         //content.innerHTML = this.generateFromJSonData(jsonData);
         if (this.id !== "home") content.appendChild(this.generateFromJSonData(jsonData));
         else {
-            console.log("CARGANDO SLIDER>>>");
+            console.log("CREANDO SLIDER>>>");
             const homeSection = this.createSliders(jsonData);
             //agregar a section
             content.appendChild(homeSection);
@@ -40481,10 +40499,8 @@ class DotItem {
                 subPagesList[identify] = subpage;
             }
         //console.log(subPagesList);
-        } else {
-            console.log(this.id, "NO TIENE HIJOS");
-            return;
-        }
+        } else //console.log(this.id, "NO TIENE HIJOS");
+        return;
         return subPagesList;
     }
     createSliders(jsonData) {
@@ -40496,7 +40512,7 @@ class DotItem {
         //recorrer todo loos elementos HOME
         jsonData.forEach((element)=>{
             console.log("GENERATE SLIDE");
-            console.log(element);
+            //console.log(element);
             //agreagar slides a el objeto
             let slide = this.generateFromJSonData(element);
             slide.classList.add("swiper-slide");
@@ -40513,23 +40529,17 @@ class DotItem {
         //agregar slides
         container.appendChild(btnNext);
         container.appendChild(btnRight);
-        //iniciar OBJETO SLIDE
-        const swiper = new (0, _swiperDefault.default)(".home-swiper", {
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev"
-            }
-        });
+        /*
         //setup listeners
         btnNext.addEventListener("click", (event)=>{
-            console.log("SLIDE SIGUIENTE");
-            swiper.slideNext();
+          console.log("SLIDE SIGUIENTE")
+          swiper.slideNext();
         });
         btnRight.addEventListener("click", (event)=>{
-            console.log("SLIDE ANTERIOR");
-            swiper.slidePrev();
+          console.log("SLIDE ANTERIOR")
+          swiper.slidePrev();
         });
-        //regresar el objeto
+*/ //regresar el objeto
         return container;
     }
     //activar o desactivar icono
@@ -40791,7 +40801,7 @@ const SLIDES_IMG = {
 module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"what is it?","title":"BlackFort Exchange Network","description":"BlackFort is an innovative blockchain platform that has all the attributes needed for a top–tier blockchain. It is a Layer 1 blockchain that is EVM compatible, fast, scalable, secure, and efficient, with POSA and easy access to become a delegator. Transparency is a key priority for BlackFort, ensuring that all parties in a transaction have the information they need to feel secure. This combination of features makes BlackFort an ideal platform for anyone looking to build a blockchain–based solution.","buttons":[{"id":"bxn","index":"0","name":"BXN Smartchain"},{"id":"blackfort","index":"1","name":"BlackFort Explorer"},{"id":"audited","index":"2","name":"Audited Code"},{"id":"posa","index":"3","name":"PoSA & Decentralization"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}]},{"title":"BlackFort Wallet &\\n Exchange APP","imgLink":[{"extLink":"localhost","imgSrc":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand"}],"buttons":[{"id":"home","index":"0","name":"Client side wallet"},{"id":"home","index":"1","name":"Swap Function"},{"id":"home","index":"2","name":"Buy & Sell with FIAT"}],"extLink":[{"name":"BlackFort Wallet 2.0 Yellowpaper","link":""}],"custom":""}],"SubPage":[{"id":"bxn","title":"BXN Smartchain","description":"BlackFort Exchange Network is a smartchain technology. this form of Blockchain is a revolutionary way to manage digital assets more securely and efficiently. With a smartchain, users can quickly and easily transfer digital assets between multiple parties in a secure and transparent manner. The smartchain can also be used to facilitate smart contracts, allowing for the automation of complex transactions and smart contract interactions. This technology has the potential to open up new possibilities for the global economy.","preview":"https://i.imgur.com/XOqirNS_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"BXN Smartchain","link":"link"}]},{"id":"blackfort","title":"BlackFort Explorer","description":"A Cryptocurrency smartchain explorer is a tool that provides users with access to the blockchain data associated with a given cryptocurrency. It can be used to view the transactions and blocks associated with a particular altcoin, as well as the address balances, network hashrate, and block rewards. The information provided can be used to analyze the activity of a given Blockchain Network.  ","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"audited","title":"Audited Code","description":"Auditing is an important step for any cryptocurrency project, as it ensures that the code is secure, efficient, and compliant with the latest industry standards. By enlisting the services of an experienced and reputable third–party auditor like Certik, a project can ensure that its code is thoroughly reviewed and tested, and that any potential issues are identified and addressed. Additionally, auditing provides an important layer of transparency and trust for a project, which can go a long way in helping to build and maintain a strong and engaged community.","preview":"https://i.imgur.com/E9Rs9kK_d.webp?maxwidth=760&amp;fidelity=grand","extLink":[{"name":"Certik Audit Report","link":"link"}]},{"id":"posa","title":"PoSA & Decentralization","description":"Proof-of-staked-authority is an efficient and secure way to validate a Cryptocurrency smartchain. BXN Blockchain has implemented this system, and is reaping the rewards, with over 60,000 delegators from over 120 countries, it ensures that the network is well-distributed. This allows for a much greater level of decentralization and security than other PoS or PoW methods, as well as increased scalability. BXN Blockchain is clearly at the forefront of the latest technologies, and is an excellent example of the benefits of using PoSA.","preview":"https://i.imgur.com/4duYyz4_d.webp?maxwidth=760&fidelity=grand","extLink":[{"name":"More Info","link":"link"}]}]}');
 
 },{}],"5egMc":[function(require,module,exports) {
-module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BlackFort Genesis Knights NFTs","description":"We’re glad to introduce you our Exclusive Genesis NFT collection! Only 500 NFTs will be minted.<br> These limited NFTs provide additional, elite opportunities….<br> First sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br>Second sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br> Third sales Phase of 150 pieces: ENDED SUCCESSFULLY <br>LAST PHASE COMING SOON","preview":"https://i.imgur.com/6SlRZpZ.png","extLink":[{"name":"Certik Audit Report","link":"link"}],"custom":"ref to element"}]}');
+module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"BlackFort Genesis Knights NFTs","description":"We’re glad to introduce you our Exclusive Genesis NFT collection! Only 500 NFTs will be minted.<br> These limited NFTs provide additional, elite opportunities….<br> First sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br>Second sales Phase of 100 pieces: ENDED SUCCESSFULLY WITHIN 24hrs!!<br> Third sales Phase of 150 pieces: ENDED SUCCESSFULLY <br>LAST PHASE COMING SOON","preview":"https://i.imgur.com/6SlRZpZ.png","extLink":[{"name":"Certik Audit Report","link":"link"}],"custom":""}]}');
 
 },{}],"2VY0o":[function(require,module,exports) {
 module.exports = JSON.parse('{"haveSlider":true,"MainPage":[{"subTitle":"","title":"Blackfort Blog","description":"Welcome to the BlackFort blog section, where you’ll find the latest news, announcements, press releases, and informative articles on a variety of topics related to blockchain, client-side applications, smart contracts, DeFi, cryptocurrency news, and more. Our expert team consistently updates the blog with valuable insights and industry trends to keep you informed and up-to-date on the latest developments in the blockchain and cryptocurrency space.","buttons":[{"id":"post","index":"0","name":"Blog Posts"},{"id":"announcements","index":"1","name":"Announcements"},{"id":"medium","index":"2","name":"Medium"}]}],"SubPage":[{"id":"post","slides":[{"previewImg":"post1","title":"BlackFort Layer 1 Blockchain Is Live on Mainnet","description":"BlackFort, a Layer-1 blockchain, launched its mainnet at the end of January 2023. After announcing on January 13, 2023, on its Twitter account that the mainnet was coming soon, BlackFort is now waiting for increasingly more crypto enthusiasts to join the community."},{"previewImg":"post2","title":"When Will Crypto Replace Fiat?","description":"A growing number of businesses and individuals are turning to crypto, especially during these turbulent times. In the last five years, cryptocurrency startups have raised over $20 billion via initial coin offerings and proven to be of great use in the business sector. Financial analysts predict that fiat money will be digitized and we will inevitably see digital versions of existing currencies…."},{"previewImg":"post3","title":"What Are Central Banks’ Digital Currencies and Do They Have a Future?","description":"A blockchain is essentially a digital ledger of transactions that is duplicated and distributed across the entire network of computer systems on the blockchain. Each block in the chain contains a number of transactions, and every time a new transaction occurs on the blockchain, a record of that transaction is added to every participant’s ledger."},{"previewImg":"post4","title":"Blackfort Wallet Security","description":"Before you enter the crypto market, you should be well-versed in the basics of cryptocurrency trading. In addition, one must be aware of the aspects that influence bitcoin security. In this article, we will examine the importance of securing cryptocurrency and how digital currencies and cybersecurity are connected."},{"previewImg":"post5","title":"What is Web 3.0, and Why Should We Care?","description":"In 1990, Berners-Lee pioneered the early development of the Internet and ushered in the era of Web 1.0. This was the age of static web pages retrieved from servers, a far cry from today’s slick content. Over the past 15 to 20 years, Web 2.0 replaced the static web pages with interactivity, social connectivity, and…"}]},{"id":"announcements","title":"Announcements","description":"Announcements HERE","extLink":[{"name":"Go to Blockchain Explorer","link":"link"}]},{"id":"medium","title":"Medium","description":"Medium HERE","extLink":[{"name":"Certik Audit Report","link":"link"}]}]}');
@@ -44008,174 +44018,7 @@ function elementOuterSize(el, size, includeMargins) {
     return el.offsetWidth;
 }
 
-},{"./ssr-window.esm.mjs":"th8PY","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gmEI9":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "CSS3DObject", ()=>CSS3DObject);
-parcelHelpers.export(exports, "CSS3DSprite", ()=>CSS3DSprite);
-parcelHelpers.export(exports, "CSS3DRenderer", ()=>CSS3DRenderer);
-var _three = require("three");
-/**
- * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
- */ const _position = new (0, _three.Vector3)();
-const _quaternion = new (0, _three.Quaternion)();
-const _scale = new (0, _three.Vector3)();
-class CSS3DObject extends (0, _three.Object3D) {
-    constructor(element = document.createElement("div")){
-        super();
-        this.isCSS3DObject = true;
-        this.element = element;
-        this.element.style.position = "absolute";
-        this.element.style.pointerEvents = "auto";
-        this.element.style.userSelect = "none";
-        this.element.setAttribute("draggable", false);
-        this.addEventListener("removed", function() {
-            this.traverse(function(object) {
-                if (object.element instanceof Element && object.element.parentNode !== null) object.element.parentNode.removeChild(object.element);
-            });
-        });
-    }
-    copy(source, recursive) {
-        super.copy(source, recursive);
-        this.element = source.element.cloneNode(true);
-        return this;
-    }
-}
-class CSS3DSprite extends CSS3DObject {
-    constructor(element){
-        super(element);
-        this.isCSS3DSprite = true;
-        this.rotation2D = 0;
-    }
-    copy(source, recursive) {
-        super.copy(source, recursive);
-        this.rotation2D = source.rotation2D;
-        return this;
-    }
-}
-//
-const _matrix = new (0, _three.Matrix4)();
-const _matrix2 = new (0, _three.Matrix4)();
-class CSS3DRenderer {
-    constructor(parameters = {}){
-        const _this = this;
-        let _width, _height;
-        let _widthHalf, _heightHalf;
-        const cache = {
-            camera: {
-                fov: 0,
-                style: ""
-            },
-            objects: new WeakMap()
-        };
-        const domElement = parameters.element !== undefined ? parameters.element : document.createElement("div");
-        domElement.style.overflow = "hidden";
-        this.domElement = domElement;
-        const viewElement = document.createElement("div");
-        viewElement.style.transformOrigin = "0 0";
-        viewElement.style.pointerEvents = "none";
-        domElement.appendChild(viewElement);
-        const cameraElement = document.createElement("div");
-        cameraElement.style.transformStyle = "preserve-3d";
-        viewElement.appendChild(cameraElement);
-        this.getSize = function() {
-            return {
-                width: _width,
-                height: _height
-            };
-        };
-        this.render = function(scene, camera) {
-            const fov = camera.projectionMatrix.elements[5] * _heightHalf;
-            if (cache.camera.fov !== fov) {
-                viewElement.style.perspective = camera.isPerspectiveCamera ? fov + "px" : "";
-                cache.camera.fov = fov;
-            }
-            if (camera.view && camera.view.enabled) {
-                // view offset
-                viewElement.style.transform = `translate( ${-camera.view.offsetX * (_width / camera.view.width)}px, ${-camera.view.offsetY * (_height / camera.view.height)}px )`;
-                // view fullWidth and fullHeight, view width and height
-                viewElement.style.transform += `scale( ${camera.view.fullWidth / camera.view.width}, ${camera.view.fullHeight / camera.view.height} )`;
-            } else viewElement.style.transform = "";
-            if (scene.matrixWorldAutoUpdate === true) scene.updateMatrixWorld();
-            if (camera.parent === null && camera.matrixWorldAutoUpdate === true) camera.updateMatrixWorld();
-            let tx, ty;
-            if (camera.isOrthographicCamera) {
-                tx = -(camera.right + camera.left) / 2;
-                ty = (camera.top + camera.bottom) / 2;
-            }
-            const scaleByViewOffset = camera.view && camera.view.enabled ? camera.view.height / camera.view.fullHeight : 1;
-            const cameraCSSMatrix = camera.isOrthographicCamera ? `scale( ${scaleByViewOffset} )` + "scale(" + fov + ")" + "translate(" + epsilon(tx) + "px," + epsilon(ty) + "px)" + getCameraCSSMatrix(camera.matrixWorldInverse) : `scale( ${scaleByViewOffset} )` + "translateZ(" + fov + "px)" + getCameraCSSMatrix(camera.matrixWorldInverse);
-            const style = cameraCSSMatrix + "translate(" + _widthHalf + "px," + _heightHalf + "px)";
-            if (cache.camera.style !== style) {
-                cameraElement.style.transform = style;
-                cache.camera.style = style;
-            }
-            renderObject(scene, scene, camera, cameraCSSMatrix);
-        };
-        this.setSize = function(width, height) {
-            _width = width;
-            _height = height;
-            _widthHalf = _width / 2;
-            _heightHalf = _height / 2;
-            domElement.style.width = width + "px";
-            domElement.style.height = height + "px";
-            viewElement.style.width = width + "px";
-            viewElement.style.height = height + "px";
-            cameraElement.style.width = width + "px";
-            cameraElement.style.height = height + "px";
-        };
-        function epsilon(value) {
-            return Math.abs(value) < 1e-10 ? 0 : value;
-        }
-        function getCameraCSSMatrix(matrix) {
-            const elements = matrix.elements;
-            return "matrix3d(" + epsilon(elements[0]) + "," + epsilon(-elements[1]) + "," + epsilon(elements[2]) + "," + epsilon(elements[3]) + "," + epsilon(elements[4]) + "," + epsilon(-elements[5]) + "," + epsilon(elements[6]) + "," + epsilon(elements[7]) + "," + epsilon(elements[8]) + "," + epsilon(-elements[9]) + "," + epsilon(elements[10]) + "," + epsilon(elements[11]) + "," + epsilon(elements[12]) + "," + epsilon(-elements[13]) + "," + epsilon(elements[14]) + "," + epsilon(elements[15]) + ")";
-        }
-        function getObjectCSSMatrix(matrix) {
-            const elements = matrix.elements;
-            const matrix3d = "matrix3d(" + epsilon(elements[0]) + "," + epsilon(elements[1]) + "," + epsilon(elements[2]) + "," + epsilon(elements[3]) + "," + epsilon(-elements[4]) + "," + epsilon(-elements[5]) + "," + epsilon(-elements[6]) + "," + epsilon(-elements[7]) + "," + epsilon(elements[8]) + "," + epsilon(elements[9]) + "," + epsilon(elements[10]) + "," + epsilon(elements[11]) + "," + epsilon(elements[12]) + "," + epsilon(elements[13]) + "," + epsilon(elements[14]) + "," + epsilon(elements[15]) + ")";
-            return "translate(-50%,-50%)" + matrix3d;
-        }
-        function renderObject(object, scene, camera, cameraCSSMatrix) {
-            if (object.isCSS3DObject) {
-                const visible = object.visible === true && object.layers.test(camera.layers) === true;
-                object.element.style.display = visible === true ? "" : "none";
-                if (visible === true) {
-                    object.onBeforeRender(_this, scene, camera);
-                    let style;
-                    if (object.isCSS3DSprite) {
-                        // http://swiftcoder.wordpress.com/2008/11/25/constructing-a-billboard-matrix/
-                        _matrix.copy(camera.matrixWorldInverse);
-                        _matrix.transpose();
-                        if (object.rotation2D !== 0) _matrix.multiply(_matrix2.makeRotationZ(object.rotation2D));
-                        object.matrixWorld.decompose(_position, _quaternion, _scale);
-                        _matrix.setPosition(_position);
-                        _matrix.scale(_scale);
-                        _matrix.elements[3] = 0;
-                        _matrix.elements[7] = 0;
-                        _matrix.elements[11] = 0;
-                        _matrix.elements[15] = 1;
-                        style = getObjectCSSMatrix(_matrix);
-                    } else style = getObjectCSSMatrix(object.matrixWorld);
-                    const element = object.element;
-                    const cachedObject = cache.objects.get(object);
-                    if (cachedObject === undefined || cachedObject.style !== style) {
-                        element.style.transform = style;
-                        const objectData = {
-                            style: style
-                        };
-                        cache.objects.set(object, objectData);
-                    }
-                    if (element.parentNode !== cameraElement) cameraElement.appendChild(element);
-                    object.onAfterRender(_this, scene, camera);
-                }
-            }
-            for(let i = 0, l = object.children.length; i < l; i++)renderObject(object.children[i], scene, camera, cameraCSSMatrix);
-        }
-    }
-}
-
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"97wAT":[function(require,module,exports) {
+},{"./ssr-window.esm.mjs":"th8PY","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"97wAT":[function(require,module,exports) {
 module.exports = require("1065846c8c783c61").getBundleURL("8Kyqb") + "final.23f53255.glb" + "?" + Date.now();
 
 },{"1065846c8c783c61":"lgJ39"}]},["gLv3T","jYf5p"], "jYf5p", "parcelRequire94c2")

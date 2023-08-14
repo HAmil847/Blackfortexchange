@@ -181,7 +181,7 @@ div.active-section {
   grid-template-areas: "title img"
                        "description img"
                        "list img";
-  display: grid !important;
+  display: grid;
 }
 
 .dot .ntfs-section.active-section .img-preview {
@@ -389,13 +389,14 @@ body {
 }
 
 header {
+  height: 80px;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
 }
 
-.navbar {
+header .navbar {
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -420,10 +421,6 @@ header .logo-link {
 header .logo-link:hover {
   transition: transform .2s;
   transform: scale(1.02);
-}
-
-header .navbar {
-  height: 120px;
 }
 
 main.intro {
