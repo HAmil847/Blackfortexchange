@@ -653,7 +653,7 @@ if ((0, _listener.esDispositivoMovilPorResolucion)()) {
 MAIN_DOTS.render();
 NTW_MAIN_DOT.render();
 // Set up post-processing
-//WEB.setPostProcessing(PostProcessing.bloomPass);
+WEB.setPostProcessing((0, _postProcessingDefault.default).bloomPass);
 // Set the scene's animation loop
 //exportar camara 
 WEB.renderer.setAnimationLoop(RenderExperience);
@@ -684,7 +684,8 @@ function RenderExperience() {
     DOM.renderScene();
     WEB.renderScene();
     if (PORTAL.isLoaded) PORTAL.model.rotation.z += 0.005;
-    (0, _cameraHandlerDefault.default).setParallax((0, _mouseHandlerDefault.default).normalized, 0.02);
+    if (!(0, _listener.esDispositivoMovilPorResolucion)()) (0, _cameraHandlerDefault.default).setParallax((0, _mouseHandlerDefault.default).normalized, 0.02);
+    else (0, _cameraHandlerDefault.default).setParallax((0, _listener.mOrientation), 0.02);
 }
 // Load the portal
 async function LoadPortal() {
@@ -36846,6 +36847,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "esDispositivoMovilPorResolucion", ()=>esDispositivoMovilPorResolucion);
 // Exportar la función setupListeners
 parcelHelpers.export(exports, "setupListeners", ()=>setupListeners);
+parcelHelpers.export(exports, "mOrientation", ()=>mOrientation);
 var _mouseHandler = require("../Handlers/MouseHandler");
 var _mouseHandlerDefault = parcelHelpers.interopDefault(_mouseHandler);
 var _textAnimJs = require("../../js/text-anim.js");
@@ -36857,6 +36859,7 @@ var _soundEffects = require("../effects/SoundEffects");
 var _dotState = require("./dom/DotState");
 let swiper;
 let isPlaying = false;
+let mOrientation = new (0, _three.Vector3)();
 //botones
 const BEGIN_BTN_REF = document.getElementById("start-scene");
 const NAVIGATOR_REF = document.getElementById("navigator");
@@ -37044,6 +37047,24 @@ function backButtonHover(event) {
 function esDispositivoMovilPorResolucion() {
     return window.innerWidth <= 768; // Cambia este valor según tus necesidades
 }
+// Variables para el cálculo de normalización
+const mouseData = {
+    screenWidth: window.innerWidth,
+    screenHeight: window.innerHeight,
+    fixedValue: 0.5,
+    intensity: 50 // Intensidad de normalización
+};
+// Evento que se dispara cuando hay cambios en la orientación del dispositivo
+window.addEventListener("deviceorientation", (event)=>{
+    const beta = event.beta; // Valor de inclinación alrededor del eje X en grados
+    const gamma = event.gamma; // Valor de inclinación alrededor del eje Y en grados
+    // Normalización de los valores de orientación según la fórmula proporcionada
+    const normalizedX = (gamma / mouseData.screenWidth - mouseData.fixedValue) * mouseData.intensity;
+    const normalizedY = (beta / mouseData.screenHeight - mouseData.fixedValue) * mouseData.intensity;
+    mOrientation.set(normalizedX, normalizedY, 0);
+    console.log(`Valor X normalizado: ${normalizedX}`);
+    console.log(`Valor Y normalizado: ${normalizedY}`);
+});
 
 },{"../Handlers/MouseHandler":"7ESAf","../../js/text-anim.js":"jjSxz","three":"ktPTu","../Main":"jYf5p","../Handlers/CameraHandler":"bJrvG","../effects/SoundEffects":"7K3aZ","./dom/DotState":"4rB7c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ESAf":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");

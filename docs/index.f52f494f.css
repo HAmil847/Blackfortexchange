@@ -60,7 +60,6 @@
   }
 
   .animated-item {
-    border: 1px solid red;
     width: -moz-fit-content;
     width: fit-content;
   }
