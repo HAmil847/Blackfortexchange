@@ -644,9 +644,9 @@ NTW_MAIN_DOT.setDomItemPosition(50, 140, WEB);
 // Uso
 if ((0, _listener.esDispositivoMovilPorResolucion)()) {
     console.log("Es un dispositivo m\xf3vil");
-    cameraPather.position.set(0, 260, 210);
+    cameraPather.position.set(0, 280, 240);
     //configurar su NUEVA posicion
-    MAIN_DOTS.setDomItemPosition(75, 350, WEB);
+    MAIN_DOTS.setDomItemPosition(70, 350, WEB);
     NTW_MAIN_DOT.setDomItemPosition(40, 250, WEB);
 }
 //mostrar estos dots
